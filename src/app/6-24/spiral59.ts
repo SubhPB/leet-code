@@ -74,6 +74,17 @@ const generateSpiralMatrix = (n: number) => {
     for(let A of matrix){
         console.log(A)
     };
-}
+};
 
+const solution = (n : number) => {
+
+    const direction = ['R', 'B', 'L', 'T'];
+
+    const boundaries = {
+        'T': [0]
+    } as {
+        [key: (typeof direction)[number]]: number[]
+    }
+
+}
 generateSpiralMatrix(4)
