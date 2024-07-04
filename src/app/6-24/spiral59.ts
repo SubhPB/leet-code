@@ -10,7 +10,7 @@
 const generateSpiralMatrix = (n: number) => {
     
     // boundries
-    let [right, bottom, left, top] = [n-1, n-1, 0, 0];
+    let [right, bottom, left, top] = [n-1, n-1, 0, 1];
 
     const compass = {
         'R': [0, 1],
@@ -78,13 +78,7 @@ const generateSpiralMatrix = (n: number) => {
 
 const solution = (n : number) => {
 
-    const direction = ['R', 'B', 'L', 'T'];
-
-    const boundaries = {
-        'T': [0]
-    } as {
-        [key: (typeof direction)[number]]: number[]
-    }
+    // const 
 
 }
 generateSpiralMatrix(4)
