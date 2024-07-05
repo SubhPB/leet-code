@@ -25,9 +25,6 @@ const findMaxPrice = () => {
         }
     };
 
-    print()
-    console.log('')
-
     for(let i = 1; i <= m; i++){
         for(let j = 1; j <= n; j++){
 
@@ -39,7 +36,7 @@ const findMaxPrice = () => {
 
         }
     }
-    print()
+    return matrix[m][n]
 };
 
 findMaxPrice()
