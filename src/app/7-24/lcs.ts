@@ -40,6 +40,33 @@ class LCS {
         return matrix[m][n]
     }
 
+    longestCommonSubString(x = "abcdxyz", y = "xyzabcd"){
+        /**
+         * Input : X = “abcdxyz”, y = “xyzabcd” 
+            Output : 4 
+            Explanation:
+            The longest common subsequence is “abcd” and is of length 4
+        */
+
+        const m = x.length, n = y.length, matrix: number[][] = Array.from({length: m+1}, () => Array.from({length: n+1}, () => 0))
+        let maxLength = 0
+
+        for (let i = 1; i <= m; i++){
+            for (let j = 1; j <= n; j++){
+                if (x[i-1] === y[j-1]){
+                    matrix[i][j] = 1 + matrix[i-1][j-1]
+                    maxLength = Math.max(maxLength, matrix[i][j])
+                } else {
+                    matrix[i][j] = 0
+                }
+            }
+        }
+
+        this.print(matrix)
+
+        return maxLength
+    }
+
 };
 
 const lcs = new LCS();
