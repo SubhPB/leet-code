@@ -96,7 +96,44 @@ class LCS {
         return x.substring(iAt - maxLength, iAt)
     }
 
+    printLongestCommonsubsequence(x = 'acbcf', y = 'abcdaf'){
+        /* we will print the longest common substring with the following strategy :-
+        *   1. find the matrix where its each slot represents the M[i][j] = length of longest common subsequence
+        *   2. Then we will track back over the matrix to find out the actual string
+        */
+
+        const m = x.length, n = y.length, matrix = Array.from({length: m+1}, () => Array.from({length: n+1}, () => 0));
+
+        for (let i = 1; i <= m; i++){
+            for(let j = 1; j <= n; j++){
+
+                if (x[i-1] === y[j-1]){
+                    matrix[i][j] = matrix[i-1][j-1] + 1
+                } else {
+                    matrix[i][j] = Math.max(matrix[i-1][j], matrix[i][j-1])
+                }
+
+            }
+        }
+        
+
+        let i = m, j = n, maxLength = matrix[m][n],subStr = '';
+
+        while (i > 0 && j > 0 && subStr.length !== maxLength){
+            if (x[i-1] === y[j-1]){
+                subStr = x[i-1] + subStr
+                i--; 
+                j--;
+            } else if (matrix[i-1][j] > matrix[i][j-1]){
+                i--;
+            } else {
+                j--;
+            }
+        };
+        return subStr
+    }
+
 };
 
 const lcs = new LCS();
-console.log(lcs.printLongestCommonSubstring())
+console.log(lcs.printLongestCommonsubsequence())
