@@ -40,7 +40,7 @@ class LCS {
         return matrix[m][n]
     }
 
-    longestCommonSubString(x = "abcdxyz", y = "xyzabcd"){
+    longestCommonSubstring(x = "abcdxyz", y = "xyzabcd"){
         /**
          * Input : X = “abcdxyz”, y = “xyzabcd” 
             Output : 4 
@@ -67,7 +67,36 @@ class LCS {
         return maxLength
     }
 
+    printLongestCommonSubstring(x = 'pqabcxy', y = 'xyzabcp'){
+
+        // So first we will find the length then we will go or actual substring
+
+        const m = x.length, n = y.length, matrix = Array.from({length: m+1}, () => Array.from({length: n+1}, () => 0));
+        // When the length of either array is zero then our answer would be zero so that will be our base case.
+        let maxLength = 0, iAt = 0;
+
+        for(let i = 1; i <= m; i++){
+            for(let j = 1; j <= n; j++){
+
+                // matched
+                if (x[i-1] === y[j-1]){
+                    matrix[i][j] = matrix[i-1][j-1] + 1
+                } else {
+                    // not matched
+                    matrix[i][j] = 0
+                };
+
+                if (matrix[i][j] > maxLength){
+                    maxLength = matrix[i][j]
+                    iAt = i
+                }
+            }
+        };
+
+        return x.substring(iAt - maxLength, iAt)
+    }
+
 };
 
 const lcs = new LCS();
-console.log(lcs.longestCommonSubsequence())
+console.log(lcs.printLongestCommonSubstring())
