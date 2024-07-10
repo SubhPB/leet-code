@@ -137,3 +137,5 @@ class LCS {
 
 const lcs = new LCS();
 console.log(lcs.printLongestCommonsubsequence())
+
+export { LCS }
