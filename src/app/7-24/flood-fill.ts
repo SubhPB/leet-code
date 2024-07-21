@@ -5,7 +5,6 @@
 
 
 function floodFill(image: number[][], sr: number, sc: number, newColor: number): number[][] {
-    // Your implementation here;
 
     const m = image.length, n = image[0].length
 
