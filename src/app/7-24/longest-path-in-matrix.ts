@@ -59,9 +59,27 @@ function findLongestpathInMatrix(matrix=Matrix){
         }
     };
 
+    const dfs = (i: number, j: number) => {
+
+        let path = [ matrix[i][j] ];
+        const validDirections = directions.filter(dir => isValid(dir[0] + i, dir[1] + j,  matrix[i][j]));
+
+        for(const [dr, dc] of validDirections){
+            let newR = dr+i, newC =dc+j;
+            const newPath = dfs(newR, newC);
+            path = [ matrix[i][j], ...newPath]
+        };
+        
+        return path
+    }
+    
     for (let i = 0;  i < matrix.length; i++){
         for(let j=0; j< matrix[0].length; j++) {
-            recursion(i, j, [])
+            // recursion(i, j, [])
+            const path  =dfs(i, j)
+            if (path.length > longestPath.length){
+                longestPath = path
+            }
         }
     }
 
