@@ -94,6 +94,39 @@ class DP {
             }
         };
         return palindromeStr
+    };
+    findMinPalindromePartition(s=this.s){
+        
+        let partitions = 0
+        const stack = [s];
+        
+        while (stack.length !== 0){
+            const str = stack.pop() as string;
+
+            if (str.length > 2){
+                const palindrome = this.findLongestPalindromeSubString(str);
+                const index = str.indexOf(palindrome);
+
+                if (palindrome.length === 1){
+                    partitions += (str.length - 1);
+                    continue
+                };
+
+                if (palindrome.length === str.length){
+                    continue
+                };
+
+                if (index > 0){
+                  stack.push(s.slice(0, index))  
+                };
+                if (index + palindrome.length < str.length){
+                    stack.push(s.slice(index+palindrome.length))
+                };
+                partitions += 1
+            }
+        }
+
+        return partitions
     }
 }
 
@@ -111,5 +144,5 @@ class Palindrome {
 
 
 const palindrome = new Palindrome("abacabad");
-console.log(palindrome.dp.findLongestPalindromeSubString())
+console.log(palindrome.dp.findMinPalindromePartition())
 
