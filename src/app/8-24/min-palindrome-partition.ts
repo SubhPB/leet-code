@@ -11,7 +11,8 @@
     CMD - npx ts-node ./src/app/8-24/min-palindrome-partition.ts
  */
 
-class Palindrome {
+// recursion approach
+class Recursion {
     constructor (public s: string) {
         this.s = s
     };
@@ -67,10 +68,48 @@ class Palindrome {
         };
         return recursion(s)
     }
+};
+
+// dp approach
+class DP {
+    constructor (public s: string){
+        this.s = s
+    };
+
+    findLongestPalindromeSubString(s=this.s){
+        const matrix = Array.from({length: s.length+1},() => Array.from({length: s.length+1}, () => 0));
+        const reversedS = Array.from(s).reverse().join('')
+
+        let palindromeStr = '';
+        for(let i = 1; i <= s.length; i++){
+            for(let j = 1; j <= s.length; j++){
+                if (s[i-1] === reversedS[j-1]){
+                    matrix[i][j] = matrix[i-1][j-1] + 1
+                    if (matrix[i][j] > palindromeStr.length){
+                        palindromeStr = s.slice(i-matrix[i][j],i)
+                    }
+                } else {
+                    matrix[i][j] = 0
+                }
+            }
+        };
+        return palindromeStr
+    }
+}
+
+class Palindrome {
+    public recursion : Recursion;
+    public dp : DP;
+    constructor (public s: string) {
+        this.s = s
+        this.recursion = new Recursion(s)
+        this.dp = new DP(s)
+    };
+
 
 };    
 
 
 const palindrome = new Palindrome("abacabad");
+console.log(palindrome.dp.findLongestPalindromeSubString())
 
-console.log(palindrome.findMinPalindromePartition())
