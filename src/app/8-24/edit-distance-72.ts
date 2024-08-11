@@ -38,7 +38,7 @@ class EditDistance {
     constructor (public word1 = "horse", public word2 = "ros"){
         this.word1 = word1;
         this.word2 = word2
-    }
+    };
     recursion(word1=this.word1, word2=this.word2){
 
         const solve = (str1: string, str2: string): number => {
@@ -53,17 +53,49 @@ class EditDistance {
             if (str1[0] === str2[0]){
                 return solve(str1.slice(1), str2.slice(2))
             } else {
+                // here we have 3 operations to do 1.Add 2. Remove 3. Replace
                 return 1 + Math.min(
+                    // replace
                     solve(str1.slice(1), str2.slice(1)),
+                    // Add
                     solve(str1, str2.slice(1)),
+                    // remove
                     solve(str1.slice(1), str2)
                 )
             }
         };
 
         return solve(word1, word2)
+    };
+
+    dp(word1=this.word1, word2=this.word2){
+        const matrix = Array.from({length: word1.length+1}, () => Array.from({length: word2.length+1}, () => 0));
+
+        for (let i = 0; i < matrix.length; i++){
+            for(let j = 0; j < matrix[0].length; j++){
+                if (i === 0 || j === 0){
+                    matrix[i][j] = i === 0 ? j : i
+                    continue;
+                };
+
+                if (word1[i-1] === word2[j-1]){
+                    matrix[i][j] = matrix[i-1][j-1]
+                } else {
+                    matrix[i][j] = 1 + Math.min(
+                        // replace
+                        matrix[i-1][j-1],
+                        // add
+                        matrix[i][j-1],
+                        // remove
+                        matrix[i-1][j]
+                    )
+                }
+            }
+        };
+
+        return matrix[word1.length][word2.length]
     }
 };
 
 const editDistance = new EditDistance();
-console.log(editDistance.recursion())
+console.log(editDistance.dp())
