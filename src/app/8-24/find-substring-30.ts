@@ -46,14 +46,41 @@ class FindSubString {
         this.words = words
     };
 
-    solve(s=this.s, words=this.words){
-        const indexes: number[] = [];
+    public permutation = {
+        dp: (words : string | string[] =this.words) => {
 
-        /**
-         * So our first task is to find the permutation of the words
-         */
-        const permutation = () => {
+            if (typeof words === 'string'){
+                words = words.split('')
+            }
 
+            const layers = [
+                [words]
+            ];
+
+            for(let layer = 0; layer < words.length; layer ++){
+
+                const prevLayer = layers.pop() as string[][]
+                
+                const newLayer = [];
+
+                for(let perms of prevLayer){
+                    for(let i = layer; i < perms.length; i++){
+
+                        const copy = [...perms];
+                        [copy[layer], copy[i]] = [copy[i], copy[layer]];
+                        newLayer.push(copy)
+                    }
+                };
+
+                layers.push(newLayer)
+            }
+
+            return layers[layers.length - 1].map(l => l.join(''));
+
+        },
+
+        recursion: (words: string | string[]=this.words) => {
+            words = typeof words === 'string' ? words.split('') : words
             const perms: string[] = []; // ["abcdef", "abefcd", "cdabef", "cdefab", "efabcd", and "efcdab"]
 
             const rec = (index: number, w: string[] /**["ab","cd","ef"] */) => {
@@ -70,16 +97,26 @@ class FindSubString {
 
             rec(0, words)
             return perms
-        };
+        }
+    }
 
-        for (let perm of permutation()){
+    solve(s=this.s, words=this.words){
+        const indexes: number[] = [];
+
+        /**
+         * So our first task is to find the permutation of the words
+         */
+
+        for (let perm of this.permutation.dp()){
             const index = s.indexOf(perm);
             if (index !== -1) indexes.push(index)
         }
         return indexes;
-    }
+    };
+
+    
 };
 
-const s = "barfoothefoobarman", words = ["foo", "bar"];
+const s = "barfoothefoobarman", words = ["bar", "foo"];
 
 console.log(new FindSubString(s, words).solve())
