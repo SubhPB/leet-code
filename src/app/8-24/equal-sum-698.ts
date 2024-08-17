@@ -21,25 +21,26 @@ class Solve {
         this.k = k
     };
 
+    equalSum(){
+        const targetSum = arrSum(this.nums) /this.k;
+        return targetSum % 2 === 0 && this.findSubsets(this.nums, targetSum).length >= this.k
+    }
+
     findSubsets(nums=this.nums, targetSum: number){
         const subsets: number[][] = [];
 
         function BT(i: number, subset: number[]){
-            if (i === nums.length){
-                return
-            };
             if (arrSum(subset) === targetSum){
                 subsets.push(subset);
                 return
             };
-
+            if (i === nums.length){
+                return
+            };
             if (nums[i] <= targetSum - arrSum(subset)){
-                // 2 choices
-                BT(i+1, [...subset])
                 BT(i+1, [...subset, nums[i]])
-            } else {
-                BT(i+1, [...subset])
-            }
+            };
+            BT(i+1, [...subset])
         };
         BT(0, [])
         return subsets
