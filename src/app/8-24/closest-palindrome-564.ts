@@ -21,11 +21,39 @@ Explanation: 0 and 2 are the closest palindromes but we return the smallest whic
  CMD :- npx ts-node ./src/app/8-24/closest-palindrome-564.ts 
  */
 
+const isPalindrome = (str: string) => {
+    return str === Array.from(str).reverse().join('')
+};
+
 function closestPalindrome(n: string = "123"){
 
-    const N = Array.from(n, (i) => Number(i))
+    let N = Number(n);
 
 
-    return N
+    let i = 0;
+
+    /** First we will go right side*/;
+    while (true){
+        if (isPalindrome(String(N+i))){
+            break
+        }
+        i++;
+    };
+
+    let j = 0;
+    /** Now lets go left side */
+    while (true){
+        if (isPalindrome(String(N-j)) || j > i){
+            break
+        };
+        j++;
+    };
+
+    if (i < j){
+        return String(N+i)
+    } else {
+        return String(N-j)
+    };
 };
+
 console.log(closestPalindrome())
