@@ -25,7 +25,7 @@ Output: []
 Explanation: There are no expressions that can be created from "3456237490" to evaluate to 9191.
 
 
-CMD :- CMD = npx ts-node ./src/app/8-24/exp&op284.ts
+CMD :- CMD = npx ts-node ./src/app/8-24/exp-add-op-284.ts
  */
 
 const operands = [
@@ -51,8 +51,28 @@ const operands = [
 
 function addOperators(num="123", target=6){
     const ans: string[] = [];
-
-
+    let calls = 0;
+    function rec(n:string, str:string, value: number){
+        if (value === target && !n){
+            ans.push(str);
+            return
+        };
+        
+        if (!n){
+            return
+        }
+        
+        calls++
+        for(let operand of operands){
+            value = operand.invoke(value, Number(n[0]))
+            str += ( (str ? operand.symbol : '') + n[0]);
+            rec(n.slice(1), str, value)
+        };
+    };
+    rec(num, '', 0)
+    console.log("calls = ", calls)
     return ans
 };
+
+console.log(addOperators())
 
