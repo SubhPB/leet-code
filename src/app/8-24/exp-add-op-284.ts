@@ -58,15 +58,15 @@ function addOperators(num="123", target=6){
             return
         };
         
-        if (!n){
+        if (n.length === 0){
             return
         }
         
         calls++
         for(let operand of operands){
-            value = operand.invoke(value, Number(n[0]))
-            str += ( (str ? operand.symbol : '') + n[0]);
-            rec(n.slice(1), str, value)
+            let newValue = operand.invoke(value, Number(n[0]))
+            let newStr = str + ( (str ? operand.symbol : '') + n[0]);
+            rec(n.slice(1), newStr, newValue)
         };
     };
     rec(num, '', 0)
