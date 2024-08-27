@@ -49,10 +49,13 @@ const operands = [
     }
 ] as const;
 
-function addOperators(num="123", target=6){
+function addOperators(num="232", target=8){
     const ans: string[] = [];
     let calls = 0;
     function rec(n:string, str:string, value: number){
+        if (str === '1+2*3'){
+            console.log("debug n = " +  n + " & value = " + value)
+        }
         if (value === target && !n){
             ans.push(str);
             return
@@ -74,5 +77,44 @@ function addOperators(num="123", target=6){
     return ans
 };
 
-console.log(addOperators())
+function anotherSolution(nums="232", target=8){
+
+    const result : string[] = []
+    
+    function BT(expr: string, index: number, value: number, prev: number){
+
+        if (index === nums.length){
+            if (value === target){
+                result.push(expr)
+            }
+            return;
+        };
+
+        for(let i = index; i < nums.length; i++){
+
+            if (i !== index && nums[index] === '0'){
+                break;
+            };
+
+            const current = parseInt(nums.substring(index, i+1));
+
+            if (index === 0){
+                BT(expr+current, i+1, current, current);
+            } else {
+                // addition
+                BT(expr + '+' + current, i + 1, value + current, current);
+                //subtraction
+                BT(expr + "-" + current, i + 1, value - current, -current);
+                // multipication
+                BT(expr + "*" + current, i + 1, value - prev + prev * current, prev * current)
+
+            }
+
+        }
+    };
+    BT('', 0, 0, 0);
+    return result
+}
+
+console.log(anotherSolution())
 
