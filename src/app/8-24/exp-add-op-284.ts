@@ -77,12 +77,13 @@ function addOperators(num="232", target=8){
     return ans
 };
 
-function anotherSolution(nums="232", target=8){
+function anotherSolution(nums="23332", target=8){
 
-    const result : string[] = []
+    const result : string[] = [];
+    let calls = 0;
     
     function BT(expr: string, index: number, value: number, prev: number){
-
+        calls++;
         if (index === nums.length){
             if (value === target){
                 result.push(expr)
@@ -92,6 +93,7 @@ function anotherSolution(nums="232", target=8){
 
         for(let i = index; i < nums.length; i++){
 
+            /** Avoids the scenrios like '05' but allows '0' */
             if (i !== index && nums[index] === '0'){
                 break;
             };
@@ -113,6 +115,7 @@ function anotherSolution(nums="232", target=8){
         }
     };
     BT('', 0, 0, 0);
+    console.log(calls)
     return result
 }
 
