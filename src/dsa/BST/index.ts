@@ -2,7 +2,7 @@
  * Byimaan
  */
 
-class BSTNodeError extends Error {
+export class BSTNodeError extends Error {
     constructor(message: string, name = "Invalid BST node") {
       super(message);
       this.name = name; 
