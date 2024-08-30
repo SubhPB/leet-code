@@ -47,7 +47,7 @@ function isSymmetric(arr =[1,2,2,3,4,4,3]){
         for(let layer of layers){
             console.log(layer)
         }
-        return layers.every(layer => { console.log(isPalindrome(layer)); return isPalindrome(layer)})
+        return layers.every(layer => {return isPalindrome(layer)})
 
         
     } catch (error) {
