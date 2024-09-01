@@ -32,31 +32,27 @@ CMD - npx ts-node ./src/app/8-24/path-sum-2.ts
 function pathSum(root =[5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22){
 
     const paths:number[][] = [];
+    const getSum = (arr:number[]) => arr.reduce((acc,val) => acc+val,0);
 
-    const isLeaf = (i:number) => i >= root.length || root[i] === null
-
-    const BT = (index: number, sum: number, path: NonNullable<typeof root[number]>[]) => {
-
-        if (index < 0){
+    const BT = (index: number, path: NonNullable<typeof root[number]>[]) => {
+        const node = root?.[index];
+        // terminate if node is a leaf
+        if (typeof node !== 'number'){
+            if (getSum(path) === targetSum){
+                paths.push([...path]);
+            };
             return
-        }
+        };
 
-        if (isLeaf(index) && sum === targetSum){
-            paths.push([...path]);
-            return
-        }
-        
-        const currNode = root?.[index], leftInd = (2*index) + 1, rightInd = 2*(index+1);
+        const leftInd = (2 * index + 1);
+        BT(leftInd, [...path, node]);
 
-        if(typeof currNode === 'number'){
-            let newPath = [...path, currNode];
-            // leftIndex
-            BT(leftInd, sum + currNode, [...newPath]);
-            BT(rightInd, sum + currNode, [...newPath])
-        }
+        const rightInd = 2*(index + 1);
+        BT(rightInd, [...path, node])
     };
 
-    BT(0, 0, [])
+
+    BT(0, [])
 
     return paths
 };
