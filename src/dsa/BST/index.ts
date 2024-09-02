@@ -77,5 +77,22 @@ export class BSTTree {
         const root = rec(0);
 
         return root
+    };
+
+    insert(val: number){
+        const newNode = new BSTNode(val);
+        if (!this.root){
+            this.root = newNode
+        } else {
+            this.insertNode(this.root, newNode)
+        }
+    };
+
+    private insertNode(root:BSTNode, newNode: BSTNode){
+        if (newNode.val < root.val){
+            root.left ? this.insertNode(root.left, newNode) : (root.left = newNode);
+        } else {
+            root.right ? this.insertNode(root.right, newNode) : root.right = newNode
+        }
     }
 }
