@@ -29,11 +29,14 @@ Output: []
 CMD - npx ts-node ./src/app/8-24/path-sum-2.ts
  */
 
+import { BSTTree } from "../../dsa/BST";
+
 function pathSum(root =[5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22){
 
     const paths:number[][] = [];
     const getSum = (arr:number[]) => arr.reduce((acc,val) => acc+val,0);
-
+    
+    const bst = new BSTTree([]);
     const BT = (index: number, path: NonNullable<typeof root[number]>[]) => {
         const node = root?.[index];
         // terminate if node is a leaf
