@@ -40,7 +40,7 @@ const digitToChar = {
 };
 
 
-function letterCombinations(digits: string): string[] {
+function letterCombinations17(digits: string): string[] {
 
     if (![...digits].every(digit => Object.keys(digitToChar).includes(digit))){
         return []
@@ -53,10 +53,11 @@ function letterCombinations(digits: string): string[] {
 
         const digit = _digits[0] as keyof (typeof digitToChar);
         const curr = [...digitToChar[digit]];
-        const next = [...solveByRec(_digits.slice(1))]
+        const next = [...solveByRec(_digits.slice(1))];
 
+        
         const combinations:string[] = [];
-
+        
         for(let a of curr){
             for (let b of next){
                 combinations.push(a+b)
@@ -64,8 +65,9 @@ function letterCombinations(digits: string): string[] {
         };
         return combinations
     }
-
+    
     return solveByRec(digits)
 };
 
-console.log(letterCombinations("23"))
+console.log(" #### LeetCode 17 ####")
+console.log(letterCombinations17("23"))
