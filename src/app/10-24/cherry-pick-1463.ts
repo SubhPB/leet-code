@@ -30,14 +30,78 @@ Total of cherries: 17 + 11 = 28.
  CMD :- npx ts-node ./src/app/10-24/cherry-pick-1463.ts
  */
 
-const grid = [[1,0,0,0,0,0,1],[2,0,0,0,0,3,0],[2,0,9,0,0,0,0],[0,3,0,5,4,0,0],[1,0,2,3,0,0,6]]
+const grid = [
+    [1,0,0,0,0,0,1],
+    [2,0,0,0,0,3,0],
+    [2,0,9,0,0,0,0],
+    [0,3,0,5,4,0,0],
+    [1,0,2,3,0,0,6]
+]
 
 
 function cherryPick(M: number[][] = grid){
 
-    let cherries = 0
+    let cherries = 0;
+
+    const isValidMove = (r:number, c:number) => {
+        return r < M.length && r >= 0
+            &&  c < M[0].length && c >= 0
+    }
+
+    const getPossibleMoves = (r:number, c: number) => {
+        const left = [r+1, c-1],
+            right = [r+1, c+1],
+            straight = [r+1, c];
+        //@ts-ignore    
+        return [left, straight, right].filter(dir => isValidMove(...dir))
+    }
 
     /** computation */
 
+    const rec = (robo1 : number[], robo2 : number[], cherryCount : number, level : number)  => {
+        if (level === M.length - 1){
+            if (cherryCount === 30){
+                console.log("Args when reached 30 : ", robo1, robo2, cherryCount, level);
+                for(let a of M){
+                    console.log(a)
+                }
+            };
+            if (cherryCount > cherries) cherries = cherryCount;
+            return 
+        };
+
+        //@ts-ignore
+        const possibleMovesForRobo1 = getPossibleMoves(...robo1),
+            //@ts-ignore
+            possibleMovesForRobo2 = getPossibleMoves(...robo2);
+
+        
+        for(let r1Move of possibleMovesForRobo1){
+            for (let r2Move of possibleMovesForRobo2){
+                const slot1 = M[r1Move[0]][r1Move[1]],
+                    slot2 =  M[r2Move[0]][r2Move[1]];
+                const cherriesCollected = slot1 + slot2;
+
+                M[r1Move[0]][r1Move[1]] = 0;
+                M[r2Move[0]][r2Move[1]] = 0;
+                rec(r1Move, r2Move, cherryCount + cherriesCollected, level+1);
+                M[r1Move[0]][r1Move[1]] = slot1;
+                M[r2Move[0]][r2Move[1]] = slot2
+            }
+        }
+    };
+
+    const r1StartPoint = [-1, 0], 
+        r2StartPoint = [-1, M[0].length - 1];
+    
+    rec(
+        r1StartPoint,
+        r2StartPoint,
+        0,
+        -1
+    )
+
     return cherries
-}
+};
+
+console.log(cherryPick(grid))
