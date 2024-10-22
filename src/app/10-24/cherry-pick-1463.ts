@@ -38,70 +38,44 @@ const grid = [
     [1,0,2,3,0,0,6]
 ]
 
+function solveCherryPick(M: number[][] = grid){
+    const rows = M.length, cols = M[0].length;
 
-function cherryPick(M: number[][] = grid){
+    const cached: {[key:string]: number} = {};
 
-    let cherries = 0;
-
-    const isValidMove = (r:number, c:number) => {
-        return r < M.length && r >= 0
-            &&  c < M[0].length && c >= 0
-    }
-
-    const getPossibleMoves = (r:number, c: number) => {
-        const left = [r+1, c-1],
-            right = [r+1, c+1],
-            straight = [r+1, c];
-        //@ts-ignore    
-        return [left, straight, right].filter(dir => isValidMove(...dir))
-    }
-
-    /** computation */
-
-    const rec = (robo1 : number[], robo2 : number[], cherryCount : number, level : number)  => {
-        if (level === M.length - 1){
-            if (cherryCount === 30){
-                console.log("Args when reached 30 : ", robo1, robo2, cherryCount, level);
-                for(let a of M){
-                    console.log(a)
-                }
-            };
-            if (cherryCount > cherries) cherries = cherryCount;
-            return 
+    function rec(row: number, col1: number, col2: number){
+        // Base cases
+        if (col1 === col2 || Math.min(col1, col2) < 0 || Math.max(col1, col2) >= cols){
+            return 0
+        } else if (row === rows - 1){
+            // At the last row robots won't have any choice
+            return M[row][col1] + M[row][col2]
         };
 
-        //@ts-ignore
-        const possibleMovesForRobo1 = getPossibleMoves(...robo1),
-            //@ts-ignore
-            possibleMovesForRobo2 = getPossibleMoves(...robo2);
-
-        
-        for(let r1Move of possibleMovesForRobo1){
-            for (let r2Move of possibleMovesForRobo2){
-                const slot1 = M[r1Move[0]][r1Move[1]],
-                    slot2 =  M[r2Move[0]][r2Move[1]];
-                const cherriesCollected = slot1 + slot2;
-
-                M[r1Move[0]][r1Move[1]] = 0;
-                M[r2Move[0]][r2Move[1]] = 0;
-                rec(r1Move, r2Move, cherryCount + cherriesCollected, level+1);
-                M[r1Move[0]][r1Move[1]] = slot1;
-                M[r2Move[0]][r2Move[1]] = slot2
-            }
+        if (cached[`${row}-${col1}-${col2}`]){
+            return cached[`${row}-${col1}-${col2}`]
         }
+
+        let cherries = 0;
+
+        for(let c1 of [-1, 0, 1]){
+            for(let c2 of [-1, 0, 1]){
+                cherries = Math.max(
+                    rec(row+1, col1 + c1, col2 + c2),
+                    cherries
+                )
+            }
+        };
+        
+        cherries = cherries + grid[row][col1] + grid[row][col2];
+        cached[`${row}-${col1}-${col2}`] = cherries;
+
+        return cherries
     };
 
-    const r1StartPoint = [-1, 0], 
-        r2StartPoint = [-1, M[0].length - 1];
+    const maxCherries = rec(0, 0, cols-1);
+    return maxCherries;
     
-    rec(
-        r1StartPoint,
-        r2StartPoint,
-        0,
-        -1
-    )
+}
 
-    return cherries
-};
-
-console.log(cherryPick(grid))
+console.log(solveCherryPick(grid))
