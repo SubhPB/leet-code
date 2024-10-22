@@ -45,8 +45,10 @@ function solveCherryPick(M: number[][] = grid){
 
     function rec(row: number, col1: number, col2: number){
         // Base cases
-        if (col1 === col2 || Math.min(col1, col2) < 0 || Math.max(col1, col2) >= cols){
+        if (Math.min(col1, col2) < 0 || Math.max(col1, col2) >= cols){
             return 0
+        } else if (col1 === col2) {
+            return M[row][col1]
         } else if (row === rows - 1){
             // At the last row robots won't have any choice
             return M[row][col1] + M[row][col2]
