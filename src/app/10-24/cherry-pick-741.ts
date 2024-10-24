@@ -24,6 +24,8 @@
     4 cherries were picked up during this single trip, and the matrix becomes [[0,1,-1],[0,0,-1],[0,0,0]].
     Then, the player went left, up, up, left to return home, picking up one more cherry.
     The total number of cherries picked up is 5, and this is the maximum possible.
+
+     CMD :- npx ts-node ./src/app/10-24/cherry-pick-741.ts
  */
 
 
@@ -37,8 +39,21 @@ function cherryPick(
         ]
     )
 ){
-    let cherries = 0;
-    // compute 
-    return cherries
+    const ROWS = grid.length, COLS = grid[0].length;
 
-} 
+    const compute = (row: number, col: number, cherries: number) : number => {
+        if (row < 0 || row >= ROWS || col < 0 || col >= COLS || grid[row][col] === -1){
+            return -1
+        };   
+        if (row === ROWS - 1 && col === COLS - 1 ){
+            return cherries + grid[row][col]
+        };
+
+        return Math.max(...[-1, 0, 1].map(c => compute(row+1, col + c, cherries + grid[row][col])))
+    }
+    // compute 
+    return compute(0, 0, 0)
+
+};
+
+console.log(cherryPick())
