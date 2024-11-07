@@ -78,6 +78,49 @@ function solveCherryPick(M: number[][] = grid){
     const maxCherries = rec(0, 0, cols-1);
     return maxCherries;
     
+};
+
+const product = (a1:number[], a2:number[]) => {
+    return a1.map(e1 => a2.map(e2 => [e1, e2])).flat()
+};
+
+const constructMatrix = (m:number, n:number, valOrFn: ((i:number, j:number) => number) | number) => {
+    const callbackFn = typeof valOrFn === 'function' ? valOrFn : () => valOrFn
+    return Array.from({length: m}, () => Array.from({length: n}, callbackFn))
 }
 
+function cherryPickWithDP(M:number[][] = grid){
+    const ROWS = M.length, COLS = M[0].length;
+    let columnTable = constructMatrix(COLS, COLS, 0);
+
+    for(let row in M){
+        // For every row we need to calculate a column table
+        let currColumnTable = constructMatrix(COLS, COLS, 0);
+        
+        for(let c1 = 0; c1 < COLS - 1; c1++){
+            for(let c2 = c1+1; c2 < COLS; c2++){
+                
+                let maxCherries = 0, cherries = grid[row][c1] + grid[row][c2];
+                for(let [n1, n2] of product([-1, 0, 1], [-1, 0, 1])){
+
+                    const nc1 = c1 + n1, nc2 = c2 + n2;
+
+                    if ([nc1, nc2].some(nc => nc < 0 || nc >= COLS)){
+                        continue;
+                    };
+                    maxCherries = Math.max(
+                        maxCherries,
+                        cherries + columnTable[nc1][nc2]
+                    )
+                };
+                currColumnTable[c1][c2] = maxCherries 
+            }
+        };
+        columnTable = currColumnTable
+    }
+    for(let a of columnTable) console.log(JSON.stringify(a));
+    return Math.max(...columnTable.flat())
+}
+
+console.log("Cherries ", cherryPickWithDP())
 console.log(solveCherryPick(grid))
