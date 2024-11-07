@@ -84,6 +84,7 @@ const product = (a1:number[], a2:number[]) => {
     return a1.map(e1 => a2.map(e2 => [e1, e2])).flat()
 };
 
+
 const constructMatrix = (m:number, n:number, valOrFn: ((i:number, j:number) => number) | number) => {
     const callbackFn = typeof valOrFn === 'function' ? valOrFn : () => valOrFn
     return Array.from({length: m}, () => Array.from({length: n}, callbackFn))
@@ -118,7 +119,7 @@ function cherryPickWithDP(M:number[][] = grid){
         };
         columnTable = currColumnTable
     }
-    for(let a of columnTable) console.log(JSON.stringify(a));
+    // for(let a of columnTable) console.log(JSON.stringify(a));
     return Math.max(...columnTable.flat())
 }
 

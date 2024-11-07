@@ -28,6 +28,7 @@
      CMD :- npx ts-node ./src/app/10-24/cherry-pick-741.ts
  */
 
+type LiteralMap = `${number}-${number}`
 
 
 function cherryPick(
@@ -35,24 +36,31 @@ function cherryPick(
         [
             [0,1,-1],
             [1,0,-1],
-            [1,1,1]
+            [1,1, 1]
         ]
     )
 ){
     const ROWS = grid.length, COLS = grid[0].length;
 
-    const compute = (row: number, col: number, cherries: number) : number => {
-        if (row < 0 || row >= ROWS || col < 0 || col >= COLS || grid[row][col] === -1){
-            return -1
-        };   
-        if (row === ROWS - 1 && col === COLS - 1 ){
+    const reachRightBottom = (row:number, col: number, cherries: number, coveredPaths: LiteralMap[]): number => {
+        const literalTemplate:LiteralMap = `${row}-${col}`
+        if (row < 0 || row >= ROWS || col < 0 || col >= COLS || grid[row][col] === -1 || coveredPaths.includes(literalTemplate)){
+            return 0
+        };
+        if (row === ROWS - 1 && col === COLS - 1) {
             return cherries + grid[row][col]
         };
+        return Math.max(
+            reachRightBottom(row, col+1, cherries + grid[row][col], [...coveredPaths, literalTemplate]),
+            reachRightBottom(row+1, col, cherries + grid[row][col], [...coveredPaths, literalTemplate])
+        )
+    };
 
-        return Math.max(...[-1, 0, 1].map(c => compute(row+1, col + c, cherries + grid[row][col])))
+    const reachLeftTop = () => {
+        
     }
-    // compute 
-    return compute(0, 0, 0)
+
+    return reachRightBottom(0, 0, 0, [])
 
 };
 
