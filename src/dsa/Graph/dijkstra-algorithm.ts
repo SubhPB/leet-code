@@ -102,3 +102,16 @@ const Dijkstra = (G: typeof graph, startingPoint: keyof typeof graph, endPoint: 
 };
 
 console.log(Dijkstra(graph, "A", "Z"))
+
+
+/** 
+ * Algorithms insights and my observation:
+ * 
+ * Key factors:-
+ *      i) Once a node is traversed then we do not re-traverse it in future.
+ *      ii) To decide which node to traverse we are using untraversed node list and node with least distance with a greedy mindset.
+ *      iii) The way we implement relaxation
+ * 
+ * 
+ * I think Key-Factor[ii] is the most critical part of the algorithm and something that make algorithm works
+ */
