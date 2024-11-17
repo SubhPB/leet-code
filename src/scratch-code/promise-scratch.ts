@@ -53,23 +53,35 @@ class Bromise<T> {
     #resolve(value: T){
         if (this.#state !== BromiseState.Pending) return;
 
-        this.#state = BromiseState.Fulfilled;
-        this.#value = value;
-
-        this.#onFulfilledCallbacks.forEach(
-            callbackFn => callbackFn(value)
+        // To achieve actual Promise like execution:
+        // We want Bromise to go in micro-task queue but must have higher priority than ordinary task queue jobs e.g WebAPI methods.
+        queueMicrotask(
+            () => {
+                this.#state = BromiseState.Fulfilled;
+                this.#value = value;
+        
+                this.#onFulfilledCallbacks.forEach(
+                    callbackFn => callbackFn(value)
+                );
+            }
         );
+
     }
 
     #reject(reason: any){
         if (this.#state !== BromiseState.Pending) return;
 
-        this.#state = BromiseState.Rejected;
-        this.#reason = reason;
-
-        this.#onRejectedCallbacks.forEach(
-            callbackFn => callbackFn(reason)
+        queueMicrotask(
+            () => {
+                this.#state = BromiseState.Rejected;
+                this.#reason = reason;
+        
+                this.#onRejectedCallbacks.forEach(
+                    callbackFn => callbackFn(reason)
+                )
+            }
         )
+
     }
 
     then<R>(onFulfilled?: ThenCallback<T, R>, onRejected?: CatchCallback): Bromise<R>{
