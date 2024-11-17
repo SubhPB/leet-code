@@ -63,6 +63,42 @@ const maximumBeauty = (items: number[][], queries: number[]) => {
     return maxBeauty
 };
 
-for(let [items, queries] of ItemsAndQueries){
-  console.log(maximumBeauty(items, queries))
+
+const optimizeSolution = (items:number[][], queries: number[]) => {
+  items.sort(
+    (a, b) => a[0] - b[0] //ascending order according price value
+  );
+  
+  const queriesWithIndex = queries.map(
+    (query, index) => [query, index]
+  );
+
+  queriesWithIndex.sort( 
+    (a, b) => a[0] - b[0]
+  );
+  
+  let j = 0,
+  maxBeauty = 0,
+  result = Array.from(items, () => 0);
+
+  for(let [query, index] of queriesWithIndex){
+    
+    while (j < items.length && items[j][0] <= query){
+      maxBeauty = Math.max(
+        maxBeauty, items[j][1]
+      );
+      j += 1;
+    };
+
+    result[index] = maxBeauty
+
+  };
+
+  return result
 }
+
+for(let [items, queries] of ItemsAndQueries){
+  console.log(optimizeSolution(items, queries))
+}
+
+
