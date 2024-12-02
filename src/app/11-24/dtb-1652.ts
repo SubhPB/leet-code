@@ -29,11 +29,43 @@ Input: code = [2,4,9,3], k = -2
 Output: [12,5,6,13]
 Explanation: The decrypted code is [3+9, 2+3, 4+2, 9+4]. Notice that the numbers wrap around again. If k is negative, the sum is of the previous numbers.
 
-CMD :- npx ts-node ./src/app/11-24/leetcode-2070.ts
+CMD :- npx ts-node ./src/app/11-24/dtb-1652.ts
 */
 
-const defuseTheBomb = (code:number[], k:number) => {
+//To go back and forth
+const move = {
+    next: (i:number, n:number) => (i+1)%n,
+    prev:(i:number, n:number) => (n+i-1)%n
+};
 
+const mod = (a:number) => a >= 0 ? a : -a;
+
+const calcSum = (currIndex: number, k: number, code: number[]) => {
+    if (k===0) return 0;
+    const moveIndex = k > 0 ? move.next : move.prev;
+
+    const solve = (index:number, iteration:number/** iteration should always positive */): number => {
+        if (iteration === 0) return 0;
+        const nextIndex = moveIndex(index, code.length);
+
+        //because we do not want sum the currentIndex, then
+        if (index === currIndex) return solve(nextIndex, iteration);
+        
+        return code[index] + solve(nextIndex, iteration - 1)
+    }
+    return solve(currIndex, mod(k))
+};
+
+const defuseTheBomb = (code:number[], k:number) => {
+    const decryptedCode:number[] = []
+    for(let i = 0; i < code.length; i++){
+        const decryptSum = calcSum(i, k, code)
+        decryptedCode.push(
+            decryptSum
+        )
+    }
+
+    return decryptedCode
 }
 
 type ARG = [number[], number]
@@ -44,4 +76,6 @@ const ARGS: ARG[] = [
     [ [2, 4, 9, 3], -2 ]
 ]
 
-ARGS.forEach( arg => console.log(`\r\n ARG = ${arg} RESULT = ${defuseTheBomb(...arg)}`) )
+console.log("-------- RESULT ---------")
+
+ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} RESULT = ${defuseTheBomb(...arg)}`) )
