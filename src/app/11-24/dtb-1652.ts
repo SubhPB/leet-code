@@ -56,15 +56,45 @@ const calcSum = (currIndex: number, k: number, code: number[]) => {
     return solve(currIndex, mod(k))
 };
 
-const defuseTheBomb = (code:number[], k:number) => {
+const defuseTheBomb = (code:number[], k:number, useOptimize=true) => {
+    if (k===0 || code.length <= 1) return Array.from({length:code.length}, () => 0);
     const decryptedCode:number[] = []
-    for(let i = 0; i < code.length; i++){
-        const decryptSum = calcSum(i, k, code)
-        decryptedCode.push(
-            decryptSum
-        )
-    }
+    const n = code.length
+    
+    const calcIndexOfLastElem = (currIndex:number, pad:number) => {
+        if (currIndex < 0 || currIndex >= n) throw Error(`Invalid currIndex expected to be in range [0, ${n}) but found ${currIndex}`)
+        const overlap = Math.floor(pad / n);
 
+        if (pad > 0){
+            return (currIndex + (pad%n + overlap)) % n
+        } else {
+            return (n + currIndex - (pad%n - overlap)) % n
+        }
+    };
+
+    if (useOptimize){
+        //optimized solution
+        for(let i = 0; i < code.length; i++){
+            if (i===0){
+                decryptedCode.push(
+                    calcSum(i, k, code)
+                )
+            } else {
+                const lastIndexToRemove = calcIndexOfLastElem(i-1, k)
+                console.log({i, k, lastIndexToRemove})
+                decryptedCode.push(
+                    decryptedCode[i-1] + code[i-1] - code[lastIndexToRemove]
+                )
+            }
+        }
+    }  else {
+        for(let i = 0; i < code.length; i++){
+            const decryptSum = calcSum(i, k, code)
+            decryptedCode.push(
+                decryptSum
+            )
+        }
+    }
     return decryptedCode
 }
 
@@ -78,4 +108,4 @@ const ARGS: ARG[] = [
 
 console.log("-------- RESULT ---------")
 
-ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} RESULT = ${defuseTheBomb(...arg)}`) )
+ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} OPTIMIZED-RESULT = ${defuseTheBomb(...arg)} NON-OPTIMIZED-RESULT = ${defuseTheBomb(...arg, false)}`) )
