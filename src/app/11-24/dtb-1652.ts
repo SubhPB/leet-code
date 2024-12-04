@@ -56,7 +56,7 @@ const calcSum = (currIndex: number, k: number, code: number[]) => {
     return solve(currIndex, mod(k))
 };
 
-const defuseTheBomb = (code:number[], k:number, useOptimize=true) => {
+const defuseTheBomb = (code:number[], k:number) => {
     if (k===0 || code.length <= 1) return Array.from({length:code.length}, () => 0);
     const decryptedCode:number[] = []
     const n = code.length
@@ -72,29 +72,35 @@ const defuseTheBomb = (code:number[], k:number, useOptimize=true) => {
         }
     };
 
-    if (useOptimize){
-        //optimized solution
-        for(let i = 0; i < code.length; i++){
-            if (i===0){
-                decryptedCode.push(
-                    calcSum(i, k, code)
-                )
-            } else {
-                const lastIndexToRemove = calcIndexOfLastElem(i-1, k)
-                console.log({i, k, lastIndexToRemove})
-                decryptedCode.push(
-                    decryptedCode[i-1] + code[i-1] - code[lastIndexToRemove]
-                )
-            }
-        }
-    }  else {
-        for(let i = 0; i < code.length; i++){
-            const decryptSum = calcSum(i, k, code)
-            decryptedCode.push(
-                decryptSum
-            )
-        }
+    for(let i = 0; i < code.length; i++){
+        const decryptSum = calcSum(i, k, code)
+        decryptedCode.push(
+            decryptSum
+        )
     }
+    
+    return decryptedCode
+}
+
+const optimizeDefuseTheBomb = (code:number[], k: number) => {
+    const n = code.length;
+    if ([n, k].some(e => e===0)) return Array.from({length:n}, () => 0);
+
+    const overlap = Math.floor(k/n)
+    const circularIndex = (i:number) => i % n;
+    const decryptedCode:number[] = [];
+    const arrSum = (arr:number[]) => arr.reduce((acc, val) => acc+val, 0)
+    for(let i = 0; i < code.length; i++){
+        let decryptedInt :number 
+        if (i===0){
+           const encryptedCodeSum = arrSum(code)
+           decryptedInt = overlap*(encryptedCodeSum - code[0]) + arrSum(code.slice(1, 1+k))
+        } else {
+            decryptedInt = decryptedCode[i-1] + code[circularIndex(i + k + overlap)] - code[i]
+        }
+        decryptedCode.push(decryptedInt)
+    };
+
     return decryptedCode
 }
 
@@ -108,4 +114,8 @@ const ARGS: ARG[] = [
 
 console.log("-------- RESULT ---------")
 
-ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} OPTIMIZED-RESULT = ${defuseTheBomb(...arg)} NON-OPTIMIZED-RESULT = ${defuseTheBomb(...arg, false)}`) )
+ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} OLD-RESULT = ${defuseTheBomb(...arg)}`) )
+
+console.log('\r\n')
+
+ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} OPTIMIZED-RESULT = ${optimizeDefuseTheBomb(...arg)}`) )
