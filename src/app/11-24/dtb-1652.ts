@@ -98,7 +98,8 @@ const optimizeDefuseTheBomb = (code:number[], k: number) => {
            decryptedInt = overlap*(encryptedCodeSum - code[0]) + arrSum(code.slice(1, 1 + (k+overlap)%n))
         } else {
             console.log({decryptedCode, circularIndex: circularIndex(i+k+overlap), i})
-            decryptedInt = decryptedCode[i-1] + code[circularIndex(i + k + overlap)] - code[i]
+            console.log(`decryptedInt = ${decryptedCode[i-1]} + ${code[circularIndex(i + k + overlap)]} - ${code[i]*(overlap+1)} + ${code[i-1]*(overlap+1)}`)
+            decryptedInt = decryptedCode[i-1] + code[circularIndex(i + k + overlap)] - code[i]*(overlap+1) + code[i-1]*Math.min(1, overlap)
         }
         decryptedCode.push(decryptedInt)
     };
@@ -110,7 +111,7 @@ const optimizeDefuseTheBomb = (code:number[], k: number) => {
 type ARG = [number[], number]
 
 const ARGS: ARG[] = [
-    [ [5, 7, 1, 4], 5 ],
+    [ [5, 7, 1, 4], 6 ],
     [ [1, 2, 3, 4], 0 ],
     [ [2, 4, 9, 3], -2 ]
 ]
