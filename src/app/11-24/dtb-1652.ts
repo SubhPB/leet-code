@@ -81,37 +81,31 @@ const defuseTheBomb = (code:number[], k:number) => {
     
     return decryptedCode
 }
+const arrSummation = (arr:number[]) => arr.reduce((acc, val) => acc+val, 0)
 
-const optimizeDefuseTheBomb = (code:number[], k: number) => {
+const solve1652 = (code:number[], k:number) => {
     const n = code.length;
-    if ([n, k].some(e => e===0)) return Array.from({length:n}, () => 0);
+    const decryptedCode = Array.from({length:n}, () => 0);
 
-    const overlap = Math.floor(k/n)
+    if (k === 0 || n <= 1) return decryptedCode;
+
     const circularIndex = (i:number) => i % n;
-    const decryptedCode:number[] = [];
-    const arrSum = (arr:number[]) => arr.reduce((acc, val) => acc+val, 0)
-    for(let i = 0; i < code.length; i++){
-        let decryptedInt :number 
-        if (i===0){
-           const encryptedCodeSum = arrSum(code)
-           console.log({overlap, encryptedCodeSum, code0: code[0]})
-           decryptedInt = overlap*(encryptedCodeSum - code[0]) + arrSum(code.slice(1, 1 + (k+overlap)%n))
-        } else {
-            console.log({decryptedCode, circularIndex: circularIndex(i+k+overlap), i})
-            console.log(`decryptedInt = ${decryptedCode[i-1]} + ${code[circularIndex(i + k + overlap)]} - ${code[i]*(overlap+1)} + ${code[i-1]*(overlap+1)}`)
-            decryptedInt = decryptedCode[i-1] + code[circularIndex(i + k + overlap)] - code[i]*(overlap+1) + code[i-1]*Math.min(1, overlap)
-        }
-        decryptedCode.push(decryptedInt)
-    };
-    console.log("\r\n")
 
+    const overlap = Math.floor( k / (n-1) ), offset = k % (n - 1);
+    decryptedCode[0] = overlap * arrSummation(code.slice(1, n)) + arrSummation(code.slice(1, offset + 1));
+    
+    console.log({overlap, offset, k})
+
+    for(let i = 1; i < n; i++){
+        decryptedCode[i] = decryptedCode[i-1] - (1 + overlap) * code[i] + (overlap) * code[i-1] + code[ circularIndex(i+k+overlap) ]
+    };
     return decryptedCode
 }
 
 type ARG = [number[], number]
 
 const ARGS: ARG[] = [
-    [ [5, 7, 1, 4], 6 ],
+    [ [5, 7, 1, 4], 18 ],
     [ [1, 2, 3, 4], 0 ],
     [ [2, 4, 9, 3], -2 ]
 ]
@@ -122,4 +116,4 @@ ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} OLD-RESULT = ${d
 
 console.log('\r\n')
 
-ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} OPTIMIZED-RESULT = ${optimizeDefuseTheBomb(...arg)}`) )
+ARGS.forEach( arg => console.log(`\r\n ARG = ${arg.join(" & ")} OPTIMIZED-RESULT = ${solve1652(...arg)}`) )
