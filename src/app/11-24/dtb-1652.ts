@@ -89,16 +89,23 @@ const solve1652 = (code:number[], k:number) => {
 
     if (k === 0 || n <= 1) return decryptedCode;
 
+    if (k < 0){
+        code.reverse()
+    }
+
     const circularIndex = (i:number) => i % n;
 
-    const overlap = Math.floor( k / (n-1) ), offset = k % (n - 1);
+    const overlap = Math.floor( mod(k) / (n-1) ), offset = mod(k) % (n - 1);
     decryptedCode[0] = overlap * arrSummation(code.slice(1, n)) + arrSummation(code.slice(1, offset + 1));
-    
-    console.log({overlap, offset, k})
 
     for(let i = 1; i < n; i++){
-        decryptedCode[i] = decryptedCode[i-1] - (1 + overlap) * code[i] + (overlap) * code[i-1] + code[ circularIndex(i+k+overlap) ]
+        decryptedCode[i] = decryptedCode[i-1] - (1 + overlap) * code[i] + (overlap) * code[i-1] + code[ circularIndex(i+ mod(k) +overlap) ]
     };
+
+    if (k < 0){
+        decryptedCode.reverse()
+    }
+
     return decryptedCode
 }
 
