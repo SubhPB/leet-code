@@ -24,3 +24,18 @@ export const combinations = (n:number, k:number) => {
     if (k > n || [n, k].some(v => v<0)) return 0;
     return permutation(n, k) / factorial(k)
 }
+
+export const computePermutation = (n:(number|string)[], k=0) => {
+    const perms:(typeof n)[] = [];
+
+    for(let i = k; i < n.length; i++){
+        [n[k], n[i]] = [n[i], n[k]];
+        perms.push(n.slice(0, k).concat(...n));
+        
+        const remainingPerms = computePermutation(n.slice(1), k+1);
+        perms.push(...remainingPerms);
+        [n[k], n[i]] = [n[i], n[k]];
+    };
+
+    return perms
+}
