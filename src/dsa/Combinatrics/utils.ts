@@ -25,17 +25,16 @@ export const combinations = (n:number, k:number) => {
     return permutation(n, k) / factorial(k)
 }
 
-export const computePermutation = (n:(number|string)[], k=0) => {
-    const perms:(typeof n)[] = [];
-
-    for(let i = k; i < n.length; i++){
-        [n[k], n[i]] = [n[i], n[k]];
-        perms.push(n.slice(0, k).concat(...n));
-        
-        const remainingPerms = computePermutation(n.slice(1), k+1);
-        perms.push(...remainingPerms);
-        [n[k], n[i]] = [n[i], n[k]];
+export const computePermutation = (arr:(number|string)[], k=0) => {
+    const perms:(typeof arr)[] = [];
+    const len = arr.length
+    const compute = (n:(typeof arr), k:number) => {
+        for(let i=k; i<len; i++){
+            [n[i], n[k]] = [n[k], n[i]];
+            if (k===len-1) perms.push(n);
+            compute([...n], k+1)
+        }
     };
-
+    compute(arr, 0)
     return perms
-}
+};
