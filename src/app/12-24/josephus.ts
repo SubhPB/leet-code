@@ -13,6 +13,21 @@ const Josephus = (n:number) :number => {
     *       When `n` is odd --> J(2n+1) = 2*J(n) + 1
      */
     return Josephus(Math.floor(n/2)) + (-1)**(n+1)
+};
+
+// Solution with O(1) complexity
+const JosephusO1 = (n:number) => {
+    /** n = 2**M + L;
+     * J(n) = 2*L + 1
+     * We saw a binary pattern in our problem, According to that we need to follow these steps:-
+     *      1) Delete the most significant, by which you will get the leftover.
+     *      2) Now doubles the leftover
+     *      3) Add one to this result by which we will get the final answer
+     * All these are super easy to perform in binary
+     */
+    const binary = String(n.toString(2)),
+        leftover = binary.substring(1);
+    return parseInt(leftover + '1', 2)
 }
 
 Array.from({length:20}, (_, i) => i + 1).forEach(
