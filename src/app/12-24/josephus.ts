@@ -16,7 +16,7 @@ const Josephus = (n:number) :number => {
 };
 
 // Solution with O(1) complexity
-const JosephusO1 = (n:number) => {
+const JosephusO1 = (n:number, startingPos=1) => {
     /** n = 2**M + L;
      * J(n) = 2*L + 1
      * We saw a binary pattern in our problem, According to that we need to follow these steps:-
@@ -25,9 +25,18 @@ const JosephusO1 = (n:number) => {
      *      3) Add one to this result by which we will get the final answer
      * All these are super easy to perform in binary
      */
+    if (n <= 0) return 0;
+    if (startingPos > n || startingPos <= 0){
+        throw new Error(`Invalid starting position expected [1, ${n}] but found ${startingPos}`)
+    };
+    
     const binary = String(n.toString(2)),
         leftover = binary.substring(1);
-    return parseInt(leftover + '1', 2)
+    const winningPosition = parseInt(leftover + '1', 2);
+
+    const rotation = 1 - startingPos; // [-(n-1), 0] 
+    const winnerAfterRotation = (winningPosition - rotation) % n
+    return winnerAfterRotation === 0 ? n  : winnerAfterRotation
 }
 
 Array.from({length:20}, (_, i) => i + 1).forEach(
