@@ -35,7 +35,7 @@ s consists of only lowercase English letters.
 CMD npx ts-node ./src/app/12-24/2246.ts
  */
 
-function longestPath2246(parent:number[],s:string){
+function solve2246(parent:number[], s:string){
     if (parent.length !== s.length) throw new Error(`Invalid value of arguments.`);
 
     const trackChildren : { [parent:number]: ([number,  string])[] } = {};
@@ -54,32 +54,50 @@ function longestPath2246(parent:number[],s:string){
     };
 
     let longestPath = '';
-    let validPaths:string[] = []
 
-    const traverse = (i:number, path:string) => {
-        const children = getChildren(i).filter(
-            ([_childInd, childName]) => childName !== s[i]
-        );
-        if (!children.length){
-            validPaths.push(path)
-            if (path.length > longestPath.length) longestPath = path
-        } else {
+    const solve = (i:number) => {
+        const paths :string[] = []
+
+        const traverse = (node:number, nodeName:string, path:string) => {
+            const children = getChildren(node);
+            if (!children.length || children.every(([childInd, childName]) => nodeName === childName)){
+                const newPath = path + nodeName;
+                paths.push(newPath)
+            };
+            
             for(let [childInd, childName] of children){
-                traverse(childInd, path + childName)
+                if (childName === nodeName){
+                    solve(childInd)
+                } else {
+                    traverse(childInd, childName, path + nodeName)
+                }
             }
-        }
+        };
+
+        traverse(i, s[i], '')
+        
+        //We need at most 2 longest paths exist from a node;
+        const atMost2LongestPaths = paths.sort((a, b) => b.length - a.length).slice(0,2); 
+        let localLongestPath = '';
+        if (atMost2LongestPaths.length === 1){
+            localLongestPath = atMost2LongestPaths[0]
+        } else {
+            atMost2LongestPaths[0] = Array.from(atMost2LongestPaths[0]).reverse().join('');
+            localLongestPath = atMost2LongestPaths.join('').replace(`${s[i]}${s[i]}`, s[i])
+        };
+
+        if (localLongestPath.length > longestPath.length) longestPath = localLongestPath
     };
 
-    traverse(0, s[0])
-    console.log({validPaths})
+    solve(0)
     return longestPath
-};
+}
 
 [
     [[-1,0,0,1,1,2], "abacbe"],
     [[-1,0,0,0], "aabc"]
 ].forEach(
     ([parent, s]) => {
-        console.log(longestPath2246(parent as number[], s as string))
+        console.log(solve2246(parent as number[], s as string))
     }
 )
