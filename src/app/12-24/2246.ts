@@ -93,7 +93,43 @@ function solve2246(parent:number[], s:string){
     return longestPath
 }
 
-[
+function anotherApproach2246(parent:number[], s:string){
+    let longest = '';
+
+    const graph: {[key:number]:number[]} = {};
+    const reverseString = (str:string) => Array.from(str).reverse().join('')
+    parent.forEach( (parent, node) => parent in graph ? graph[parent].push(node) : graph[parent] = [node]);
+    
+    const solve = (node:number) => {
+        /**carry on code */
+    }
+    const dfs = (node:number) => {
+        let longestPathFromThisNode = '';
+        
+        const rec = (i:number, traversedPath:string) => {
+            const children = node in graph ? graph[node] : [];
+            const nodeName = s[node];
+            if (!children.length && traversedPath.length > longestPathFromThisNode.length){
+                longestPathFromThisNode = traversedPath
+            };
+            for(let child of children){
+                const childName = s[child];
+                if (childName === nodeName){
+                    solve(child)
+                } else {
+                    rec(child, traversedPath + childName)
+                }
+            }
+        };
+        rec(node, s[node])
+        return longestPathFromThisNode
+    };
+
+
+    return longest
+}
+
+[ 
     [[-1,0,0,1,1,2], "abacbe"],
     [[-1,0,0,0], "aabc"]
 ].forEach(
