@@ -101,31 +101,44 @@ function anotherApproach2246(parent:number[], s:string){
     parent.forEach( (parent, node) => parent in graph ? graph[parent].push(node) : graph[parent] = [node]);
     
     const solve = (node:number) => {
-        /**carry on code */
+        const children = node in graph ? graph[node] : [];
+        const longestPaths:string[] = ['', ''];
+        for(let child of children){
+            longestPaths.push(
+                dfs(child)
+            )
+        };
+        longestPaths.sort((a,b) => b.length - a.length);
+        console.log({node, longestPaths})
+        const jointPath = reverseString(longestPaths[0]) + s[node] + longestPaths[1];
+        if (jointPath.length > longest.length) longest = jointPath;
     }
     const dfs = (node:number) => {
         let longestPathFromThisNode = '';
         
         const rec = (i:number, traversedPath:string) => {
-            const children = node in graph ? graph[node] : [];
-            const nodeName = s[node];
-            if (!children.length && traversedPath.length > longestPathFromThisNode.length){
-                longestPathFromThisNode = traversedPath
-            };
+            const children = i in graph ? graph[i] : [];
+            const nodeName = s[i];
+            
+            let baseCase = 0;
             for(let child of children){
                 const childName = s[child];
                 if (childName === nodeName){
                     solve(child)
+                    baseCase++
                 } else {
                     rec(child, traversedPath + childName)
                 }
+            };
+            if (baseCase === children.length && traversedPath.length > longestPathFromThisNode.length){
+                longestPathFromThisNode = traversedPath
             }
         };
         rec(node, s[node])
         return longestPathFromThisNode
     };
 
-
+    solve(0)
     return longest
 }
 
@@ -134,6 +147,6 @@ function anotherApproach2246(parent:number[], s:string){
     [[-1,0,0,0], "aabc"]
 ].forEach(
     ([parent, s]) => {
-        console.log(solve2246(parent as number[], s as string))
+        console.log(anotherApproach2246(parent as number[], s as string))
     }
 )
