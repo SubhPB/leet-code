@@ -42,28 +42,29 @@ word[7..12], which is "ieaouq".
 
 CMD npx ts-node ./src/app/12-24/3306.ts
  */
+const vowels = ['a', 'e', 'i', 'o', 'u'];
+const isVowel = (c:string) => vowels.includes(c);
 
 function solve3306(s:string, k:number){
-    const n = s.length + k;
+    const n = vowels.length + k;
     if (k < 0 || n > s.length) return 0;
 
     let count = 0
-    const vowels = ['a', 'e', 'i', 'o', 'u'];
-    const isVowel = (c:string) => vowels.includes(c);
 
-    // const record: {[k:string]:number} = {};    
-    const test = (str:string) => {
-        const v = Array.from(str).reduce( (acc, key) => {
-            isVowel(key) ? acc[0].push(key) : acc[1].push(key);
-            return acc
-        }, [[], []] as string[][]);
-        return v[0].length === vowels.length && v[1].length === k
-    }
+    const record: {[k:string]: number} = {'k':0};
+    vowels.forEach(vowel => record[vowel] = 0);
 
-    for(let i=0; i <(s.length-k-1); i++){
-        const substring = s.substring(i, i+5+k);
-        console.log({str: s, i, substring, test: test(substring)})
-        if (test(substring)) count++;
+    const recordKey = (char:string) => isVowel(char) ? char : 'k'
+
+    for(let i=0; i <(s.length-(n-1)); i++){
+        if(i===0){
+            for(let j=0; j < i+n; j++) record[recordKey(s[j])]++;
+        } else {
+            const lastChar = s[i-1], newChar = s[i+n-1];
+            record[recordKey(lastChar)]--;
+            record[recordKey(newChar)]++;
+        };
+        if (record['k'] === k && vowels.every(vowel => record[vowel] === 1)) count++;
     };
 
     return count
