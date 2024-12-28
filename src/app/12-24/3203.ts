@@ -44,13 +44,14 @@ function solve3203(edges1:[number, number][], edges2: [number, number][]){
         return tree
     };
 
+    const reverseStr = (str:string) => Array.from(str).reverse().join('')
     const tree1 = constructTree(edges1), tree2 = constructTree(edges2);
 
     const longestPath = (tree:ReturnType<typeof constructTree>, parent=0) => {
         let longestPath = '';
 
         const dfs = (node:number, path:string) => {
-            const children = tree[node], newpath = path + node;
+            const children = node in tree ? tree[node] : [], newpath = path + node;
             if (!children.length && newpath.length > longestPath.length) longestPath = newpath;
             for(let child of children) dfs(child, newpath)
         };
@@ -58,10 +59,12 @@ function solve3203(edges1:[number, number][], edges2: [number, number][]){
         return longestPath
     };
 
-    console.log(`longestPath of tree1 = ${longestPath(tree1)}`);
-    console.log(`longestPath of tree2 = ${longestPath(tree2)}`)
-
-
+    //Our next task is to find the diameter since we now have longest paths of both trees 
+    const [longestPathOfTree1, longestPathOfTree2] = [tree1, tree2].map(tree => longestPath(tree));
+    if (longestPathOfTree1[0]!==longestPathOfTree2[0]) return longestPathOfTree1.length > longestPathOfTree2.length ? longestPathOfTree1 : longestPathOfTree2;
+    //Joining the parent of both trees, will make sure we do not count parent twice in diameter 
+    const diameterOfTree = reverseStr(longestPathOfTree1) + longestPathOfTree2.substring(1);
+    return diameterOfTree
 }
 
 const EDGES = [
