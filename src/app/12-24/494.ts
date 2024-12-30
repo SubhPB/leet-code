@@ -46,7 +46,6 @@ const solve494 = (nums:number[], target:number, arithmeticOps=arithmeticOperatio
     const sum = (arr:number[]|string[]) => arr.reduce<number>( (acc, val) => acc + Number(val), 0);
 
     const noOfWays:string[] = [], ops = arithmeticPerms();
-    console.log(ops)
     ops.forEach(op => {
         const way = nums.map((num, i) => op[i] + num);
         if (sum(way) === target) noOfWays.push(way.join(''))
@@ -54,5 +53,35 @@ const solve494 = (nums:number[], target:number, arithmeticOps=arithmeticOperatio
     return noOfWays
 };
 
-console.log(solve494([1,1,1,1,1], 3))
+const another494Solution = (nums:number[], target:number, arithmeticOps=arithmeticOperations) => {
+    const n = nums.length;
+    if(!n) return [''];
 
+    const noOfWays:string[] = [] 
+    const solve = (way:string, l:number) => {
+        console.log({way, l})
+        if(l===n){
+            if (eval(way) === target) noOfWays.push(way)
+        } else {
+            for(let op of arithmeticOps){
+                const updatedWay = way + op + nums[l];
+                solve(updatedWay, l+1)
+            }
+        };
+    };
+    solve('', 0)
+    return noOfWays
+}
+
+console.log(solve494([1,1,1,1,1], 3));
+console.log('\r\n')
+console.log(another494Solution([1,1,1,1,1], 3))
+
+const data = [
+    { Name: "Alice", Age: 25, Role: "Developer" },
+    { Name: "Bob", Age: 30, Role: "Designer" },
+    { Name: "Charlie", Age: 35, Role: "Manager" }
+  ];
+  
+  console.table(data);
+  
