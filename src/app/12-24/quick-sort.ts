@@ -5,26 +5,30 @@
  */
 
 const quickSort = (arr:number[]) => {
-    const swap = (i:number, j:number) => [arr[i], arr[j]] = [arr[j], arr[i]]
-    const n = arr.length
-    const pivotSort = (ascI:number=1, descI:number=arr.length-1) => {
-        if (descI <= ascI) return;
-        const pivot = 0;
-        while(descI > ascI){
-            while(arr[descI]>arr[pivot]) descI--;
-            while(arr[ascI]<arr[pivot] && ascI<n) ascI++;
-            if (arr[ascI]>arr[descI]) swap(ascI, descI);
+    const swap = (i:number, j:number) => [arr[i], arr[j]] = [arr[j], arr[i]];
+    
+    const fn = (start:number, end:number) => {
+        if (end-start <= 1 || start>=end) return; // subArr = arr[start:end]
+        let pivot = arr[start], a = start+1, b = end-1;
+        while(a<b){
+            if (arr[a]>=arr[b]) swap(a, b);
+            while(a<end && arr[a]<=pivot) a++;
+            while(b>=a && arr[b]>=pivot) b--;
         };
-        const newPivot = descI;
-        swap(pivot, newPivot);
-        pivotSort(1, newPivot-1);
-        pivotSort(newPivot+1, n-1)
-    }
-    pivotSort()
+        swap(b, start);
+        // arr[b] is been sorted, and at the correct spot
+        fn(start, b);
+        fn(b+1, end)
+
+    };
+    fn(0, arr.length)
     return arr
 };
 
-const arr = [35, 50, 15, 25, 80, 0, 90, 45]
+const TESTARRS = [
+    [35, 50, 15, 25, 80, 0, 90, 45],
+    [35, 4,3, 4, 3, 2, 1]
+]
 
 console.log(`@quick-sort`)
-console.log(`Quick-Sort Algorithm \r\n ${arr} -> ${quickSort(arr)}`)
+TESTARRS.forEach( arr => console.log(`Quick-Sort Algorithm \r\n ${arr} -> ${quickSort(arr)}`) )
