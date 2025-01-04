@@ -37,60 +37,43 @@
     CMD npx ts-node ./src/app/2025/Jan/1760.ts
  */
 
-const solve1760 = (nums:number[], maxOperations:number) => {
-   const n = nums.length;
-   if (n<=1 || maxOperations<=0) return 0;
-   const partitions: {[k:number]:[number, number][]} = {};
-   const getPartitions = (k:number) => {
-      if (!(k in partitions)){
-         partitions[k] = Array.from(
-            {length:Math.max(0, Math.floor(k/2))}, (_,i) => [i+1, k-i+1])
-      };
-      return partitions[k]
+class Solve1760 {
+   /**One thing that certain answer lies in between range [1, max(nums)] */
+   constructor(public nums:number[], public maxOperations:number) {
+      this.nums = nums; this.maxOperations = maxOperations;
    };
-   nums.sort((a, b) => b-a)
-   let MAX = nums[0]
-
-   const place = (arr:number[], val:number) => {
-      if (arr.length===0 || arr[arr.length-1]>=val){
-         arr.push(val)
-      } else if (arr[0]<=val){
-         arr.unshift(val)
-      } else {
-         for(let i=1; i<arr.length-1; i++){
-            if (arr[i-1]>=val&&arr[i+1]<=val) {
-               arr = [
-                  ...arr.slice(0,i+1),
-                  val,
-                  ...arr.slice(i, arr.length)
-               ]
-            }
-         }
-      };
-      return arr
-   }
-   const fn = (sortedArray:number[], ops:number) => {
-      const tempMax = sortedArray[0];
-      if (ops===0 || tempMax<=1){
-         if (tempMax<MAX) MAX = tempMax
-      } else {
-         const p = getPartitions(tempMax);
-         for(let [a, b] of p){
-            const newSortedArray = place(place(sortedArray, a), b);
-            fn([...newSortedArray], ops-1)
+   countOperations(num:number, target:number, threshold:number=Infinity){
+      let operations = 0;
+      while(num>target){
+         if(operations>threshold) return Infinity;
+         num -= target;
+         operations++
+      }
+      return operations
+   };
+   solution1(){
+      let bestCase = 1, worstCase = Math.max(...this.nums);
+      while(bestCase < worstCase){
+         let operationsTakenToReachBestCase = 0;
+         for(let num of this.nums){
+            if (operationsTakenToReachBestCase>this.maxOperations) break;
+            const ops = this.countOperations(num, bestCase, this.maxOperations-operationsTakenToReachBestCase);
+            operationsTakenToReachBestCase += ops
+         };
+         if (operationsTakenToReachBestCase>this.maxOperations){
+            bestCase++
+         } else {
+            break;
          }
       }
+      return bestCase
    };
-   fn(nums, maxOperations)
-   for(let k in partitions){
-      console.log(`key=${k}, value=${partitions[k]}`)
-   }
-   return MAX
-};
+   solve = this.solution1
+}
 
 console.log(`\r\n@Leetcode-1760`);
 const TestArgs1760 : [number[], number][] = [
    [ [2, 4, 8, 2] ,4],
    [ [35, 50, 15, 25, 80, 0, 90, 45], 2 ]
 ];
-TestArgs1760.forEach(([nums, ops]) => console.log(` nums=${nums}, maxOperations=${ops} -> ${solve1760(nums, ops)} `))
+TestArgs1760.forEach(([nums, ops]) => console.log(` nums=${nums}, maxOperations=${ops} -> ${new Solve1760(nums, ops).solve()} `))
