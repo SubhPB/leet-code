@@ -68,7 +68,33 @@ class Solve1760 {
       }
       return bestCase
    };
-   solve = this.solution1
+   binarySearchSolution(){
+      /**Most optimal solution based on binary search */
+      const canDivide = (maxBalls:number) => {
+         //Just optimal solution of this.countOperations
+         let ops = 0;
+         for(let num of this.nums){
+            ops += Math.ceil( (num-maxBalls) / maxBalls )
+            if (ops>this.maxOperations) return false
+         }
+         return true
+      };
+      let low = 1, high = Math.max(...this.nums);
+      let minCost = high;
+      while (low < high){
+         const median = Math.floor( (high+low) / 2 );
+         if (canDivide(median)){
+            //means `median` is an answer, but not sure if it is most optimal, if no then that optimal number should exist on the left side
+            minCost = median;
+            high = median;
+         } else {
+            //means optimal solution is bigger than `median`, then we need to check at right side (num who are greater than `median`)
+            low = median + 1
+         }
+      }
+      return minCost
+   }
+   solve = this.binarySearchSolution
 }
 
 console.log(`\r\n@Leetcode-1760`);
@@ -76,4 +102,4 @@ const TestArgs1760 : [number[], number][] = [
    [ [2, 4, 8, 2] ,4],
    [ [35, 50, 15, 25, 80, 0, 90, 45], 2 ]
 ];
-TestArgs1760.forEach(([nums, ops]) => console.log(` nums=${nums}, maxOperations=${ops} -> ${new Solve1760(nums, ops).solve()} `))
+TestArgs1760.forEach(([nums, ops]) => console.log(` nums=${nums}, maxOperations=${ops} -> (i) ${new Solve1760(nums, ops).binarySearchSolution()}, (ii) ${new Solve1760(nums, ops).solution1()} `))
