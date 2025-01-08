@@ -85,6 +85,30 @@ class Solve689 {
         fn(0, subArrays, subArraysSum)
       };
       return subArrays  
+    };
+    dpSolution(){
+        let subArrays :number[] = [], subArraysSum = 0;
+        if (this.n>=3*this.k && this.k>=1){
+            const record:number[] = [];
+            for(let i=0; i<=this.n-this.k; i++){
+                record[i] = 0;
+                if (i===0){
+                    for(let j=i; j<this.k; j++) record[i]+=this.nums[j]
+                } else record[i] = record[i-1] - this.nums[i-1] + this.nums[i+this.k-1]
+            }
+            for(let a=0; a<=this.n-this.k;a++){
+                for(let b=a+this.k; b<=this.n-this.k+1;b++){
+                    for(let c=b+this.k; c<=this.n-this.k+2;c++){
+                        const sum = record[a]+record[b]+record[c]
+                        if( sum > subArraysSum ){
+                            subArrays = [a,b,c];
+                            subArraysSum = sum
+                        }
+                    }
+                }
+            }
+        };
+        return subArrays
     }
 };
 
@@ -94,4 +118,4 @@ const ARGS689: [number[], number][] = [
     [[1,2,1,2,6,7,5,1], 2],
     [[1,2,1,2,1,2,1,2,1], 2]
 ];
-ARGS689.forEach(([nums,k]) => console.log(`\r\nLeetcode-689 nums=${nums}, k=${k} -> [${new Solve689(nums,k).topDownSolution()}]`))
+ARGS689.forEach(([nums,k]) => console.log(`\r\nLeetcode-689 nums=${nums}, k=${k} -> [${new Solve689(nums,k).dpSolution()}]`))
