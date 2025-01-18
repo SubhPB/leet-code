@@ -60,6 +60,21 @@ class Solve354{
         };
         console.log(`dp=${dp}`)
         return dp.length
+    };
+    sort(arr=this.envelops){
+        //Goal here is to sort according envelop dimension, not only according area but equally considering width and height.
+        //We can'tv rely on area e.f (i) 2*3=6 (ii) 8*1=8 even though area is more but can't put the first envelop as whole.
+        const mergeSort = (start:number,end:number) => {
+            const mid = Math.floor( (start+end)/2 );
+
+            const arr1 = mergeSort(start,mid+1);
+            const arr2 = mergeSort(mid, end);
+
+            let i = start, j = mid;
+            while(i<mid+1&&j<=end){
+                // const 
+            }
+        }
     }
 };
 
