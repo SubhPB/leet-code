@@ -33,6 +33,9 @@ class Solve354{
          * This problem is basically a subproblem of longest increasing subsequence 
          */
         const n = this.envelops.length;
+        console.log(`Before sort `, this.envelops);
+        this.envelops = this.sort();
+        console.log(`After sort `, this.envelops)
         const dp :number[] = []; /**
          * dp[i] represents minimum ending value possible of a longest increasing subsequence at a particular length means i+1.
          */
@@ -48,7 +51,7 @@ class Solve354{
                     w2,h2
                 ] = this.envelops[dp[mid]];
                 
-                if (w1<w2&&h1<h2){
+                if (w1<=w2&&h1<=h2){
                     right=mid
                 } else {
                     left=mid+1
@@ -61,20 +64,49 @@ class Solve354{
         console.log(`dp=${dp}`)
         return dp.length
     };
-    sort(arr=this.envelops){
+    sort(){
         //Goal here is to sort according envelop dimension, not only according area but equally considering width and height.
         //We can'tv rely on area e.f (i) 2*3=6 (ii) 8*1=8 even though area is more but can't put the first envelop as whole.
-        const mergeSort = (start:number,end:number) => {
-            const mid = Math.floor( (start+end)/2 );
+        const n = this.envelops.length;
+        const mergeSort = (
+            envs:number[]=Array.from({length:n},(_,i)=>i) //Will use indexes to calc sorting algorithm
+        ) => {
+            const len = envs.length;
+            if (len<=1) return envs;
 
-            const arr1 = mergeSort(start,mid+1);
-            const arr2 = mergeSort(mid, end);
+            const mid = Math.floor( len/2 );
+            const sortedEnvs: number[] = [];
 
-            let i = start, j = mid;
-            while(i<mid+1&&j<=end){
-                // const 
+            const s1 = mergeSort(envs.slice(0, mid)),
+                s2 = mergeSort(envs.slice(mid, len));
+
+            let i=0, j=0;
+
+            while(i<mid&&j<(len-mid)){
+                /* Need to sort according dimension  */
+                const [w1,h1] = this.envelops[s1[i]],
+                    [w2,h2] = this.envelops[s2[j]];
+                if(w1<w2&&h1<h2){
+                    sortedEnvs.push(s1[i]); i++;
+                } else {
+                    sortedEnvs.push(s2[j]); j++;
+                }
+            };
+
+            while(i<mid){
+                sortedEnvs.push(s1[i]);
+                i++
             }
-        }
+            while(j<(len-mid)){
+                sortedEnvs.push(s2[j]);
+                j++
+            }
+
+
+            return sortedEnvs;
+        };
+        const sortedEnvs = mergeSort();
+        return sortedEnvs.map(envIndex=>this.envelops[envIndex])
     }
 };
 
