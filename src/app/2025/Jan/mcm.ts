@@ -96,7 +96,13 @@ class SolveMCM{
             }
         };
         //We can also use kTable to know the place of parenthesis
+        const parenthesis = (i:number,j:number): string => {
+            if (i===j) return `M${i}`;
+            const k = kTable[i][j];
+            return `( ${parenthesis(i,k)} x ${parenthesis(k+1, j)} )`
+        };
         
+        console.log(parenthesis(1, this.n-1))
         return M[1][this.n-1]
     }
     solve = this.solution3
