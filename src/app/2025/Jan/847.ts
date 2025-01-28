@@ -79,6 +79,39 @@ class Solve847{
         for(let i=0; i<matrix.length; i++) fn(i, [i], 0);
         
         return minPath
+    };
+    solution2(){
+        const n = this.nodes;
+        /**
+         * We will be using bit-masking to track how many nodes are visited e.g 101 means (2th,0th nodes are visited)
+         */
+        const allVisited = (1<<n)-1; //e.g n=3, 001->100 & -1 -> 111 means all nodes are visited
+        //Using queue we're tracking currentNode to traverse and storing how many nodes are visited using bitmask, and how many steps has been taken to current state
+        const queue: [number /**currentNode*/, number/**bitmask*/, number/**stepsTaken*/][] = [];
+        const visited = new Set<string>();
+        for(let i=0; i<n; i++){
+            const initialMask = 1 << i; //means starting node is i and e.g i=1 -> b_1 --> b_10 so means node-1 is visited
+            queue.push([i, initialMask, 0]);
+            visited.add(`${i}-${initialMask}`)  // Mark (node,bitmask) as visited
+        };
+
+        //start BFS
+        while(queue.length>0){
+            const [node, bitmask, steps] = queue.shift()!;
+            //if all nodes are visited, we got answer
+            if (bitmask===allVisited) return steps;
+            //time to explore all neighboring nodes 
+            for(const neighbor of this.graph[node]){
+                //now neighbor will also be visited
+                const nextMask = bitmask | (1<<neighbor) // very smart step
+                const stateKey = `${neighbor}-${nextMask}`;
+                if (!visited.has(stateKey)){
+                    queue.push([neighbor, nextMask, steps+1]);
+                    visited.add(stateKey)
+                }
+            }
+        };
+        return -1; //should never be reached, if yes then graph is not connected
     }
 };
 
@@ -88,6 +121,6 @@ class Solve847{
             [[1,2,3],[0],[0],[0]],
             [[1],[0,2,4],[1,3,4],[2],[1,2]]
         ];
-        Graphs.forEach(graph => console.log(`Graph=${JSON.stringify(graph)} solution ->${new Solve847(graph).solution1()}`))   
+        Graphs.forEach(graph => console.log(`Graph=${JSON.stringify(graph)} solution ->${new Solve847(graph).solution2()}`))   
     }
 )()
