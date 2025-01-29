@@ -90,6 +90,70 @@ class Solve499{
             };
         };
         return 'impossible'
+    };
+
+    solution2(){
+        class PQ<T>{
+            private heap: T[] = [];
+            constructor(private compareFn:(a:T,b:T)=>number){
+                this.compareFn = compareFn
+            };
+            push(elem:T){
+                this.heap.push(elem); this.heap.sort(this.compareFn)
+            };
+            pop():T|undefined{
+                return this.heap.shift()
+            };
+            size(){
+                return this.heap.length
+            }
+        };
+
+        const fn = () => {
+            const dirs = [
+                [1, 0, 'd'], [-1, 0, 'u'], [0, -1, 'l'], [0, 1, 'r']
+            ] as const;
+            const [m,n] = [this.maze.length, this.maze[0].length];
+            const [ri,ci] = this.ballCoordinate;
+            const [rn, cn] = this.holeCoordinate;
+            const distKey = (r:number,c:number) => `${r}-${c}`
+            const dist = new Map<string , [number/**Min steps */,string/**lexicographically smallest path */]>();
+            const pq = new PQ<
+                [number/**distance */, string /**traveled path e.g: lru */, number /**row-index */, number/**col-index */]
+            >( /**Shortest paths would have priority in heap */
+                ([distA,pathA],[distB, pathB]) => (
+                    (distA-distB) || (
+                        /**in the case both paths are equal, then sort them lexicographically e.g `dlr` -> `ldr` */
+                        pathA.localeCompare(pathB)
+                    )
+                )
+            );
+            /**Begin process of traversing */
+            pq.push([0, "", ri, ci]);
+            dist.set(distKey(ri,ci), [0,""]);
+            while(pq.size()){
+                const [d, path, r, c] = pq.pop()!;
+                if (r===rn&&c===cn) return path;
+                for(const [dr,dc,dir] of dirs){
+                    let [nr, nc, steps] = [r, c, 0];
+                    while(nr+dr>=0&&nr+dr<m&&nc+dc>=0&&this.maze[nr+dr][nc+dc]===0){
+                        nr+=dr; nc+=dc; steps++;
+                    };
+                    const newDist = d+steps, newPath=path+dir, key = distKey(nr, nc)
+                    if(
+                        !dist.has(key) //doesn't have key
+                        || newDist < dist.get(key)![0] //less distance
+                        || ( //equal dist but less path
+                            newDist === dist.get(key)![0] && newPath<dist.get(key)![1]
+                        )
+                    ){
+                        pq.push([newDist,newPath, nr,nc]);
+                        dist.set(key, [newDist, newPath])
+                    }
+                }
+            };
+            return 'impossible'
+        }
     }
 };
 
