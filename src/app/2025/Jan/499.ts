@@ -136,7 +136,7 @@ class Solve499{
                 if (r===rn&&c===cn) return path;
                 for(const [dr,dc,dir] of dirs){
                     let [nr, nc, steps] = [r, c, 0];
-                    while(nr+dr>=0&&nr+dr<m&&nc+dc>=0&&this.maze[nr+dr][nc+dc]===0){
+                    while(nr+dr>=0&&nr+dr<m&&nc+dc>=0&&nc+dc<n&&this.maze[nr+dr][nc+dc]===0){
                         nr+=dr; nc+=dc; steps++;
                     };
                     const newDist = d+steps, newPath=path+dir, key = distKey(nr, nc)
