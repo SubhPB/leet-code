@@ -31,6 +31,38 @@ class TravelingSalesperson{
             }
         };
         return minCost
+    };
+    solution2(){
+        const n = this.graph.length;
+        // #-rows = 2**n (each row represents which nodes are visited e.g 0110 -> 1st and 2nd nodes are visited)
+        // #-cols = n (col value represent which node we are at e.g c=2 means we are at 2nd node)
+        // [r,c] each slot represent minimum cost to reach city c, having already visited nodes represented by mask-<r> 
+        const dp:number[][] = Array.from({length:1<<n}, ()=>Array(n).fill(Infinity));
+        dp[1][0] = 0; // mask = 0001 and currNode = 0, what's the min dist to reach node-0 when visited nodes are 0001
+        
+        for(let mask=0; mask<(1<<n); mask++){
+            for(let u=0; u<n; u++){
+                // if u-th node is already visited in the mask
+                if (mask&(1<<u)){
+                    for(let v=0; v<n; v++){
+                        //try to move to another city...
+                        //if `v` is not yet visited in the mask
+                        if (!(mask&(1<<v))){
+                            const newBitMask = mask | (1<<v);
+                            dp[newBitMask][v] = Math.min(
+                                dp[newBitMask][v],
+                                dp[mask][u]+this.graph[u][v]
+                            )
+                        }
+                    }
+                }
+            }
+        };
+        let minCost = Infinity;
+        for(let u=1; u<n; u++){
+            minCost = Math.min(minCost, dp[(1<<n)-1][u]+this.graph[u][0]) 
+        };
+        return minCost
     }
 };
 
