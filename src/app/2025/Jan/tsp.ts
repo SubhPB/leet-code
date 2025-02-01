@@ -40,14 +40,14 @@ class TravelingSalesperson{
         const dp:number[][] = Array.from({length:1<<n}, ()=>Array(n).fill(Infinity));
         dp[1][0] = 0; // mask = 0001 and currNode = 0, what's the min dist to reach node-0 when visited nodes are 0001
         
-        for(let mask=0; mask<(1<<n); mask++){
+        for(let mask=1; mask<(1<<n); mask++){
+            /* We need to travel from a visited node to a un-visited node. e.g r=0110 -> node-1, node-2 are visited
+            * So `u` must be visited and `v` should be unvisited node
+            */
             for(let u=0; u<n; u++){
-                // if u-th node is already visited in the mask
-                if (mask&(1<<u)){
-                    for(let v=0; v<n; v++){
-                        //try to move to another city...
-                        //if `v` is not yet visited in the mask
-                        if (!(mask&(1<<v))){
+                if (mask&(1<<u)){//Ensures u-th node is visited in the mask
+                    for(let v=0; v<n; v++){//need to visit a new unvisited node from u
+                        if (!(mask&(1<<v))){//Ensures `v` is not yet visited in the mask
                             const newBitMask = mask | (1<<v);
                             dp[newBitMask][v] = Math.min(
                                 dp[newBitMask][v],
