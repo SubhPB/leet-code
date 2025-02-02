@@ -40,6 +40,12 @@ class TravelingSalesperson{
         const dp:number[][] = Array.from({length:1<<n}, ()=>Array(n).fill(Infinity));
         dp[1][0] = 0; // mask = 0001 and currNode = 0, what's the min dist to reach node-0 when visited nodes are 0001
         
+        //If we need to track back the path, parent[][] would help us!
+        const parent:number[][] = Array.from({length:1<<n}, ()=>Array(n).fill(-1));
+
+        //If starting can be any node
+        for(let i=0; i<n; i++) dp[1<<i][i] = 0
+
         for(let mask=1; mask<(1<<n); mask++){
             /* We need to travel from a visited node to a un-visited node. e.g r=0110 -> node-1, node-2 are visited
             * So `u` must be visited and `v` should be unvisited node
@@ -48,21 +54,40 @@ class TravelingSalesperson{
                 if (mask&(1<<u)){//Ensures u-th node is visited in the mask
                     for(let v=0; v<n; v++){//need to visit a new unvisited node from u
                         if (!(mask&(1<<v))){//Ensures `v` is not yet visited in the mask
-                            const newBitMask = mask | (1<<v);
-                            dp[newBitMask][v] = Math.min(
-                                dp[newBitMask][v],
-                                dp[mask][u]+this.graph[u][v]
-                            )
+                            const newBitMask = mask | (1<<v), newCost = dp[mask][u]+this.graph[u][v];
+                            if (newCost<dp[newBitMask][v]){
+                                dp[newBitMask][v] = newCost;
+                                parent[newBitMask][v] = u; //Track the previous city
+                            };
                         }
                     }
                 }
             }
         };
         let minCost = Infinity;
+        let lastCity = -1, finalMask = (1<<n)-1;
         for(let u=1; u<n; u++){
-            minCost = Math.min(minCost, dp[(1<<n)-1][u]+this.graph[u][0]) 
+            const cost = dp[finalMask][u] + this.graph[u][0];
+            if (cost<minCost){
+                minCost = cost;
+                lastCity = u //last city before returning to start
+            }
         };
-        return minCost
+
+        //time to reconstruct path
+        const path:number[] = [];
+        let mask = finalMask;
+        while(lastCity!==-1){
+            path.push(lastCity);
+            const prevCity = parent[mask][lastCity];
+            mask = mask ^ lastCity; //removing last city
+            lastCity = prevCity
+        };
+
+        path.push(0); //eventually need to go to start city
+        path.reverse()
+        // for(let r=0; r<dp.length; r++) console.log(`R-${r} Bit-${(r).toString(2)}` + " | " + dp[r].join(" | ") + " | ")
+        return {minCost, path}
     }
 };
 
@@ -77,7 +102,7 @@ class TravelingSalesperson{
             ]
         ];
         ARGS.forEach(
-            (matrix, i)=> console.log(`Graph-${i=1} Traveling Salesperson solution = ${new TravelingSalesperson(matrix).solution1()}`)
+            (matrix, i)=> console.log(`Graph-${i=1} Traveling Salesperson solution = ${new TravelingSalesperson(matrix).solution2()}`)
         )
     }
 )()
