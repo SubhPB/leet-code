@@ -43,8 +43,10 @@ class TravelingSalesperson{
         //If we need to track back the path, parent[][] would help us!
         const parent:number[][] = Array.from({length:1<<n}, ()=>Array(n).fill(-1));
 
+        const startingNodes = Array.from({length:1<<n},()=>Array(n).fill(Infinity)); //startingNode[lastNode] -> gives when startingNode value when path's last node is lastNode
+        
         //If starting can be any node
-        for(let i=0; i<n; i++) dp[1<<i][i] = 0
+        for(let i=0; i<n; i++) { startingNodes[1<<i][i] = i; dp[1<<i][i] = 0};
 
         for(let mask=1; mask<(1<<n); mask++){
             /* We need to travel from a visited node to a un-visited node. e.g r=0110 -> node-1, node-2 are visited
@@ -58,6 +60,7 @@ class TravelingSalesperson{
                             if (newCost<dp[newBitMask][v]){
                                 dp[newBitMask][v] = newCost;
                                 parent[newBitMask][v] = u; //Track the previous city
+                                startingNodes[newBitMask][v] = startingNodes[mask][u]
                             };
                         }
                     }
@@ -67,7 +70,8 @@ class TravelingSalesperson{
         let minCost = Infinity;
         let lastCity = -1, finalMask = (1<<n)-1;
         for(let u=1; u<n; u++){
-            const cost = dp[finalMask][u] + this.graph[u][0];
+            // const cost = dp[finalMask][u] + this.graph[u][0];
+            const cost = dp[finalMask][u] + this.graph[u][startingNodes[(1<<n)-1][u]]
             if (cost<minCost){
                 minCost = cost;
                 lastCity = u //last city before returning to start
@@ -75,19 +79,24 @@ class TravelingSalesperson{
         };
 
         //time to reconstruct path
-        const path:number[] = [];
-        let mask = finalMask;
-        while(lastCity!==-1){
-            path.push(lastCity);
-            const prevCity = parent[mask][lastCity];
-            mask = mask ^ lastCity; //removing last city
-            lastCity = prevCity
-        };
+        // const path:number[] = [];
+        // let mask = finalMask;
+        // while(lastCity!==-1){
+        //     path.push(lastCity);
+        //     const prevCity = parent[mask][lastCity];
+        //     mask = mask ^ lastCity; //removing last city
+        //     lastCity = prevCity
+        // };
 
-        path.push(0); //eventually need to go to start city
-        path.reverse()
+        // path.push(0); //eventually need to go to start city
+        // path.reverse()
         // for(let r=0; r<dp.length; r++) console.log(`R-${r} Bit-${(r).toString(2)}` + " | " + dp[r].join(" | ") + " | ")
-        return {minCost, path}
+        return {
+            minCost,
+            // path,
+            startingNode: startingNodes[(1<<n)-1],
+            lastMask: dp[(1<<n)-1]
+        }
     }
 };
 
@@ -96,13 +105,13 @@ class TravelingSalesperson{
         const ARGS:(number[][])[] = [
             [
                 [0,10,15,20],
-                [5,0,9,10],
-                [6,13,0,12],
-                [8,8,9,0]
+                [5, 0, 9,10],
+                [6,13, 0,12],
+                [8, 8, 9, 0]
             ]
         ];
         ARGS.forEach(
-            (matrix, i)=> console.log(`Graph-${i=1} Traveling Salesperson solution = ${new TravelingSalesperson(matrix).solution2()}`)
+            (matrix, i)=> console.log(`Graph-${i=1} Traveling Salesperson solution = %O`, new TravelingSalesperson(matrix).solution2())
         )
     }
 )()
