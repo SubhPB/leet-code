@@ -83,7 +83,78 @@ class TravelingSalesperson{
             minCost,
             lastMask: dp[(1<<n)-1],
         }
-    }
+    };
+    solution3(){
+        /**This solution may not be most efficient, but focuses to solve this problem using `Branch And Bound` approach */
+        function utils(matrix: number[][]) {
+            return {
+                getCol: (c: number) => {
+                    return matrix.map(row => row[c]); // Get column c
+                },
+                reduceMatrix: () => {
+                    const m = matrix.length, n = matrix[0].length;
+                    const reducedMatrix = matrix.map(row => [...row]); // Create a copy
+                    let reduceCost = 0;
+        
+                    // Row Reduction
+                    for (let r = 0; r < m; r++) {
+                        const rowMin = Math.min(...reducedMatrix[r]); // Use reducedMatrix, not matrix
+                        reduceCost += rowMin;
+                        if (rowMin !== 0) {
+                            reducedMatrix[r] = reducedMatrix[r].map(rv => rv - rowMin);
+                        }
+                    }
+        
+                    // Column Reduction
+                    for (let c = 0; c < n; c++) {
+                        const col = reducedMatrix.map(row => row[c]); // Corrected column retrieval
+                        const colMin = Math.min(...col);
+                        reduceCost += colMin;
+                        if (colMin !== 0) {
+                            for (let r = 0; r < m; r++) {
+                                reducedMatrix[r][c] -= colMin;
+                            }
+                        }
+                    }
+        
+                    return { reduceCost, reducedMatrix };
+                }
+            };
+        };
+        const m = this.graph.length, n = this.graph[0].length;
+        for(let r=0; r<m; r++) this.graph[r][r] = Infinity;
+
+        // const queue: ({parentReducedMatrix:number[][], parentReducedCost:number[], path:number[]})[] = [];
+        /**suppose 0 is our starting node */
+        let {reducedMatrix, reduceCost:lowerBound} = utils(this.graph).reduceMatrix(), path = [0], upperBound = Infinity;
+        while(path.length!==m){
+            const traversed: {currUpperBound:number,currReducedMatrix:number[][], currPath:number[]}[] = []
+            for(let childNode=0; childNode<m; childNode++){
+                if (path.includes(childNode)) continue;
+                const parentNode = path[path.length-1];
+                //updating reducedMatrix
+                const currMatrix = reducedMatrix.map((r, ri) => r.map((c,ci)=> {
+                    if (ri===parentNode||ci===childNode) return Infinity;
+                    else return r[ci]
+                }));
+                currMatrix[childNode][parentNode] = Infinity; 
+
+                const {reduceCost:currReduceCost, reducedMatrix:currReducedMatrix} = utils(currMatrix).reduceMatrix();
+                const currUpperBound = reducedMatrix[parentNode][childNode] + lowerBound + currReduceCost;
+                if (currUpperBound<upperBound) traversed.push({currReducedMatrix, currUpperBound, currPath:[...path,childNode]})
+            };
+            if (traversed.length){
+                let minTraverse: typeof traversed[number] = traversed.pop()!;
+                while(traversed.length){
+                    const currTraverse = traversed.pop()!;
+                    if (currTraverse.currUpperBound<minTraverse.currUpperBound) minTraverse = currTraverse
+                };
+                //updating the global state
+                reducedMatrix = minTraverse.currReducedMatrix, upperBound = minTraverse.currUpperBound, path = minTraverse.currPath;
+            } else break;
+        };
+        return upperBound
+    };
 };
 
 (
