@@ -28,21 +28,47 @@ class Solve1208{
     constructor(public s:string, public t:string,public maxCost:number){
         this.s=s; this.t=t; this.maxCost = maxCost
     };
+    utils={
+        ascii(char:string){return char.charCodeAt(0)},
+        abs(val:number){return val<0?-val:val}
+    };
     solution1(){
         const s = this.s, t = this.t, l = s.length;
         const mod = (v:number) => v<0?-v:v;
         const costTable = Array.from(s).map((_,i)=>mod(s.charCodeAt(i)-t.charCodeAt(i)));
-        let max = [0/*val*/, 0/*len*/, -1/*index*/]
+        let max = [0/*val*/, 0/*len*/, -1/*index*/], window = [...max]
         for(let i=0; i<l; i++){
             if ((l-i)<=max[1]) break; //if remaining length can't compete with pre-existing substring
             let size = 0,j = i;
+            if (i>0){
+                j = window[1]+i;
+                size = window[0]-costTable[i-1]+costTable[j];
+            }
             while(j<l&&(costTable[j]+size)<=this.maxCost){
                 size+=costTable[j];
                 if (size>=max[0]) max = [size, j-i+1, i];
                 j++;
-            }
+            };
+            window = [size, j-i+1, i]
         };
         return max[1]
+    };
+    solution2(){
+        const s = this.s, t = this.t;
+        let currCost = 0, left = 0, res = 0;
+        for(let right=0; right<s.length; right++){
+            currCost += this.utils.abs(
+                this.utils.ascii(s[right]) - this.utils.ascii(t[right])
+            );
+            while(currCost>this.maxCost){
+                currCost -= this.utils.abs(
+                    this.utils.ascii(s[left]) - this.utils.ascii(t[left])
+                );
+                left++;
+            };
+            res = Math.max(res, right-left+1)
+        };
+        return res;
     }
 };
 
@@ -55,7 +81,7 @@ class Solve1208{
         ];
         ARGS.forEach(
             ([s,t,maxCost,expected]) => {
-                const found = new Solve1208(s,t,maxCost).solution1()
+                const found = new Solve1208(s,t,maxCost).solution2()
                 console.log(
                     `Leetcode[1208] s=${s} t=${t} maxCost=${maxCost} expected=${expected}, and found=${found} `, found===expected?"Passed!":"Failed!"
                 )
