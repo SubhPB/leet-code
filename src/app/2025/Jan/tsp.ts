@@ -135,12 +135,12 @@ class TravelingSalesperson{
                 //updating reducedMatrix
                 const currMatrix = reducedMatrix.map((r, ri) => r.map((c,ci)=> {
                     if (ri===parentNode||ci===childNode) return Infinity;
-                    else return r[ci]
+                    else return c
                 }));
                 currMatrix[childNode][parentNode] = Infinity; 
 
                 const {reduceCost:currReduceCost, reducedMatrix:currReducedMatrix} = utils(currMatrix).reduceMatrix();
-                const currUpperBound = reducedMatrix[parentNode][childNode] + lowerBound + currReduceCost;
+                const currUpperBound = this.graph[parentNode][childNode] + lowerBound + currReduceCost;
                 if (currUpperBound<upperBound) traversed.push({currReducedMatrix, currUpperBound, currPath:[...path,childNode]})
             };
             if (traversed.length){
@@ -165,10 +165,17 @@ class TravelingSalesperson{
                 [5, 0, 9,10],
                 [6,13, 0,12],
                 [8, 8, 9, 0]
+            ],
+            [
+                [0, 20, 30, 10, 11],
+                [15, 0, 16, 4, 2],
+                [3, 5, 0, 2, 4],
+                [19, 6, 18, 0, 3],
+                [16, 4, 7, 16, 0]
             ]
         ];
         ARGS.forEach(
-            (matrix, i)=> console.log(`Graph-${i=1} Traveling Salesperson solution = %O`, new TravelingSalesperson(matrix).solution2())
+            (matrix, i)=> console.log(`Graph-${i=1} Traveling Salesperson solution = %O`, new TravelingSalesperson(matrix).solution3())
         )
     }
 )()
