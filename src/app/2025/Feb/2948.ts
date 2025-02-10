@@ -41,20 +41,22 @@ class Solve2948{
     };
     solution1(){
         const nums = this.nums, lm = this.limit;
-        /**We will use two pointer approach */
-        let swapCount=0;
-        for(let r=1; r<nums.length&&swapCount<lm; r++){
-            let left = r-1, right = r;
-            while(swapCount<lm&&right<nums.length){
-                if(nums[left]>nums[right]){
-                    [nums[left],nums[right]] = [nums[right], nums[left]]; //swapped
-                    swapCount++;
-                    left++;
-                };
-                right++
-            }
+        const groups :number[][] = [], groupMap: {[k:string]:number} = {};
+        const abs = (val:number) => val<0?-val:val, lastIndex = (arr:any[]) => arr.length-1;
+        for(let sn of [...nums].sort((a,b)=>a-b)){
+            const glen = groups.length;
+            if (!glen||abs(sn-groups[glen-1][lastIndex(groups[glen-1])])){
+                groups.push()
+            };
+            groups[lastIndex(groups)].push(sn);
+            groupMap[sn]=groups.length-1;
         }
-        return nums
+        const res:number[] = [];
+        for(let n of nums){
+            let j = groupMap[n];
+            res.push(groups[j].shift()!)
+        };
+        return res
     }
 };
 
