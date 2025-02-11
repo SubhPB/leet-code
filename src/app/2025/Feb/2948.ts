@@ -46,7 +46,7 @@ class Solve2948{
         for(let sn of [...nums].sort((a,b)=>a-b)){
             const glen = groups.length;
             if (!glen||abs(sn-groups[glen-1][lastIndex(groups[glen-1])])){
-                groups.push()
+                groups.push([])
             };
             groups[lastIndex(groups)].push(sn);
             groupMap[sn]=groups.length-1;
@@ -57,6 +57,29 @@ class Solve2948{
             res.push(groups[j].shift()!)
         };
         return res
+    };
+    solution2(){
+        const n = this.nums.length;
+        const sortedNums = this.nums.map((num,i)=>[num,i]).sort(([n1],[n2])=>n1-n2), abs = (a:number,b:number) => {
+            const diff = a-b;
+            return diff>0?diff:-diff
+        };
+        let left = 0;
+        while(left<n){
+            let right = left+1;
+            while(
+                right<n&&abs(
+                    sortedNums[right][0], sortedNums[right-1][0]
+                ) <= this.limit
+            ){
+                right++;
+            };
+            const group = sortedNums.slice(left,right);
+            const groupElemIndexes = group.map(([num,pos])=>pos).sort((a,b)=>a-b);
+            for(let i=0; i<group.length; i++) this.nums[groupElemIndexes[i]] = group[i][0];
+            left=right
+        };
+        return this.nums
     }
 };
 
@@ -66,6 +89,8 @@ class Solve2948{
             [[1,5,3,9,8], 2],
             [[1,7,6,18,2,1], 3],
         ];
-        ARGS.forEach(([nums,lm])=>console.log(`Leetcode-2948 nums=[${nums.join(', ')}] limit=${lm} solution -> [${new Solve2948(nums,lm).solution1().join(', ')}]`))
+        ARGS.forEach(([nums,lm])=>console.log(
+            `Leetcode-2948 nums=[${nums.join(', ')}] limit=${lm} solution -> [${new Solve2948(nums,lm).solution2().join(', ')}]`
+        ))
     }
 )()
