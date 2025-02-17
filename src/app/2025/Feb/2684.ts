@@ -43,7 +43,7 @@ class Solve2684{
             totalPairs += i;
             const slope = this.nums[i] - i;
             if (!(slope in count)) count[slope] = 0;
-            goodPairs += count[slope];
+            goodPairs += count[slope]; //Interesting step to count pairs in the way of n(n-1)/2 in very minimum lines of code
             count[slope]++;
         };
         return totalPairs - goodPairs

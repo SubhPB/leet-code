@@ -20,10 +20,10 @@ Example 2:
 Input: dictionary = ["a","b","c"], sentence = "aadsfasf absbs bbab cadsfafs"
 Output: "a a b c"
 
-npx ts-node ./src/app/2025/Feb/684.ts
+npx ts-node ./src/app/2025/Feb/648.ts
  */
 
-class Solve684{
+class Solve648{
     constructor(public dict:string[], public sentence:string){
         this.dict=dict.sort((a,b)=>a.length-b.length); this.sentence=sentence;
     };
@@ -44,6 +44,6 @@ class Solve684{
             [["cat","bat","rat"], "the cattle was rattled by the battery"],
             [["a","b","c"], "aadsfasf absbs bbab cadsfafs"]
         ];
-        ARGS.forEach(([dict,sentence])=>console.log(`leetcode-684 dictionary=[${dict.join(", ")}] sentence=${sentence} solution=${new Solve684(dict,sentence).solution1()}`))
+        ARGS.forEach(([dict,sentence])=>console.log(`leetcode-684 dictionary=[${dict.join(", ")}] sentence=${sentence} solution=${new Solve648(dict,sentence).solution1()}`))
     }
 )()
