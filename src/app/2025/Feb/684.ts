@@ -35,10 +35,33 @@ class Solve684{
     };
     solution2(edges=this.Edges){
         /**Solution based on union sets approach*/
-        const parent = Array.from({length:edges.length+1}, ()=>-1);
+        const parent = Array.from({length:edges.length+1}, (_,i)=>i);
+        const rank = Array.from(parent, ()=>1);
 
-        for(let i=1;i<=edges.length; i++){
-            
+        const find = (n:number) => { 
+            /**Not only find the rootParent of the component but also update the rootParent*/
+            if (parent[n]!==n) parent[n] = find(parent[n]);
+            return parent[n]
+        };
+
+        const union = (n1:number,n2:number) => {
+            const [p1, p2] = [n1,n2].map(find);
+            if (p1===p2) return false;
+            if (rank[p1]>rank[p2]){
+                parent[p2] = p1;
+                rank[p2] += rank[p2];
+            } else {
+                parent[p1] = p2;
+                rank[p1] += rank[p1];
+            };
+            return true;
+        }
+        
+        for(let i=0;i<edges.length; i++){
+            if (!(union(...edges[i]))){
+                console.log({parent})
+                return edges[i]
+            }
         }
         return -1
     }
@@ -50,7 +73,7 @@ class Solve684{
             [[1,2],[1,3],[2,3]],
             [[1,2],[2,3],[3,4],[1,4],[1,5]]
         ];
-        ARGS.forEach(edges => console.log(`Edges=[${edges.map(e=>e.join('->')).join(', ')}] solution = {${ new Solve684(edges).solution1() }}`))
+        ARGS.forEach(edges => console.log(`Edges=[${edges.map(e=>e.join('->')).join(', ')}] solution = {${ new Solve684(edges).solution2() }}`))
     }
 )()
 
