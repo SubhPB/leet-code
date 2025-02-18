@@ -32,6 +32,15 @@ class Solve684{
             parentMap[newNode] = parent;
         };
         return -1;
+    };
+    solution2(edges=this.Edges){
+        /**Solution based on union sets approach*/
+        const parent = Array.from({length:edges.length+1}, ()=>-1);
+
+        for(let i=1;i<=edges.length; i++){
+            
+        }
+        return -1
     }
 };
 
