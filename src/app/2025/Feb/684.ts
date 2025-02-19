@@ -64,6 +64,38 @@ class Solve684{
             }
         }
         return -1
+    };
+    solution3(edges=this.Edges){
+        /**This is also based on union find approach, but will try to reduce the space-complexity to O(n)*/
+        const parent = Array.from({length:edges.length+1}, ()=>-1); //if -ve means it's a root and number represents the size of this union-set
+        const findParent = (n:number) => {
+            if (parent[n]<0){/**Is it a root?*/
+                return n
+            } else {
+                parent[n] = findParent(parent[n])
+                return parent[n]
+            }
+        };
+        const setSize = (n:number) => {
+            if (parent[n]>0) throw new Error(`Root of a component is expected to be in -ve value but found ${parent[n]}`);
+            return -parent[n]
+        };
+        const union = (n1:number, n2:number) => {
+            const [p1,p2] = [n1,n2].map(findParent);
+            if (p1===p2) return false;
+            if (setSize(p1)>setSize(p2)){
+                parent[p2] = p1;
+                parent[p1] -= setSize(parent[p2]) //Size of p2 is been merged into p1
+            } else {
+                parent[p1] = p2;
+                parent[p2] -= setSize(parent[p1])
+            };
+            return true
+        };
+        for(let edge of edges){
+            if (!(union(...edge))) return edge
+        };
+        return -1
     }
 };
 
@@ -73,7 +105,7 @@ class Solve684{
             [[1,2],[1,3],[2,3]],
             [[1,2],[2,3],[3,4],[1,4],[1,5]]
         ];
-        ARGS.forEach(edges => console.log(`Edges=[${edges.map(e=>e.join('->')).join(', ')}] solution = {${ new Solve684(edges).solution2() }}`))
+        ARGS.forEach(edges => console.log(`Edges=[${edges.map(e=>e.join('->')).join(', ')}] solution = {${ new Solve684(edges).solution3() }}`))
     }
 )()
 
