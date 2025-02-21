@@ -60,6 +60,23 @@ class Solve802{
             if (checkList[i]===1) safeNodes.push(i);
         };
         return safeNodes
+    };
+    solution2(graph=this.G){
+        const n = graph.length;
+        const checkList: (-1|0|1)[] = Array.from({length:n}, ()=>-1) //-1 means unvisited, 0 means visiting, 1 means safe;
+        const dfs = (node:number) => {
+            if (checkList[node]!==-1) return checkList[node]===1;
+            checkList[node] = 0; //visiting now.
+            for(const child of graph[node]){
+                if (checkList[child]===1) continue;
+                if (checkList[child]===0 || !dfs(child)) return false
+            };
+            checkList[node]=1;
+            return true
+        };
+        const safeNodes:number[]=[];
+        for(let i=0; i<n; i++) if (dfs(i)) safeNodes.push(i);
+        return safeNodes
     }
 };
 
@@ -67,8 +84,10 @@ class Solve802{
     ()=>{
         const ARGS = [
             [[1,2],[2,3],[5],[0],[5],[],[]],
-            [[1,2,3,4],[1,2],[3,4],[0,4],[]]
+            [[1,2,3,4],[1,2],[3,4],[0,4],[]],
+            [[1, 2], [3], [3], []],
+            [[1, 2], [3], [3], [4], []]
         ];
-        ARGS.forEach(graph => console.log(`[Leetcode-802] SafeNodes = ${new Solve802(graph).solution1()}`))
+        ARGS.forEach(graph => console.log(`[Leetcode-802] SafeNodes = ${new Solve802(graph).solution2()}`))
     }
 )()
