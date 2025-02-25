@@ -36,26 +36,110 @@ class Solve889WarmUp{
     preOrder(tree=this.graph.tree){
         const preOrder:number[] = [], n = Object.keys(tree).length, root = this.graph.root;
         if (n>0){
-            const fn = (node:number) => { //A DFS approach
+            /**
+            Recursive approach
+                const fn = (node:number) => { //A DFS approach
+                    preOrder.push(node);
+                    for(let child of tree[node]) fn(child);
+                };
+                fn(root);
+             *  
+             */
+            const stack = [root];
+            while(stack.length){
+                const node = stack.pop()!;
                 preOrder.push(node);
-                for(let child of tree[node]) fn(child);
-            };
-            fn(root)
+                const children = node in tree ? tree[node] : []
+                for(let i=children.length-1; i>=0; i--) stack.push(children[i])
+            }
         };
         return preOrder
     };
     postOrder(tree=this.graph.tree){
         const n = Object.keys(tree).length, postOrder:number[] = [], root = this.graph.root;
         if (n>0){
-            const fn = (node:number) => { //A DFS approach
-                for(let child of tree[node]) fn(child);
-                postOrder.push(node);
+            /**
+             Recursive Approach
+                const fn = (node:number) => { //A DFS approach
+                    for(let child of tree[node]) fn(child);
+                    postOrder.push(node);
+                };
+                fn(root)
+             */
+
+            const stack:number[]=[root];
+            while(stack.length){
+                const node:number = stack.pop()!;
+                const isLeaf = !(node in tree) || tree[node].length===0;
+                if (isLeaf) postOrder.push(node);
+                else {
+                    const possibleParent = postOrder[postOrder.length-1]
+                    const childAreTraversed = Number.isInteger(possibleParent) && possibleParent in tree && (
+                        tree[possibleParent][tree[possibleParent].length-1/**basically the last child */] === node
+                    )
+                    if (childAreTraversed){
+                        postOrder.push(node)
+                    } else {
+                        for(let i=tree[node].length-1; i>=0; i--){
+                            stack.push(tree[node][i])
+                        }
+                    }
+                }
             };
-            fn(root)
         }
         return postOrder
-    }
+    };
 };
+
+class Solve889{
+  constructor(public preOrder:number[],public postOrder:number[]){
+    this.preOrder=preOrder; this.postOrder=postOrder;
+  };
+  solution(preOrder=this.preOrder, postOrder=this.postOrder){
+    const nodesCount = preOrder.length;
+    const [preOrderIndex, postOrderIndex] = [Array(nodesCount).fill(-1), Array(nodesCount).fill(-1)];
+    for(let i=0; i<nodesCount; i++){
+      preOrderIndex[preOrder[i]] = i;
+      postOrderIndex[postOrder[i]] = i;
+    };
+    const tree:(number|null)[] = [];
+    const queue: ([[number,number]/**Indices indicating subPreOrder*/, [number,number] /**Indices indicating subPostOrder*/]|[])[] = [];
+    while(queue.length){
+      const indices = queue.pop()!;
+      if (!indices.length){
+        if (queue.every(indices => !indices.length)) break; //End of the tree traversal
+        /**If zero length, indicates at some part our tree had only single child on either side & it's parent does not exist*/
+        tree.push(null);
+        for(let i=0; i<2; i++) queue.push([]); //It's child should also be null
+      } else {
+        const [[preStart,preEnd], [postStart, postEnd]] = indices;
+        const subNodesCount = preEnd - preStart;
+
+        const currRoot = preOrder[preStart]; //or postOrder[postEnd-1]
+        tree.push(currRoot);
+  
+        //now time to traverse left and right side.
+        /**
+         * Challenge: Identify whether this currRoot has single child subtree or does it have both?
+         * PreOrder works this way, ( Top -> Left -> Right ) & PostOrder works as ( Left -> Right -> Top )
+         * Next to the currRoot means preOrder[preStart+1] can be either be at left side or right side.
+         * If preOrder[preStart+1] === postOrder[postEnd-2] It means currRoot has only one child-subtree,
+         *  because this condition shows that same node is both at left as well as right side, which contradicts out ordering mechanism,
+         * else : preOrder[preStart+1] has been proved to be as left node of the currRoot
+         */
+        if (subNodesCount>0){
+          if (preOrder[preStart+1]===postOrder[postEnd-2]){
+            //Only one left-subtree
+          } else {
+            //There are both right 
+          }
+        }
+      }
+
+    };
+    return tree
+  }
+}
 
 const _trees: { root: number; tree: { [parent: number]: number[] } }[] = [
     // Test Case 1: Simple Binary Tree
