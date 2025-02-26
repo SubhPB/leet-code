@@ -113,9 +113,12 @@ class Solve889{
         for(let i=0; i<2; i++) queue.push([]); //It's child should also be null
       } else {
         const [[preStart,preEnd], [postStart, postEnd]] = indices;
+
         const subNodesCount = preEnd - preStart;
+        if (subNodesCount!==postEnd-postStart) throw new Error(`Invalid indices, expected subArrays of same size but found of length ${subNodesCount} and ${postEnd-postStart}`);
 
         const currRoot = preOrder[preStart]; //or postOrder[postEnd-1]
+        if (currRoot!==postOrder[postEnd-1]) throw new Error(`Invalid currRoot, ${currRoot} and ${postOrder[postEnd-1]} are different values`)
         tree.push(currRoot);
   
         //now time to traverse left and right side.
@@ -129,9 +132,29 @@ class Solve889{
          */
         if (subNodesCount>0){
           if (preOrder[preStart+1]===postOrder[postEnd-2]){
-            //Only one left-subtree
+            //Only one left-subtree. Now in next subproblem we will remove the currRoot from the indices
+            const leftSubTreeIndices: typeof queue[number] = [
+              [preStart+1, preEnd], // {PreOrder} Incrementing preStart because of (Top, left, right) remove top and move to the left as nextRoot
+              [postStart, postEnd-1], // {PostOrder} decrementing postEnd because (Left, right, top) remove top and move to right as nextRoot
+            ]
+            queue.push(leftSubTreeIndices);
+            queue.push([]); //Right subtree not exist so fill it with null
           } else {
-            //There are both right 
+            //There are both right and left-subtree
+            /**
+             *Let's first resolve left subtree, leftNode is preOrder[preStart+1] is for sure. How many children does in involves in its subtree?
+             */            
+            const leftSubTreeIndices: typeof queue[number] = [
+              [preStart+1, preOrderIndex[postOrder[postEnd-1]]], //preOrder subpart
+              [postStart, postOrderIndex[preOrder[preStart+1]]+1] //postOrder subPart
+            ];
+            queue.push(leftSubTreeIndices);
+
+            const rightSubTreeIndices: typeof queue[number] = [
+              [preOrderIndex[postOrder[postEnd-1]], preEnd], //preOrder subPart
+              [postOrderIndex[preOrder[preStart+1]]+1, postEnd-1] //postOrder subPart
+            ];
+            queue.push(rightSubTreeIndices);
           }
         }
       }
@@ -237,12 +260,12 @@ const _trees: { root: number; tree: { [parent: number]: number[] } }[] = [
             }
             return true
         }
-        _trees.forEach((tree, i)=>{
-            const preOrder = new Solve889WarmUp(tree).preOrder(), postOrder = new Solve889WarmUp(tree).postOrder()
-            console.log('\n')
-            console.log(`Testing Tree-${i+1} root=[${Object.keys(tree)[0]}] preOrder=[${preOrder.join(", ")}] expected=[${_expectedTraversals[i].preorder.join(', ')}]`, isEqual(preOrder, _expectedTraversals[i].preorder) ? " Passed! " : " Failed! ");
-            console.log(`Testing Tree-${i+1} root=[${Object.keys(tree)[0]}] postOrder=[${postOrder.join(", ")}] expected=[${_expectedTraversals[i].postorder.join(', ')}]`, isEqual(postOrder, _expectedTraversals[i].postorder) ? " Passed! " : " Failed! ")
-        })
+        // _trees.forEach((tree, i)=>{
+        //     const preOrder = new Solve889WarmUp(tree).preOrder(), postOrder = new Solve889WarmUp(tree).postOrder()
+        //     console.log('\n')
+        //     console.log(`Testing Tree-${i+1} root=[${Object.keys(tree)[0]}] preOrder=[${preOrder.join(", ")}] expected=[${_expectedTraversals[i].preorder.join(', ')}]`, isEqual(preOrder, _expectedTraversals[i].preorder) ? " Passed! " : " Failed! ");
+        //     console.log(`Testing Tree-${i+1} root=[${Object.keys(tree)[0]}] postOrder=[${postOrder.join(", ")}] expected=[${_expectedTraversals[i].postorder.join(', ')}]`, isEqual(postOrder, _expectedTraversals[i].postorder) ? " Passed! " : " Failed! ")
+        // })
     }
 )()
   
