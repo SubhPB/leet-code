@@ -27,12 +27,12 @@ npx ts-node ./src/app/2025/Feb/136.ts
 class Solve136{
     constructor(public nums:number[]){this.nums=nums};
     solution(nums=this.nums){
-        const dict: {[k:string]:any} = {};
-        for(let num of nums){
-            if (num in dict) delete dict[num];
-            else dict[num] = true
-        };
-        return parseInt(Object.keys(dict)[0])
+        /**
+         * Using XOR (If two inputs are same return false else true), e.g. a^a=0, a^0=a
+         */
+        let res = 0
+        for(let num of nums) res ^= num
+        return res
     }
 };
 (
