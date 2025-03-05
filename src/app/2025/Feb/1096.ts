@@ -47,56 +47,57 @@ class Solve1096{
         this.expression=expression
     };
     solution(expression=this.expression){
+
+        
+
         class Dict{
             constructor(public expr:string){
                 this.expr = expr
             };
-            flat(){
-                if (this.expr.length<=1) return `{${this.expr}}`;
-
-                const tempStartStack = [0];
-                const startAt:number[] = [], endsAt:number[] = [];
-
-                for(let i=1; i<this.expr.length; i++){
-                    if (this.expr[i]==='{'){
-                        tempStartStack.push(i)
-                    } else if (this.expr==='}'){
-                        startAt.push(tempStartStack.pop()!);
-                        endsAt.push(i);
-                    } else {
-                        //If char is not been surrounded by any bracket e.g. `f` in here: {a{b,c}f{d}}
-                        startAt.push(i); endsAt.push(i); //A special way to represent this,
+            inspect(){
+                const  expr = this.expr, n = expr.length;
+                const indices: [number/**startIndex of a set */, number /**endIndex of a set*/][] = [];
+                const temp:number[] = [];
+                const ops : {[indicesIndex:string]:'*'|'+'} = {};
+                if (expr[0]!=='{') { //means at root level only multiplication occurs in b/w all sets
+                    indices.push([0, expr.length-1]);
+                    ops[0] = '*'
+                } else {
+                    let startAt = 0, endsAt = n;
+                    if (expr[0]==='{'&&expr[n-1]==='}'){
+                        startAt++; endsAt--;
+                    } 
+                    for(let i=startAt; i<endsAt; i++){
+                        const char = expr[i]
+                        const l = indices.length;
+                        if (char===' ') continue;
+                        else if (char===','){//An 'additive' operation b/w two sets
+                            ops[indices[l-1][0]]='+';//We apply operation from left->right
+                        } else if (char==='{'){
+                            indices.push([i, -1]);
+                            temp.push(l);//this will help to determine lastIndex which is currently set to -1
+                            /**Another thing to identify is to to determine whether is getting multiplied with other set.
+                             * Is there any Set that exist left to it & do any operation with this current index?,
+                             *  if that Set exist and does not point to any operation, then it means this is the multiplication
+                             */
+                            if (i>0&&l>0){ //As 'l' still points to prev length, hence indices[l] points to the current indice, to track left indice we need indices[l-1] or indices[indices.length-2]
+                                const leftSetStartingIndex = indices[l-1][0];
+                                if (!(leftSetStartingIndex in ops)) ops[leftSetStartingIndex] = '*'
+                            }
+                        } else if (char==='}'){
+                            indices[temp.pop()!][1] = i; //The unknown lastIndex is now been found!
+                        } else { //means this is a letter or continuos seq. of letters, e.g. 'a', 'abc', 'de'
+                            indices.push([i, -1]); //A letter or seq of letters can itself be a Set, now we know its starting index but not end of it.
+                            //Be prepared in advance following line can cause an expected bug related to 'newspace' in future, during special/intentional inputs whose output would technically correct but awkward for human reading
+                            while(i+1<n&&['{','}',',',' '].every(sym=>sym!==expr[i+1])) i++; //To handle letter sequence
+                            indices[l][1] = i;//if starting and end index is of same value we can consider this as singleton set
+                        }
                     }
                 };
-
-                let flattenExpr = '{';
-                let i = 1;
-                while(i<startAt.length){
-                    if (startAt[i]===endsAt[i]) flattenExpr += `{${this.expr[i]}}`;
-                    else {
-                        const subExpr = this.expr.substring(startAt[i], endsAt[i]+1);
-                        const isDeeplyNested = (currI:number) => currI+1<startAt.length && endsAt[currI]>startAt[currI+1];
-                        if (isDeeplyNested(i)){
-                            flattenExpr += new Dict(subExpr).flat();
-                            while (isDeeplyNested(i)) i++
-                        }
-                    };
-                    i++
+                return {
+                    indices, ops, temp
                 }
-                flattenExpr += '}'
-                return flattenExpr 
-                
-            };
-            // parse(){
-            //     const flattenExpr = this.flat(); //Here we sure that expression is flatten and not deeply nested
-            //     const stack: string[][] = [];
-            //     for(let i=1; i<flattenExpr.length-1; i++){
-            //         if (flattenExpr[i]==='{'){
-
-            //         }
-            //     }
-            // }
-            
+            };            
         };
         return new Dict(expression)
     }
@@ -105,11 +106,11 @@ class Solve1096{
 (
     ()=>{
         const Expressions = [
-            "{a,b}{c,{d,e}}",
             "{{a,z},a{b,c},{ab,z}}",
-            "a{b,c}{d,e}f{g,h}",
-            "{a,b}{c,d}",
+            // "{a,b}{c,{d,e}}",
+            // "a{b,c}{d,e}f{g,h}",
+            // "{a,b}{c,d}",
         ];
-        Expressions.forEach(exp => console.log(`expression=(${exp}) testExpression: ${new Solve1096(exp).solution().flat()}`))
+        Expressions.forEach(exp => console.log(`expression=(${exp}) testExpression: %O`, new Solve1096(exp).solution().inspect()))
     }
 )()
