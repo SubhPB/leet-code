@@ -48,21 +48,49 @@ class Solve1096{
     };
     solution(expression=this.expression){
 
-        // class Tree {
-        //     private children: Tree[] = []
-        //     constructor(private expr:string){
-        //         this.expr = expr;
-        //     };
-        //     width(){
-        //         return this.children.length
-        //     };
-        //     isSingleton(){
-        //         return this.width()<=1
-        //     }
-        //     private construct(){
+        class Tree {
+            public children: (string|Tree)[] = [];
+            public ops: ('+'|'*')[] = []; //ops.length must eq to children.length-1
 
-        //     }
-        // }
+            width(){
+                return this.children.length
+            };
+            isSingleton(){
+                return this.width()===1&&typeof this.children[0]==='string'
+            };
+        };
+
+        const init = () => {
+            const expr = this.expression, n = expr.length;
+            const parent: Tree[] = [];
+            let opExpected = false
+            for(let i=0; i<n; i++){
+                const char = expr[i], pl = parent.length;
+                if (char===' ') continue;
+                else if (char==='{'){
+                    if (opExpected) {
+                        parent[pl-1].ops.push('*');
+                        opExpected=false
+                    };
+                    parent.push(new Tree())
+                } else if (char==='}'){
+                    if (pl!==1){
+                        const child = parent.pop()!;
+                        parent[parent.length-1].children.push(child);
+                    };
+                    opExpected=true
+                } else if (char===','){
+                    opExpected = false;
+                    parent[pl-1].ops.push('+')
+                } else { //character
+                    let j = i;
+                    //handling if there is a word instead of letter
+                    while(j+1<n && ['{','}',',',' '].every(sym=>sym!==expr[j+1])) j++;
+                    parent[pl-1].children.push(expr.substring(i,j+1));
+                    i=j;
+                }
+            }
+        }
 
         class Dict{
             constructor(public expr:string){
@@ -103,53 +131,7 @@ class Solve1096{
                 return {
                     indices, ops, temp
                 }
-            };  
-            inspect2(){
-                const  expr = this.expr, n = expr.length;
-                const indices: [number/**startIndex of a set */, number /**endIndex of a set*/][] = [];
-                const temp:number[] = [];
-                const ops : {[indicesIndex:string]:'*'|'+'} = {};
-                if (expr[0]!=='{') { //means at root level only multiplication occurs in b/w all sets
-                    indices.push([0, expr.length-1]);
-                    ops[0] = '*'
-                } else {
-                    let startAt = 0, endsAt = n;
-                    if (expr[0]==='{'&&expr[n-1]==='}'){
-                        startAt++; endsAt--;
-                    };
-                    const neighbor:number[] = [];
-                    for(let i=startAt; i<endsAt; i++){
-                        const char = expr[i]
-                        const l = indices.length;
-                        if (char===' ') continue;
-                        else if (char===','){//An 'additive' operation b/w two sets
-                            ops[neighbor.pop()!]='+';//We apply operation from left->right
-                        } else if (char==='{'){
-                            indices.push([i, -1]);
-                            neighbor.push(i)
-                            temp.push(l);//this will help to determine lastIndex which is currently set to -1
-                            /**Another thing to identify is to to determine whether is getting multiplied with other set.
-                             * Is there any Set that exist left to it & do any operation with this current index?,
-                             *  if that Set exist and does not point to any operation, then it means this is the multiplication
-                             */
-                            if (i>0&&l>0){ //As 'l' still points to prev length, hence indices[l] points to the current indice, to track left indice we need indices[l-1] or indices[indices.length-2]
-                                const leftSetStartingIndex = indices[l-1][0];
-                                if (!(leftSetStartingIndex in ops)) ops[leftSetStartingIndex] = '*'
-                            }
-                        } else if (char==='}'){
-                            indices[temp.pop()!][1] = i; //The unknown lastIndex (where set ends!) is now been found!
-                        } else { //means this is a letter or continuos seq. of letters, e.g. 'a', 'abc', 'de'
-                            indices.push([i, -1]); //A letter or seq of letters can itself be a Set, now we know its starting index but not end of it.
-                            //Be prepared in advance following line can cause an expected bug related to 'newspace' in future, during special/intentional inputs whose output would technically correct but awkward for human reading
-                            while(i+1<n&&['{','}',',',' '].every(sym=>sym!==expr[i+1])) i++; //To handle letter sequence
-                            indices[l][1] = i;//if starting and end index is of same value we can consider this as singleton set
-                        }
-                    }
-                };
-                return {
-                    indices, ops, temp
-                }
-            };  
+            };
         };
         return new Dict(expression)
     }
