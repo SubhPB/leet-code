@@ -49,91 +49,103 @@ class Solve1096{
     solution(expression=this.expression){
 
         class Tree {
-            public children: (string|Tree)[] = [];
+            public children: Tree[] = [];
             public ops: ('+'|'*')[] = []; //ops.length must eq to children.length-1
-
+            constructor(public expr:string){this.expr=expr};
             width(){
                 return this.children.length
             };
-            isSingleton(){
-                return this.width()===1&&typeof this.children[0]==='string'
-            };
+            parse():string[]{
+                if (!this.width()) return [this.expr];
+                let parsed:string[] = this.children[0].parse();
+                for(let i=1; i<this.width(); i++){
+                    const nextParsed = this.children[i].parse();
+                    const op = this.ops[i-1];
+                    if (op==='+'||[parsed,nextParsed].some(p=>!p.length)) parsed = Array.from(new Set([...parsed, ...nextParsed]));
+                    else {
+                        const newParsed:string[] = []
+                        for(let a of parsed){
+                            for(let b of nextParsed){
+                                newParsed.push(a+b)
+                            }
+                        };
+                        parsed = newParsed
+                    }
+                }
+                return parsed
+            }
         };
 
         const init = () => {
-            const expr = this.expression, n = expr.length;
-            const parent: Tree[] = [];
-            let opExpected = false
+            const  expr = this.expression, n = expr.length;
+            const indices: [number/**startIndex of a set */, number /**endIndex of a set*/][] = [];
+            const temp:number[] = [];
+            const ops : {[indicesIndex:string]:'*'|'+'} = {};
+            
             for(let i=0; i<n; i++){
-                const char = expr[i], pl = parent.length;
+                const char = expr[i]
+                const l = indices.length;
                 if (char===' ') continue;
-                else if (char==='{'){
-                    if (opExpected) {
-                        parent[pl-1].ops.push('*');
-                        opExpected=false
-                    };
-                    parent.push(new Tree())
-                } else if (char==='}'){
-                    if (pl!==1){
-                        const child = parent.pop()!;
-                        parent[parent.length-1].children.push(child);
-                    };
-                    opExpected=true
-                } else if (char===','){
-                    opExpected = false;
-                    parent[pl-1].ops.push('+')
-                } else { //character
-                    let j = i;
-                    //handling if there is a word instead of letter
-                    while(j+1<n && ['{','}',',',' '].every(sym=>sym!==expr[j+1])) j++;
-                    parent[pl-1].children.push(expr.substring(i,j+1));
-                    i=j;
-                }
-            }
-        }
-
-        class Dict{
-            constructor(public expr:string){
-                this.expr = expr
-            };
-            inspect(){
-                const  expr = this.expr, n = expr.length;
-                const indices: [number/**startIndex of a set */, number /**endIndex of a set*/][] = [];
-                const temp:number[] = [];
-                const ops : {[indicesIndex:string]:'*'|'+'} = {};
-                
-                for(let i=0; i<n; i++){
-                    const char = expr[i]
-                    const l = indices.length;
-                    if (char===' ') continue;
-                    else if (char===','){//An 'additive' operation b/w two sets
-                        ops[indices[l-1][0]]='+';//We apply operation from left->right
-                    } else if (char==='{'){
-                        indices.push([i, -1]);
-                        temp.push(l);//this will help to determine lastIndex which is currently set to -1
-                        /**Another thing to identify is to to determine whether is getting multiplied with other set.
-                         * Is there any Set that exist left to it & do any operation with this current index?,
-                         *  if that Set exist and does not point to any operation, then it means this is the multiplication
-                         */
-                        if (i>0&&l>0){ //As 'l' still points to prev length, hence indices[l] points to the current indice, to track left indice we need indices[l-1] or indices[indices.length-2]
-                            const leftSetStartingIndex = indices[l-1][0];
-                            if (!(leftSetStartingIndex in ops)) ops[leftSetStartingIndex] = '*'
-                        }
-                    } else if (char==='}'){
-                        indices[temp.pop()!][1] = i; //The unknown lastIndex (where set ends!) is now been found!
-                    } else { //means this is a letter or continuos seq. of letters, e.g. 'a', 'abc', 'de'
-                        indices.push([i, -1]); //A letter or seq of letters can itself be a Set, now we know its starting index but not end of it.
-                        //Be prepared in advance following line can cause an expected bug related to 'newspace' in future, during special/intentional inputs whose output would technically correct but awkward for human reading
-                        while(i+1<n&&['{','}',',',' '].every(sym=>sym!==expr[i+1])) i++; //To handle letter sequence
-                        indices[l][1] = i;//if starting and end index is of same value we can consider this as singleton set
+                else if (char===','){//An 'additive' operation b/w two sets
+                    ops[indices[l-1][0]]='+';//We apply operation from left->right
+                } else if (char==='{'){
+                    indices.push([i, -1]);
+                    temp.push(l);//this will help to determine lastIndex which is currently set to -1
+                    /**Another thing to identify is to to determine whether is getting multiplied with other set.
+                     * Is there any Set that exist left to it & do any operation with this current index?,
+                     *  if that Set exist and does not point to any operation, then it means this is the multiplication
+                     */
+                    if (i>0&&l>0){ //As 'l' still points to prev length, hence indices[l] points to the current indice, to track left indice we need indices[l-1] or indices[indices.length-2]
+                        const leftSetStartingIndex = indices[l-1][0];
+                        if (!(leftSetStartingIndex in ops)&&expr[leftSetStartingIndex]!=='{') ops[leftSetStartingIndex] = '*'
                     }
-                }
-                return {
-                    indices, ops, temp
+                } else if (char==='}'){
+                    indices[temp.pop()!][1] = i; //The unknown lastIndex (where set ends!) is now been found!
+                } else { //means this is a letter or continuos seq. of letters, e.g. 'a', 'abc', 'de'
+                    indices.push([i, -1]); //A letter or seq of letters can itself be a Set, now we know its starting index but not end of it.
+                    //Be prepared in advance following line can cause an expected bug related to 'newspace' in future, during special/intentional inputs whose output would technically correct but awkward for human reading
+                    while(i+1<n&&['{','}',',',' '].every(sym=>sym!==expr[i+1])) i++; //To handle letter sequence
+                    indices[l][1] = i;//if starting and end index is of same value we can consider this as singleton set
                 }
             };
+            return {indices,ops}
         };
-        return new Dict(expression)
+
+        const {indices,ops} = init();
+
+        if (!indices.length||indices[0][1]!==expression.length-1){
+            indices.unshift([0,expression.length-1])
+        };
+
+        const parent = [new Tree(expression)];
+        const parentIndices = [0];
+
+        for(let i=1; i<indices.length;i++){
+            const lastIndex = () => parent.length-1, lastParent = () => parent[lastIndex()];
+            let [startFrom,endAt] = indices[i], [parentStartFrom, parentEndAt] = indices[parentIndices[lastIndex()]];
+            const currTree = new Tree(expression.substring(startFrom,endAt+1));
+
+            while(startFrom>parentStartFrom&&endAt>parentEndAt){
+                const subParent = parent.pop()!; parentIndices.pop();
+                const grandParent = parent[lastIndex()]
+                grandParent.children.push(subParent);
+                if (parentStartFrom in ops) grandParent.ops.push(ops[parentStartFrom]);
+                [parentStartFrom, parentEndAt] = indices[lastIndex()]
+            };
+
+            parent.push(currTree);
+            parentIndices.push(i)
+        };
+
+        while (parent.length!==1){
+            parent[0].children.push(parent.pop()!);
+            const [start,end] = indices[parentIndices.pop()!];
+            if (start in ops) parent[0].ops.push(ops[start])
+        };
+
+
+
+        return parent[0].parse()
     }
 };
 
@@ -141,10 +153,10 @@ class Solve1096{
     ()=>{
         const Expressions = [
             "{{a,z},a{b,c},{ab,z}}",
-            "{a,b}{c,{d,e}}",
-            "a{b,c}{d,e}f{g,h}",
-            "{a,b}{c,d}",
+            // "{a,b}{c,{d,e}}",
+            // "a{b,c}{d,e}f{g,h}",
+            // "{a,b}{c,d}",
         ];
-        Expressions.forEach(exp => console.log(`expression=(${exp}) testExpression: %O`, new Solve1096(exp).solution().inspect()))
+        Expressions.forEach(exp => console.log(`expression=(${exp}) testExpression: %O`, new Solve1096(exp).solution()))
     }
 )()
