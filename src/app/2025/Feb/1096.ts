@@ -48,34 +48,6 @@ class Solve1096{
     };
     solution(expression=this.expression){
 
-        class Tree {
-            public children: Tree[] = [];
-            public ops: ('+'|'*')[] = []; //ops.length must eq to children.length-1
-            constructor(public expr:string){this.expr=expr};
-            width(){
-                return this.children.length
-            };
-            parse():string[]{
-                if (!this.width()) return [this.expr];
-                let parsed:string[] = this.children[0].parse();
-                for(let i=1; i<this.width(); i++){
-                    const nextParsed = this.children[i].parse();
-                    const op = this.ops[i-1];
-                    if (op==='+'||[parsed,nextParsed].some(p=>!p.length)) parsed = Array.from(new Set([...parsed, ...nextParsed]));
-                    else {
-                        const newParsed:string[] = []
-                        for(let a of parsed){
-                            for(let b of nextParsed){
-                                newParsed.push(a+b)
-                            }
-                        };
-                        parsed = newParsed
-                    }
-                }
-                return parsed
-            }
-        };
-
         const init = () => {
             const  expr = this.expression, n = expr.length;
             const indices: [number/**startIndex of a set */, number /**endIndex of a set*/][] = [];
@@ -112,38 +84,63 @@ class Solve1096{
         };
 
         const {indices,ops} = init();
+        console.log('\n %O',{indices,ops})
+        class Tree {
+            public children: Tree[] = [];
+            public expr : string;
+            constructor(public indice:[number,number]){
+                this.indice=indice; this.expr = expression.substring(indice[0], indice[1]+1)
+            };
+            width(){
+                return this.children.length
+            };
+            parse():string[]{
+                if (!this.width()) return [this.expr];
+                let parsed:string[] = this.children[0].parse();
+                for(let i=1; i<this.width(); i++){
+                    const nextParsed = this.children[i].parse();
+                    const op = ops[this.children[i].indice[0]];
+                    if (op==='+'||[parsed,nextParsed].some(p=>!p.length)) parsed = Array.from(new Set([...parsed, ...nextParsed]));
+                    else {
+                        const newParsed:string[] = []
+                        for(let a of parsed){
+                            for(let b of nextParsed){
+                                newParsed.push(a+b)
+                            }
+                        };
+                        parsed = newParsed
+                    }
+                }
+                return parsed
+            }
+        };
 
         if (!indices.length||indices[0][1]!==expression.length-1){
             indices.unshift([0,expression.length-1])
         };
 
-        const parent = [new Tree(expression)];
-        const parentIndices = [0];
+        const parent = [new Tree(indices[0])];
 
         for(let i=1; i<indices.length;i++){
-            const lastIndex = () => parent.length-1, lastParent = () => parent[lastIndex()];
-            let [startFrom,endAt] = indices[i], [parentStartFrom, parentEndAt] = indices[parentIndices[lastIndex()]];
-            const currTree = new Tree(expression.substring(startFrom,endAt+1));
+            const lastIndex = () => parent.length-1;
+            let [startFrom,endAt] = indices[i], [parentStartFrom, parentEndAt] = parent[lastIndex()].indice;
+            const currTree = new Tree(indices[i]);
 
             while(startFrom>parentStartFrom&&endAt>parentEndAt){
-                const subParent = parent.pop()!; parentIndices.pop();
+                const subParent = parent.pop()!;
                 const grandParent = parent[lastIndex()]
                 grandParent.children.push(subParent);
-                if (parentStartFrom in ops) grandParent.ops.push(ops[parentStartFrom]);
                 [parentStartFrom, parentEndAt] = indices[lastIndex()]
             };
 
             parent.push(currTree);
-            parentIndices.push(i)
         };
 
         while (parent.length!==1){
             parent[0].children.push(parent.pop()!);
-            const [start,end] = indices[parentIndices.pop()!];
-            if (start in ops) parent[0].ops.push(ops[start])
         };
 
-
+        console.log('%O',{parent: parent[0], children:parent[0].children})
 
         return parent[0].parse()
     }
