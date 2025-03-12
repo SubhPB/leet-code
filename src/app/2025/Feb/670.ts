@@ -34,12 +34,28 @@ class Solve670 {
             }
         }
         return parseInt(num.join(''))
+    };
+    solution2(){
+        const num = Array.from(this.num.toString()).map((s)=>parseInt(s)), n =num.length;
+        const map: {[k:string]:number} = {};
+        for(let i=0; i<n; i++) if (!(num[i] in map)) map[num[i]] = i;
+        const dcs = [...num].sort((a,b) => b-a);
+        
+        let i=0;
+        while(i<n&&num[i]===dcs[i]) i++;
+
+        if (i!==n){
+            const swapIndex = map[dcs[i]];
+            [num[i], num[swapIndex]] = [num[swapIndex], num[i]]
+        }
+
+        return parseInt(num.join(''))
     }
 };
 
 (
     ()=>{
         const ARGS = [2763, 9973];
-        ARGS.forEach(num => console.log(`Num = ${num}, Solution = ${new Solve670(num).solution()}`))
+        ARGS.forEach(num => console.log(`Num = ${num}, Solution = ${new Solve670(num).solution2()}`))
     }
 )()
