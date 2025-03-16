@@ -81,6 +81,34 @@ class Solve3358{
             if (!count) return k+1
         }
         return count ? -1 : 0;
+    };
+    solution3(){
+        const nums = this.nums, n = nums.length, queries = this.queries;
+        const canBeZeroArr = (k:number/**0 <= k < queries.length*/) => {
+            const diff = Array.from({length:n+1},()=>0);
+            if (k<0||k>queries.length) throw new Error(`Invalid 'k' value expected [0, ${queries.length}) but found ${k}`)
+            for(let i=0; i<k; i++){
+                const [start, end, val] = queries[i];
+                diff[start] += val;
+                diff[end+1]-=val;
+            };
+            let decrement = 0;
+            for(let i=0; i<n; i++){
+                const num = nums[i]
+                decrement += diff[i]
+                if (num>decrement) return false /**means num-decrement > 0 */
+            };
+            return true
+        };
+        let left=0, right=queries.length+1;
+        while(left<right){
+            const mid = Math.floor((left+right)/2);
+            console.log({mid,left,right, canZero: canBeZeroArr(mid)})
+            if (canBeZeroArr(mid)) right = mid;
+            else left = mid+1;
+        };
+        console.log({left,right})
+        return left<=queries.length ? left : -1;
     }
 };
 
@@ -88,8 +116,9 @@ class Solve3358{
     ()=>{
         const ARGS: [number[], number[][]][]  = [
             [[2,0,2], [[0,2,1],[0,2,1],[1,1,3]]],
-            [[4,3,2,1], [[1,3,2],[0,2,1]]]
+            [[4,3,2,1], [[1,3,2],[0,2,1]]],
+            [[2,2,2,2], [[0,3,1], [0,3,1]]]
         ];
-        ARGS.forEach(([nums, queries])=>console.log(`Nums=[${nums.join(', ')}] queries=[${queries.map(q=>`[${q.join(',')}]`).join(', ')}] Solution = ${new Solve3358(nums,queries).solution()}`))
+        ARGS.forEach(([nums, queries])=>console.log(`Nums=[${nums.join(', ')}] queries=[${queries.map(q=>`[${q.join(',')}]`).join(', ')}] Solution = ${new Solve3358(nums,queries).solution3()}`))
     }
 )()
