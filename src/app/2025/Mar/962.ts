@@ -39,6 +39,30 @@ class Solve962{
             }
         }
         return dp[n-1][n]
+    };
+    solution2(nums=this.nums){
+        const n = nums.length;
+        let idealDiff = Math.max(0,n-1);
+
+        const R:string[][] = []
+
+        while(idealDiff>0){
+            let start = 0, end = idealDiff;
+            
+            for(let i=idealDiff; i<n; i++){
+                if (R.length<=start) R.push([])
+                R[start].push(`(${start}-${i})`)
+                if (nums[start]<=nums[end]){
+                    for(let r of R){
+                        console.log(JSON.stringify(r.join(', ')))
+                    }
+                    return idealDiff
+                };
+                start++; end++;
+            };
+            idealDiff--; //decrement because this value was not the max-diff
+        };
+        return idealDiff
     }
 };
 
@@ -47,8 +71,10 @@ class Solve962{
     ()=>{
         const ARGS = [
             [6,0,8,2,1,5],
-            [9,8,1,0,1,9,4,0,4,1]
+            [9,8,1,0,1,9,4,0,4,1],
+            [3, 4, 2, 5, 1, 6]
+
         ];
-        ARGS.forEach(nums => console.log(`Nums=[${nums.join(', ')}] Max-ramp=${new Solve962(nums).solution()}`))
+        ARGS.forEach(nums => console.log(`Nums=[${nums.join(', ')}] Max-ramp=${new Solve962(nums).solution2()}`))
     }
 )()
