@@ -63,6 +63,19 @@ class Solve962{
             idealDiff--; //decrement because this value was not the max-diff
         };
         return idealDiff
+    };
+    solution3(nums=this.nums){
+        /**Official one of the most-efficient algorithm */
+        const n = nums.length;
+        const maxRight = [...nums];
+        for(let i=n-2; i>=0; i--) maxRight[i] = Math.max(maxRight[i], maxRight[i+1]);
+
+        let res=0, left=0;
+        for(let right=0; right<n; right++){
+            while(nums[left]>maxRight[right]) left++;
+            res = Math.max(res, right-left)
+        }
+        return res
     }
 };
 
@@ -72,9 +85,10 @@ class Solve962{
         const ARGS = [
             [6,0,8,2,1,5],
             [9,8,1,0,1,9,4,0,4,1],
-            [3, 4, 2, 5, 1, 6]
+            [3, 4, 2, 5, 1, 6],
+            [7,9,2,0,8,1]
 
         ];
-        ARGS.forEach(nums => console.log(`Nums=[${nums.join(', ')}] Max-ramp=${new Solve962(nums).solution2()}`))
+        ARGS.forEach(nums => console.log(`Nums=[${nums.join(', ')}] Max-ramp=${new Solve962(nums).solution3()}`))
     }
 )()
