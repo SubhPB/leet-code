@@ -55,6 +55,26 @@ class Solve2401{
         };
         return res
     };
+    solution2(nums=this.nums){
+        /**
+         * Key insights: 
+         * 1. If no bits occurs at same position then AND will result into zero.
+         * 2. (Revision) OR to set the bit, XOR to unset that value
+         * Why don't we implement this in sliding window as strate
+         */
+        const n=nums.length;
+        let curr=0, l=0;
+        let res=0;
+        for(let r=0; r<n; r++){
+            while(curr & nums[r]){
+                curr ^= nums[l];
+                l++;
+            };
+            res = Math.max(res, r-l+1);
+            curr |= nums[r]
+        };
+        return res      
+    }
 };
 
 (
@@ -64,6 +84,6 @@ class Solve2401{
             [3,1,5,11,13],
             [1,1]
         ];
-        ARGS.forEach(nums => console.log(`Nums=${nums.join(', ')} Solution=${new Solve2401(nums).solution()}`))
+        ARGS.forEach(nums => console.log(`Nums=${nums.join(', ')} Solution=${new Solve2401(nums).solution2()}`))
     }
 )()
