@@ -74,6 +74,25 @@ class Solve3394{
             }
         };
         return check()
+    };
+    solution2(recs=this.recs,n=this.n){
+        const Sn = (n:number) => 2**n - 1;
+        /**will use yMask to mark horizontal cuts, xMask for vertical cuts */
+        let yMask = Sn(n)-1, xMask = Sn(n)-1; //e.g nth and 0th can never be a valid cut at both axises
+        for(let i=0; i<recs.length; i++){
+            const [sx,sy,ex,ey] = recs[i];
+            //horizontal-cuts
+            if ((ey-sy)>1) {
+                const currYMask = Sn(n+1) - ( Sn(ey-1) - Sn(sy+1) );
+                yMask &= currYMask;
+            };
+            //vertical-cuts
+            if ((ex-sx)>1){
+                const currXMask = Sn(n+1) - ( Sn(ex-1) - Sn(sx+1) );
+                xMask &= currXMask
+            }
+        };
+        return [yMask,xMask].some(mask => mask>0&&((mask&(mask-1))!==0))//There are at-least 2 cuts available.
     }
 };
 
