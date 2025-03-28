@@ -83,16 +83,16 @@ class Solve3394{
             const [sx,sy,ex,ey] = recs[i];
             //horizontal-cuts
             if ((ey-sy)>1) {
-                const currYMask = Sn(n+1) - ( Sn(ey-1) - Sn(sy+1) );
+                const currYMask = Sn(n+1) - ( Sn(ey) - Sn(sy+1) );
                 yMask &= currYMask;
             };
             //vertical-cuts
             if ((ex-sx)>1){
-                const currXMask = Sn(n+1) - ( Sn(ex-1) - Sn(sx+1) );
+                const currXMask = Sn(n+1) - ( Sn(ex) - Sn(sx+1) );
                 xMask &= currXMask
             }
         };
-        return [yMask,xMask].some(mask => mask>0&&((mask&(mask-1))!==0))//There are at-least 2 cuts available.
+        return [yMask,xMask].some(mask => mask>0&&((mask&(mask-1))!==0))//There are at-least 2 cuts available, then true else false.
     }
 };
 
@@ -103,6 +103,6 @@ class Solve3394{
             [4, [[0,0,1,1],[2,0,3,4],[0,2,2,3],[3,0,4,3]]],
             [4, [[0,2,2,4],[1,0,3,2],[2,2,3,4],[3,0,4,2],[3,2,4,4]]]
         ];
-        ARGS.forEach(([n,recs]) => console.log(`Recs=${JSON.stringify(recs)} n=${n} solution=${new Solve3394(recs,n).solution()}`))
+        ARGS.forEach(([n,recs]) => console.log(`Recs=${JSON.stringify(recs)} n=${n} solution=${new Solve3394(recs,n).solution2()}`))
     }
 )()
