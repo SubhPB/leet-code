@@ -63,6 +63,17 @@ class Solve2375{
             )) res.push(stk.pop()!)
         }
         return res.join('')
+    };
+    solution3(pattern=this.pattern, n=pattern.length){
+        /**A twist, in here we use learned intuition to build the large lexicographically order */
+        const [res,stack] : number[][] = [[], []];
+        let v = 9;
+        for(let i=0; i<=n; i++){
+            stack.push(v);
+            while(stack.length&&(i===n || pattern[i]==='D')) res.push(stack.pop()!);
+            v--;
+        }
+        return res.join('')
     }
 };
 
@@ -70,8 +81,9 @@ class Solve2375{
     ()=>{
         const ARGS = [
             "IIIDIDDD",
-            "DDD"
+            "DDD",
+            "DIDI"
         ];
-        ARGS.forEach(pattern => console.log(`pattern="${pattern}", lexMin="${new Solve2375(pattern).solution()}"`))
+        ARGS.forEach(pattern => console.log(`pattern="${pattern}", lexMin="${new Solve2375(pattern).solution3()}"`))
     }
 )()
