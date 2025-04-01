@@ -33,6 +33,8 @@ Explanation: To get a score of 4788, we can apply the following operations:
 - Choose subarray nums[5, ..., 5]. nums[5] is the only element in this subarray. Hence, we multiply the score by nums[5]. The score becomes 19 * 18 = 342.
 - Choose subarray nums[2, ..., 3]. Both nums[2] and nums[3] have a prime score of 2, but nums[2] has the smaller index. Hence, we multipy the score by nums[2]. The score becomes 342 * 14 = 4788.
 It can be proven that 4788 is the highest score one can obtain.
+
+npx ts-node ./src/app/2025/Mar/2818.ts
  */
 
 class Solve2818{
@@ -40,24 +42,52 @@ class Solve2818{
         this.nums=nums; this.k=k;
     };
     getPrimeScore(num:number){
-        /**Pseudo code: compute prime score */
-        return num
+        let ps = 0;
+
+        if (num%2===0){
+            ps+=1;
+            while(num%2===0) num /= 2;
+        };
+
+        let i = 3;
+        while(i*i <= num){
+            if (num%i===0){
+                ps+=1;
+                while(num%i===0) num = Math.floor(num/i)
+            };
+            i+=2
+        };
+
+        if (num>2) ps+=1;
+
+        return ps
     }
     solution(nums=this.nums,k=this.k){
         const n = nums.length;
         const pnums = nums.map(this.getPrimeScore);
-        const pi = nums.map((_,i)=>i).sort((a,b) =>  pnums[a]*nums[a] - pnums[b]*nums[b]);
+        const pi = nums.map((_,i)=>i).sort((a,b) =>  nums[a]-nums[b]);
         let score = 1;
         while(k>0&&pi.length){
             const l = pi.pop()!;
             if (pnums[l]>0&&nums[l]>0){
                 let r = l;
                 while(k>0&&r<n&&pnums[r]<=pnums[l]){
-                    score *= nums[r];
+                    score *= nums[l];
+                    k--;
                     r++
                 }
             }
         };
         return score;
     };
-}
+};
+
+(
+    ()=>{
+        const ARGS: [number[],number][] = [
+            [[8,3,9,3,8], 2],
+            [[19,12,14,6,10,18], 3]
+        ];
+        ARGS.forEach(([nums,k]) => console.log(`Nums=[${nums.join(',')}] k=${k} Solution=${new Solve2818(nums,k).solution()}`))
+    }
+)()
