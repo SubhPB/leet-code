@@ -57,6 +57,27 @@ class Solve2780{
             if (ld===rd) return i
         };
         return -1;
+    };
+    boyerMooreVotingAlg(a:number, b:number){
+        /**
+         * Boyer moore voting algorithm guarantees to return the elem in majority (If exist).
+         * If not exist, any arbitrary value can be returned 
+         */
+        let res = -1, count = 0;
+        for(let i=a; i<=b; i++){
+            const val = nums[i];
+            if (count === 0) res = val;
+            count += (val===res ? 1 : -1)
+        };
+        return res
+    };
+    solution2(nums=this.nums,n=nums.length){
+        for(let i=0; i<n-1; i++){
+            if (
+                this.boyerMooreVotingAlg(i,i) === this.boyerMooreVotingAlg(i+1,n-1)
+            ) return i
+        };
+        return -1
     }
 };
 
