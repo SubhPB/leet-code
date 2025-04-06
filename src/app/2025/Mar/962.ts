@@ -76,6 +76,25 @@ class Solve962{
             res = Math.max(res, right-left)
         }
         return res
+    };
+    solution4(nums=this.nums){
+        //Not yet completed!
+        const n = nums.length;
+        const sdc:number[] = [];//strictly decreasing curve
+        for(let i=0; i<n; i++){
+            while(sdc.length&&nums[sdc[sdc.length-1]]<=nums[i]) sdc.pop();
+            sdc.push(i)
+        };
+        console.log({sdc})
+        let res = 0;
+        for(let r=n-1; r>=0; r--){//traversing nums from right to left
+            // console.log("Before %O",{r,sdc, res})
+            while(sdc.length&&nums[sdc[sdc.length-1]]<nums[r]){
+                res = Math.max(res, r - sdc.pop()!)
+            };
+            // console.log("After %O", {r,sdc,res})
+        };
+        return res;
     }
 };
 
@@ -89,6 +108,6 @@ class Solve962{
             [7,9,2,0,8,1]
 
         ];
-        ARGS.forEach(nums => console.log(`Nums=[${nums.join(', ')}] Max-ramp=${new Solve962(nums).solution3()}`))
+        ARGS.forEach(nums => console.log(`Nums=[${nums.join(', ')}] Max-ramp=${new Solve962(nums).solution4()}`))
     }
 )()
