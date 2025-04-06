@@ -41,23 +41,21 @@ class Solve2874{
         this.nums=nums;
     };
     solution(nums=this.nums,n=nums.length){
-        const ris = Array.from({length:n}, (_,i)=>i);
-        const lis = Array.from({length:n}, (_,i)=>i);
+        const I = Array.from({length:n},(_,i)=>i);
+        const K = Array.from({length:n},(_,i)=>i);
         for(let i=1; i<n; i++){
-            lis[i] = (nums[lis[i-1]]<nums[i]) ? i : lis[i-1];
-            ris[n-i-1] = (nums[ris[n-i]]<nums[n-i-1]) ? n-i-1 : ris[n-i];
+            if (nums[I[i-1]]>nums[i]) I[i] = I[i-1];
+            let k = n-i-1;
+            if (nums[K[k+1]]>nums[k]) K[k] = K[k+1];
         };
-        // console.log({lis,ris, ldsVal: lis.map(i=>nums[i]), risVal: ris.map(i=>nums[i])})
-        for(let j=0; j<n; j++){
-            const k = ris[j];
-            const i = lis[j];
-            if (i<j&&j<k){
-                console.log({i,j,k})
-                return (nums[i] - nums[j])*nums[k]
-            }
+        const inums = nums.map((_,i)=>i).sort((a,b)=>nums[a]-nums[b]);
+        for(let j of inums){
+            let i = I[j];
+            let k = K[j];
+            if (i<j&&j<k) return (nums[i] - nums[j])*nums[k]
         };
-        return -1
-    }
+        return -1;
+    };
 };
 (
     ()=>{
