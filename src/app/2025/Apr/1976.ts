@@ -57,6 +57,63 @@ class Solve1976{
             };
         };
         return count;
+    };
+    solution2(n=this.n, roads=this.roads){
+        let minTime = Infinity, count = 0;
+        const traversed = Array(n).fill(false);
+        const cost = Array.from({length:n}, (_,i)=> i!==0 ? Infinity : 0);
+
+        class PQ {
+            public arr:number[];
+            constructor(arr:number[]){this.arr=arr}
+            push(val:number){
+                this.arr.push(val);
+                this.arr.sort( (cityA,cityB) => cost[cityB] - cost[cityA] );
+            };
+            get len() {
+                return this.arr.length
+            };
+            pop(){
+                return this.arr.pop();
+            };
+        };
+
+        const graph:{[k:string]:[number,number][]} = {};
+        for(let [u,v,t] of roads) {
+            [u,v].forEach(c=>{
+                if (!(c in graph)) graph[c] = [];
+            });
+            graph[u].push([v,t]);
+            graph[v].push([u,t]);
+        };
+
+        const pq = new PQ([0]);
+        console.log('Graph = %O', graph)
+        while(pq.len){
+            const city = pq.pop()!, cityCost = cost[city];
+            if (city===(n-1)){
+                if (cityCost<=minTime){
+                    if (minTime>cityCost){
+                        minTime = cityCost;
+                        count=0
+                    };
+                    count++;
+                }
+            };
+
+            if (traversed[city]) continue;
+
+            if (city in graph){
+                for(let [nextCity, nextTime] of graph[city]){
+                    if ( cost[nextCity] > (cityCost + nextTime) ){
+                        cost[nextCity] = cityCost + nextTime
+                    };
+                    if (cost[nextCity]<=minTime && !traversed[nextCity]) pq.push(nextCity);
+                }
+            };
+            traversed[city]=true;
+        };
+        return count
     }
 };
 
@@ -64,10 +121,11 @@ class Solve1976{
     ()=>{
         const ARGS: [number,number[][]][] = [
             [7, [[0,6,7],[0,1,2],[1,2,3],[1,3,3],[6,3,3],[3,5,1],[6,5,1],[2,5,1],[0,4,5],[4,6,2]]],
-            // [2, [[1,0,10]]]
+            [2, [[1,0,10]]]
         ];
         ARGS.forEach(([n,roads]) => {
-            console.log(`N=${n}, count=${new Solve1976(n,roads).solution()}}`)
+            const sol = new Solve1976(n,roads)
+            console.log(`N=${n}, sol1=${sol.solution()}, sol2=${sol.solution2()}`)
         })
     }
 )()
