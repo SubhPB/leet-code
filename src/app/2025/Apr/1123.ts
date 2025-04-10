@@ -35,20 +35,25 @@ class Solve1123{
         this.root=root;
     };
     solution(root=this.root,n=root.length){
-        const leftChild = (i:number) => (2*i+1)<n ? 2*i+1 : null;
-        const rightChild = (i:number) => (2*i+2)<n ? 2*i+2 : null;
-        const isLeaf =(i:number) => i<n && root[i]!==null && [leftChild,rightChild].every(fn=>fn(i)===null) 
+        
+        const children = (i:number) => [2*i+1, 2*i+2].filter(node => node<n && root[node]!==null)
 
-        const dfs =(node:number|null, depth:number): [number|null, number] => {
-            // console.log({node, nodeVal: node!==null ? root[node]: null, depth})
-            if (node===null || isLeaf(node)) return [node, depth];
-            const [lc,ld] = dfs(leftChild(node), depth+1), [rc,rd] = dfs(rightChild(node),depth+1);
-            console.log({nodeI:node, nodeVal: node!==null ? root[node] : null, depth, left: lc!==null ? root[lc]: null,lc,ld, right: rc!==null ? root[rc] : null, rc,rd})
-            if (ld>rd) return [lc, ld];
-            else if (ld<rd) return [rc, rd];
-            return [node, ld];
+        const dfs =(node:number, depth:number): [number, number] => {
+            const childNodes = children(node);
+            switch (childNodes.length) {
+                case 0:
+                    return [node, depth];
+                case 1:
+                    const oneChild = dfs(childNodes[0], depth+1);
+                    return oneChild
+                default:
+                    const [[ln, ld], [rn, rd]] = childNodes.map(i => dfs(i, depth+1));
+                    if (ld>rd) return [ln, ld];
+                    else if (ld<rd) return [rn, rd];
+                    else return [node, ld];
+            }
         };
-        return dfs(0, 0)
+        return root.length&&root[0]!==null ? dfs(0, 0) : []
     }
 };
 
