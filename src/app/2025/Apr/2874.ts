@@ -56,6 +56,26 @@ class Solve2874{
         };
         return -1;
     };
+    solution1(nums=this.nums,n=nums.length){
+        let res = 0, inum = nums[0], maxDiff = 0;
+        /** Pattern observation
+         * Trying to maximize nums[i] and nums[k], while minimizing num[j]
+         */
+        for(let k=0; k<n; k++){
+            res = Math.max(
+                res, maxDiff * nums[k]
+            );
+            /**What's most max-found nums[i] value is? */
+            inum = Math.max(
+                inum, nums[k]
+            );
+            /**What maxDiff is found? */
+            maxDiff = Math.max(
+                maxDiff, inum - nums[k]
+            )
+        };
+        return res
+    }
 };
 (
     ()=>{
@@ -64,6 +84,6 @@ class Solve2874{
             // [1,10,3,4,19],
             // [1,2,3]
         ];
-        ARGS.forEach(nums => console.log(`Nums=[${nums.join(',')}] Solution=${new Solve2874(nums).solution()}`))
+        ARGS.forEach(nums => console.log(`Nums=[${nums.join(',')}] Solution=${new Solve2874(nums).solution1()}`))
     }
 )()
