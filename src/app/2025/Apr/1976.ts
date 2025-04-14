@@ -88,8 +88,9 @@ class Solve1976{
         };
 
         const pq = new PQ([0]);
-        console.log('Graph = %O', graph)
+        // console.log('Graph = %O', graph)
         while(pq.len){
+            // console.log('Before %O', {traversed, cost, pq: pq.arr, count, minTime})
             const city = pq.pop()!, cityCost = cost[city];
             if (city===(n-1)){
                 if (cityCost<=minTime){
@@ -121,7 +122,7 @@ class Solve1976{
     ()=>{
         const ARGS: [number,number[][]][] = [
             [7, [[0,6,7],[0,1,2],[1,2,3],[1,3,3],[6,3,3],[3,5,1],[6,5,1],[2,5,1],[0,4,5],[4,6,2]]],
-            [2, [[1,0,10]]]
+            // [2, [[1,0,10]]]
         ];
         ARGS.forEach(([n,roads]) => {
             const sol = new Solve1976(n,roads)
