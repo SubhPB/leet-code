@@ -78,6 +78,13 @@ class Solve1863{
             res += xorSum;
         }
         return res
+    };
+    solution2(nums=this.nums, n=nums.length){
+        let weights = 0, occur = (2 ** n)/2;
+        for(let num of nums){
+            weights = weights | num
+        }
+        return occur * weights
     }
 };
 
@@ -91,7 +98,7 @@ class Solve1863{
         ];
         ARGS.forEach(nums => {
             const sol = new Solve1863(nums);
-            console.log(`Nums=[${nums.join(', ')}] Ans=${sol.solution()}`)
+            console.log(`Nums=[${nums.join(', ')}] Ans=${sol.solution()} Eff-Solution=${sol.solution2()}`)
         })
     }
 )()
