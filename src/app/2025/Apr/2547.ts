@@ -53,6 +53,10 @@ class Solve2547 {
     constructor(public nums:number[], public k:number){
         this.nums=nums; this.k=k;
     };
+    /**
+     * Solution1 is an example of outstanding attempt solution which tries to reduce official O(n^2) complexity near to O(n)
+     * Works 90% but closely fails in some testcases, Even though this is not 100% correct, but (attempt-wise) far better than the original solution
+     */
     solution1(nums=this.nums, k=this.k){
         const n = nums.length;
         const map = new Map<number,number>();
@@ -109,15 +113,52 @@ class Solve2547 {
             );
         }
         
-        console.log({pi, shi, barsUsed});
+        // console.log({pi, shi, barsUsed});
         
-        let splits:number[][] = []
-        for(let i=0; i<=barsUsed; i++){
-            splits.push(nums.slice(shi[i], i===barsUsed ? n : shi[i+1]))
-        };
-        console.log('View: ', splits.map(split => `[${split.join(' ')}]`).join(' | '))
+        // let splits:number[][] = []
+        // for(let i=0; i<=barsUsed; i++){
+        //     splits.push(nums.slice(shi[i], i===barsUsed ? n : shi[i+1]))
+        // };
+        // console.log('View: ', splits.map(split => `[${split.join(' ')}]`).join(' | '))
         return min
-    }
+    };
+    solution2(nums=this.nums, k=this.k){
+        const n = nums.length;
+        const memo = new Map<number, number>();
+
+        const dp = (i:number) => {
+            if (i===n) return 0;
+            else if (memo.has(i)) return memo.get(i)!;
+
+            let min = Infinity, cost = 0;
+            const freq = new Map<number,number>();
+
+            for(let bar=i; bar<n; bar++){
+                const num = nums[bar];
+
+                freq.set(
+                    num, 
+                    (freq.get(num) || 0) + 1
+                );
+
+                const count = freq.get(num)!;
+                if (count>1){
+                    cost += count===2 ? 2 : 1
+                };
+
+                const tempCost = cost + k + dp(bar+1);
+
+                min = Math.min(
+                    min, tempCost
+                );
+            };
+
+            memo.set(i, min);
+            return min
+        };
+
+        return dp(0)
+    };
 };
 
 (
@@ -130,7 +171,7 @@ class Solve2547 {
         ];
         ARGS.forEach(([nums,k]) => {
             const sol = new Solve2547(nums, k);
-            console.log(`Nums=[${nums.join(', ')}] k=${k} MinCost=${sol.solution1()}`)
+            console.log(`Nums=[${nums.join(', ')}] k=${k} MinCost=${sol.solution2()}`)
         })
     }
 )()
