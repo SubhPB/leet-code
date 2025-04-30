@@ -44,6 +44,47 @@ class Solve560{
         };
         
         return res
+    };
+    /**
+     * Let's add twist now having `nums` we need to count number of subarrs having sum less than k
+     */
+    lessThanK(nums=this.nums, k=this.k){
+        let sum = 0, res = 0;
+        const hashMap: {[k:number]:number} = {};
+        const get = (k:number) => k in hashMap ? hashMap[k] : 0;
+
+        for(let num of nums){
+            sum += num;
+            /*In prev problem {0:1} was handling the increment when whole arr was itself was an part of answer
+            * But now there is no pre-assignment of 0, to make algorithm work correctly we will need to manually increment the value
+            */
+            if (sum<k) res++;
+
+            const moreThan = sum - k;
+            
+            const sums = Object.keys(hashMap).map(sn => parseInt(sn));
+            sums.sort((a,b) => a-b);
+
+            if (moreThan<sums[sums.length-1]){
+                let l=0, r=sums.length-1;
+                while(l<r){
+                    const mid = Math.floor((l+r)/2);
+                    const currSum = sums[mid];
+
+                    if (currSum>moreThan){
+                        r = mid
+                    } else {
+                        l = mid+1
+                    }
+                };
+                for(let i=l; i<sums.length; i++){
+                    res += hashMap[sums[i]]
+                }
+            };
+
+            hashMap[sum] = 1 + get(sum);
+        }
+        return res
     }
 };
 
@@ -57,7 +98,7 @@ class Solve560{
         ARGS.forEach(
             ([nums, k])=> {
                 const sol = new Solve560(nums,k);
-                console.log(`Nums=[${nums.join(',')}] K=${k} Ans=${sol.solution()}`)
+                console.log(`Nums=[${nums.join(',')}] K=${k} Ans=${sol.solution()} LessThanK=${sol.lessThanK()}`)
             }
         )
     }
