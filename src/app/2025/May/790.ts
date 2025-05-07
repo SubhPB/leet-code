@@ -73,6 +73,53 @@ class Solve790{
 
         fn(n,n)
         return dp[n][n]
+    };
+    dpSolution(n=this.n){
+        const MOD = 1e9+7;
+        const dp = Array.from(
+            {length:n+1}, () => Array(n+1).fill(0)
+        );
+
+        const ops = (r1:number,r2:number) =>  {
+            const diff = r2-r1;
+            if (diff===0){
+                return [
+                    [r1-2, r2-2], //H
+                    [r1-1,r2-1], //V
+                    [r1-2, r2-1], //^^|
+                    [r1-1,r2-2], //_|
+                ]
+            } else if (diff>0){
+                return [
+                    [r1-1,r2-2],
+                    [r1,r2-2]
+                ]
+            } else {
+                return [
+                    [r1-2,r2-1],
+                    [r1-2, r2]
+                ]
+            }
+        };
+
+        dp[0][0]=1;
+
+        for(let r1=1; r1<=n; r1+=1){
+            let r2=r1-1;
+            
+            while(r2<=Math.min(r1+1, n)){
+                let ways = 0;
+                for(let [nxtR1,nxtR2] of ops(r1,r2)){
+                    if ([nxtR1,nxtR2].every(r=>r>=0)){
+                        ways += dp[nxtR1][nxtR2];
+                        ways %= MOD;
+                    }
+                };
+                dp[r1][r2]=ways;
+                r2+=1;
+            };
+        };
+        return dp[n][n]
     }
 };
 
@@ -85,7 +132,7 @@ class Solve790{
         ARGS.forEach(
             n => {
                 const sol = new Solve790(n);
-                console.log(`N=${n} Ways=${sol.memoSolution()}`)
+                console.log(`N=${n} MemoSol=${sol.memoSolution()} DpSol=${sol.dpSolution()}`)
             }
         )
     }
