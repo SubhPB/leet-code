@@ -120,6 +120,21 @@ class Solve790{
             };
         };
         return dp[n][n]
+    };
+    effSolution(n=this.n){
+        const dp = Array(Math.max(4,n)).fill(-1);
+        //Base-cases
+        [0,1,3,5].forEach((res,i) => dp[i]=res);
+        /**
+         * Pattern:-
+         * dp[n] = dp[n-1] + dp[n-2] +  2*E(dp[i]) Where {0 <= i <= n-3}
+         * If simplify mathematically:-
+         *      dp[n] = 2*dp[n-1] + dp[n-3]
+         */
+        for(let i=4; i<dp.length; i++){
+            dp[i] = 2*dp[i-1] + dp[i-3]
+        };
+        return dp[n]
     }
 };
 
