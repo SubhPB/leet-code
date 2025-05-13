@@ -70,7 +70,8 @@ class Solve2094{
                     }
                 }
             }
-        }
+        };
+        res.sort((a,b) => a-b)
         return res
     }
 }
