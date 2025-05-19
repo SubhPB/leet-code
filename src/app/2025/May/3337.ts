@@ -107,22 +107,86 @@ class Solve3337{
             )%MOD;
         };
         return res
+    };
+    solution2(s=this.s, t=this.t, nums=this.nums){
+        const MOD = 1e9+7, n = s.length;
+
+        const modADD = (a:number,b:number) => ((a%MOD) + (b%MOD))%MOD;
+        const modMUL = (a:number,b:number) => ((a%MOD) * (b%MOD))%MOD;
+        const codeAt = (char:string) => (char.charCodeAt(0)-97)%26;
+        
+        const freq:number[] = Array(26).fill(0);
+        for(let char of s) freq[codeAt(char)]+=1;
+        
+        const MATRIX = (
+            m:number,
+            n:number,
+            inp:number|((i:number,j:number)=>number)
+        ) => {
+            const M = Array.from(
+                {length:m},
+                (_,mi) => Array.from(
+                    {length:n}, 
+                    (_,ni) => typeof inp === 'number' ? inp : inp(mi,ni)
+                )
+            );
+            return M
+        };
+
+        const matrixMUL = (M1:number[][], M2:number[][]) => {
+            const [[a,b], [c,d]] = [M1,M2].map(M=>[M.length, M[0].length]);
+            if (b!==c) throw new Error(`Hey stupid!, M1[${a},${b}] can't be multiplied with M2[${c},${d}], ${b} != ${c}`);
+            return MATRIX(
+                a,
+                d,
+                (mi,ni) => {
+                    let res = 0;
+                    for(let i=0; i<b; i++) res = modADD(
+                        res, modMUL(M1[mi][i], M2[i][ni])
+                    );
+                    return res
+                }
+            );
+        };
+
+        const matrixExp = (M:number[][], pow:number) => {
+            let res = MATRIX(M.length, M[0].length, (mi,ni)=> mi===ni ? 1 : 0);
+            while(pow>0){
+                if (pow&1) res = matrixMUL(res, M);
+                M = matrixMUL(M, M);
+                pow >>= 1;
+            }
+            return res;
+        };
+
+        let Tm = MATRIX(26, 26, 0); //transformation matrix
+        for(let alp=0; alp<26; alp++){
+            for(let to=1; to<=nums[alp]; to++) Tm[alp][(alp+to)%26] = 1;
+        };
+
+        Tm = matrixExp(Tm, t); // 't' number of transformations
+        
+        const output = matrixMUL([freq], Tm);
+        
+        let cnt=0;
+        for(let i=0; i<output[0].length; i++) cnt = modADD(cnt, output[0][i]);
+        return cnt
     }
 };
 
 (
     ()=>{
         const ARGS: [string, number, number[]][] = [
-            // ["abcyy", 2, [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2]],
+            ["abcyy", 2, [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2]],
             // ["azbk", 1, [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]],
             // ["u", 5, [1,1,2,2,3,1,2,2,1,2,3,1,2,2,2,2,3,3,3,2,3,2,3,2,2,3]],
-            ["uc", 16, [5,3,1,6,4,9,6,6,7,3,10,6,8,4,1,5,3,5,5,2,10,7,6,6,5,10]]
+            // ["uc", 16, [5,3,1,6,4,9,6,6,7,3,10,6,8,4,1,5,3,5,5,2,10,7,6,6,5,10]]
         ];
         ARGS.forEach(
             ([s,t,nums]) => {
                 const sol = new Solve3337(s,t,nums);
-                console.log(`s="${s}" t=${t} Res=${sol.solution1()}`)
+                console.log(`s="${s}" t=${t} Res=${sol.solution2()}`)
             }
-        )
+        );
     }
 )()
