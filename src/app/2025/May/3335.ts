@@ -72,8 +72,8 @@ class Solve3335{
             let freq = Array(26).fill(0);
             const modAdd = (a:number, b:number) => (a%MOD + b%MOD)%MOD;
             for(let char of s) freq[char.charCodeAt(0)-97] += 1;
-
-            for(let tf=0; tf<t; t++){
+            
+            for(let tf=0; tf<t; tf++){
                 const currFreq = Array(26).fill(0);
                 for(let code=0; code<26; code++){
                     if (code<25) currFreq[code+1] = freq[code];
@@ -97,8 +97,8 @@ class Solve3335{
             ["azbk", 1],
         ];
         ARGS.forEach(
-            ([S,t]) => {
-                const sol = new Solve3335(S,t);
+            ([s,t]) => {
+                const sol = new Solve3335(s,t);
                 console.log(`\ns="${s}" t=${t} res=`, sol.solution())
             }
         )
