@@ -59,28 +59,80 @@ class Solve3372{
     constructor(public edges1:number[][], public edges2:number[][], public k:number){
         this.edges1=edges1; this.edges2=edges2; this.k=k;
     };
-    solution(edges1=this.edges1, edges2=this.edges2, k=this.k){
-        const [n,m] = [edges1, edges2].map(E => E.length+1);
-        const graphs = [n,m].map(size => Array.from(
-            {length: size+1}, () => [] as number[]
-        )) ;
+
+    private findTargetNodes(node:number, depth:number, graph:number[][]){
+        const queue = [[node, -1, 0]];
+        let targetNodes = 0, head = 0;
+        while (head<queue.length){
+            const [currNode, parent, lvl] = queue[head];
+            targetNodes+=1;
+            head+=1;
+            if (lvl>=depth) continue;
     
-        for(let tree=0; tree<2; tree+=1){
-            for(let [u,v] of [edges1, edges2][tree]){
-                graphs[tree][u].push(v);
-                graphs[tree][v].push(u)
+            for(let v of graph[currNode]){
+                if (v===parent) continue;
+                queue.push([v, currNode, lvl+1])
             }
         };
+        return targetNodes;
+    };
+    solution(edges1=this.edges1, edges2=this.edges2, k=this.k){
+        const [n,m] = [edges1, edges2].map(E => E.length+1);
+        const res:number[] = Array(n).fill(1);
     
-        const [G1, G2] = graphs;
+        if (k>0){
+            const graphs = [n,m].map(size => Array.from(
+                {length: size}, () => [] as number[]
+            )) ;
+        
+            for(let tree=0; tree<2; tree+=1){
+                for(let [u,v] of [edges1, edges2][tree]){
+                    graphs[tree][u].push(v);
+                    graphs[tree][v].push(u)
+                }
+            };
+        
+            const [G1, G2] :number[][][] = graphs;
+            
+            //In tree2, let's find a node who have most target nodes at k-1
+            let mostNodesInTree2 = 0;
+            for(let node=0; node<m; node+=1) mostNodesInTree2 = Math.max(
+                mostNodesInTree2, this.findTargetNodes(node, k-1, G2)
+            );
     
-        // const [DP1, DP2] = [n,m].map(
-        //     (size, dpi) => Array.from(
-        //         {length:k+1}, (_,i)=> Array.from(
-        //             {length:size+1}, (_,j) => 
-        //         )
-        //     )
-        // );
-        return
+            for(let node=0; node<n; node+=1){
+                res[node] = this.findTargetNodes(
+                    node, k, G1
+                ) + mostNodesInTree2
+            }
+        };
+        return res
     }
-}
+};
+
+(
+    ()=>{
+        const TestCases: [number[][], number[][], number][] = [
+            [    
+                [[0,1],[0,2],[2,3],[2,4]],
+                [[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]],
+                2,
+            ],
+            [
+                [[0,1],[0,2],[0,3],[0,4]],
+                [[0,1],[1,2],[2,3]],
+                1,
+            ],
+            [
+                [[2,1],[7,3],[0,4],[7,5],[2,6],[0,2],[0,7]],
+                [[3,0],[1,2],[5,1],[6,3],[9,4],[5,6],[7,5],[9,7],[8,9]],
+                7,
+            ]
+        ];
+
+        for(const [e1, e2, k] of TestCases){
+            const sol = new Solve3372(e1,e2,k);
+            console.log(`N=${e1.length+1} M=${e2.length+1} k=${k} ans=${sol.solution()}`)
+        }
+    }
+)()
