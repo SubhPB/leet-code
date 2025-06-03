@@ -86,11 +86,13 @@
     There are no duplicate edges.
     Employee 1 is the direct or indirect boss of every employee.
     The input graph hierarchy is guaranteed to have no cycles.
+
+    npx ts-node ./src/app/2025/May/c451-q3.ts
  */
 
 
 class SolveC451Q3 {
-    constructor(public n:number, public present:number[], public future:number[], public hierarchy:number[], public budget: number){
+    constructor(public n:number, public present:number[], public future:number[], public hierarchy:number[][], public budget: number){
         this.n=n;
         this.present=present;
         this.future=future;
@@ -99,5 +101,106 @@ class SolveC451Q3 {
     };
     solution(n=this.n, present=this.present, future=this.future, hierarchy=this.hierarchy, budget=this.budget){
         
+        const graph:number[][] = Array.from({length:n+1}, ()=>[]), CEO = 1;
+        for(let [boss, emp] of hierarchy) graph[boss].push(emp);
+
+        const DP:number[][][] = Array.from({length:n+1}, ()=> Array.from({length:2}, ()=>[]));
+
+        const profitReport = (empId:number, discountFlag:0|1) => {//discountFlag indicates direct boss has bought their stock
+            if (!DP[empId][discountFlag].length){
+                let [notBuyReport, buyReport] = Array.from({length:2},()=>Array.from({length:budget+1}, ()=>0));
+
+                //Process empId not buying their stock
+                for(let employee of graph[empId]){
+                    const employeeReport = profitReport(employee, 0);
+                    const temp = Array(budget+1).fill(0)
+                    for(let subBud=0; subBud<=budget; subBud+=1){
+                        for(let distribution=0; distribution<=subBud; distribution+=1){
+                            temp[subBud] = Math.max(
+                                temp[subBud],
+                                notBuyReport[distribution] + employeeReport[subBud-distribution] //this line may causing error!
+                            )
+                        }
+                    };
+                    notBuyReport = temp;
+                };
+
+                const finalReport = Array.from({length:budget+1}, ()=>0);
+                //Process empId going to buy their stock
+                const cost = discountFlag ? Math.floor(present[empId-1]/2) : present[empId-1], stockProfit = future[empId-1] - cost;
+                if (cost>=0 && cost<=budget){
+                    for(let employee of graph[empId]){
+                        const employeeReport = profitReport(employee, 1);//also, indicating employee that they are eligible for discount
+                        const temp = Array(budget+1).fill(0);
+                        for(let subBud=0; subBud<=budget; subBud+=1){
+                            for(let distribution=0; distribution<=subBud; distribution+=1){
+                                temp[subBud] = Math.max(
+                                    temp[subBud],
+                                    buyReport[distribution] + employeeReport[subBud-distribution]
+                                )
+                            }
+                        };
+                        buyReport = temp;
+                    };
+                };
+
+                //Since empId has bought their stock, we need to slightly update the resultant buyReport
+                for(let subBud=budget; subBud>=0; subBud-=1){
+
+                    buyReport[subBud] = subBud>cost&&cost>=0 ? stockProfit+buyReport[subBud-cost] : 0;
+                    if (subBud===cost) buyReport[cost]=stockProfit;
+                    finalReport[subBud] = Math.max(
+                        notBuyReport[subBud],
+                        buyReport[subBud]
+                    )
+                };
+
+                DP[empId][discountFlag] = finalReport;
+            };
+            return DP[empId][discountFlag]
+        };
+
+        let maxProfit = 0; const profits = profitReport(CEO, 0);
+        for(let subBud=0; subBud<=budget; subBud+=1) maxProfit = Math.max(
+            maxProfit, profits[subBud]
+        );
+        return maxProfit
     }
-}
+};
+
+(
+    ()=>{
+        const Testcases:[number,number[],number[], number[][],number, number][] = [
+            [
+                2,
+                [1,2],
+                [4,3],
+                [[1,2]],
+                3,
+                5
+            ],
+            [
+                3,
+                [5,2,3],
+                [8,5,6],
+                [[1,2],[2,3]],
+                7,
+                12
+            ],
+
+        ];
+
+        for(let [nodes, present, future, hierarchy, budget, expected] of Testcases){
+            const ans = new SolveC451Q3(nodes, present, future, hierarchy, budget).solution();
+            console.log(`
+                n=${nodes} 
+                present=[${present.join(',')}] 
+                future=[${future.join(',')}] 
+                hierarchy=[${hierarchy.join(',')}]
+                Ans=${ans}
+                Test ${ans===expected ? 'Passed' : 'Failed' }!
+                `)
+                
+        }
+    }
+)()
