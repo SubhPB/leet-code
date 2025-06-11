@@ -82,3 +82,58 @@ class Solution:
                 res = max(res, finddiff(currstate))
 
         return res
+
+    def optimizedSol(self, s:str, k:int):
+        n, inf = len(s), 10**9
+        res = -inf
+
+        def getState(a:int, b:int):
+            state = 0
+            state |= (1 if b&1 else 0)
+            state |= (2 if a&1 else 0)
+            return state
+
+        for a in range(5):
+            for b in range(5):
+                if a!=b:
+                    '''
+                        Symbol{1} -> odd count
+                        Symbol{0} -> even count
+                        There are can at most 4 states possible
+                        "00" -> even&even
+                        "01" -> even&odd
+                        "10" -> odd&even
+                        "11" -> odd&odd
+                    '''
+                    minPrevState = [inf]*4
+
+                    cnt_a, cnt_b = 0, 0
+                    prev_cnt_a, prev_cnt_b = 0, 0
+
+                    l, r = -1, 0
+
+                    while r<n:
+                        cnt_a += (1 if int(s[r])==a else 0)
+                        cnt_b += (1 if int(s[r])==b else 0)
+
+                        # (substr is of at least k size) and (b should be at least 2) and (s should be at least 1)
+                        while r-l>=k and cnt_b-prev_cnt_b >=2 and cnt_a-prev_cnt_a>=1:
+                            leftState = getState(prev_cnt_a, prev_cnt_b)
+                            minPrevState[leftState] = min(minPrevState[leftState], prev_cnt_a-prev_cnt_b)
+
+                            l+=1
+                            if int(s[l]) == a: prev_cnt_a+=1
+                            elif int(s[l])==b: prev_cnt_b+=1
+                        
+                        rightState = getState(cnt_a, cnt_b)
+                        leftState = rightState^2
+                        diff = minPrevState[leftState]
+
+                        if diff != inf:
+                            res = max(
+                                res,
+                                (cnt_a - cnt_b) - diff
+                            )
+                        r+=1
+        return res
+    
