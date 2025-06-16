@@ -64,72 +64,71 @@
     0 <= nums[i] <= 105
     python ./src/app/2025/June/3583.py
 '''
+import math
 from collections import deque
 
 class Solution:
     def specialTriplets(nums:list[int]):
-        n = len(nums)
+        n, res= len(nums), 0
+        M = 10**9+7
+
         indexes:dict[int, deque[int]] = {}
         prefix:dict[int, int] = {}
-        res, M = 0, 10**9+7
-        
+        dp:dict[int, int] = {}
+
         ADD:int = lambda x,y: (x%M+y%M)%M
         MUL:int = lambda x,y: ((x%M)*(y%M))%M
 
-        def bs(inp:list[int],i:int):# return the most nearest index of value which is less than 'i'.
-            if not len(inp) or inp[0]>=i: return -1
-            l, r = 0, len(inp)-1
-            while l<r:
-                mid = (l+r)//2
-                if inp[mid]>=i:
-                    r = mid-1
-                else: # mid can be valid output
-                    l = mid
-            return l
+        def binarySearch(inp:list[int],i:int,default=-1):
+        # return the most nearest index of value which is less than 'i'.
+            if len(inp) and inp[0]<i:
+                l,r = 0, len(inp)-1
+                while l<r:
+                    mid = math.ceil((l+r)/2)
+                    if inp[mid]>=i:
+                        r = mid-1
+                    else:
+                        l = mid
+                return l
+            return default
 
         for x in range(n-1, -1, -1):
-            num = nums[x]
+            num, J = nums[x], nums[x]//2
+
             if num not in indexes: indexes[num] = deque()
+            
+            if len(indexes[num]) and not num&1:
+                #We can only form a triplet when I/K is even
+                prev_x = indexes[num][0] #When did last curr num occurred
 
-            if (not (num&1)) and len(indexes[num]): #isEven: can act as (I,K)
-                J = num//2
-                prev_x = indexes[num][0]
-
-                prev_j = bs(
+                #prev_j is index of indexes[J] where indexes[J] is the index of nums where J has occurred just before prev num value
+                prev_j = binarySearch(
                     indexes[J] if J in indexes else [],
                     prev_x
-                )
+                ) if num!=0 else len(indexes[num])-2# Remember prev_j is index in indexes[J] not the actual index pointing to nums, indexes[J] points to actual index of nums
 
-                #How many times j has occurred before the prev_j index
-                occ_j = prev_j+1 if prev_j!=-1 else 0
 
-                #How many times curr value has occurred excluding now
-                occ_x = len(indexes[num])
-
+                cnt_j = max(0, prev_j+1)#How many times J has occurred before the prev num
                 prev_prefix = prefix.get(num, 0)
                 res -= prev_prefix
 
-                if num==0:
-                    prefix[num] = ADD(
-                        prev_prefix, occ_x if occ_x>1 else 0
-                    )
-                else:
-                    prefix[num] = ADD(
-                        prev_prefix, MUL(occ_x, occ_j)
-                    )
+                #How many times num has occurred behind J
+                cnt_x = len(indexes[num]) if num!=0 else 1
 
+                #This should also perfectly handle the case like 6636 when no 3 occurred before 636
+                dp[num] = ADD(dp.get(num, 0), MUL(cnt_j, cnt_x))
+                prefix[num] = ADD(prefix.get(num, 0), dp[num])
                 res = ADD(res, prefix[num])
-                
+
             indexes[num].appendleft(x)
-        print(f'prefix={prefix} indexes={indexes}')
-        
+
         return res
     
 if __name__ == '__main__':
     TestCases = [
         [[6,3,6],1],
         [[0,1,0,0], 1],
-        [[8,4,2,8,4], 2]
+        [[8,4,2,8,4], 2],
     ]
     for testcase in TestCases:
         [nums, expected] = testcase
