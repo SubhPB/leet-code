@@ -65,7 +65,7 @@
     python ./src/app/2025/June/3583.py
 '''
 import math
-from collections import deque
+from collections import deque, Counter
 
 class Solution:
     def specialTriplets(nums:list[int]):
@@ -124,6 +124,19 @@ class Solution:
 
         return res
     
+    def logNSolution(nums:list[int]):
+        n, M = len(nums), 10**9+7
+        leftCnt, rightCnt = Counter(), Counter(nums)
+
+        ADD = lambda x,y:(x%M+y%M)%M
+
+        res=0
+        for J in nums:
+            I, K = J*2, J*2
+            rightCnt[J] -= 1
+            ans = ADD(leftCnt[I]*rightCnt[K], ans)
+            leftCnt[J] -= 1
+        return res
 if __name__ == '__main__':
     TestCases = [
         [[6,3,6],1],
