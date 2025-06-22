@@ -119,7 +119,7 @@ class Solution:
             elif i>10:
                 isPrime[i] = True#Assume it was a prime
                 limit, k = int(math.sqrt(i)), 5
-                while k <= limit and isPrime:
+                while k <= limit and isPrime[i]:
                     if i%k==0 or i%(k+2)==0: 
                         isPrime[i] = False
                     k+=6
