@@ -54,7 +54,7 @@
 from collections import deque
 import heapq
 class Solution:
-    def mostBooked(self, n: int, meetings: List[List[int]]) -> int:
+    def mostBooked(self, n: int, meetings: list[list[int]]) -> int:
         useCnt, usedRooms, freeRooms = [0]*n, [], [i for i in range(n)]
         
         hpush = lambda pq,elem:heapq.heappush(pq,elem)
