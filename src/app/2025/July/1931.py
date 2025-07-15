@@ -23,27 +23,44 @@
 
     1 <= m <= 5
     1 <= n <= 1000
+
+    python ./src/app/2025/July/1931.py
 '''
 
 class Solution:
-    def colorTheGrid(self, m: int, n: int) -> int:
-        MOD, state = 10**9+7, [
-            [-1 for _ in range(1<<2*m)] for _ in range(n)
+    def __init__(self):
+        max_cols, col_bits  = 1000, 1<<2*5
+        self.state = [
+            [-1 for _ in range(max_cols)] for _ in range(col_bits)
         ]
+
+    def colorTheGrid(self, m: int, n: int) -> int:
+        M = 10**9+7
+        add = lambda x,y:(x%M + y%M)%M
         def count_ways(r:int,c:int,curr:int,prev:int):
-            nonlocal MOD, state
             if c==n: return 1
-            elif r==0 and state[c][prev]!=-1: return state[c][prev]
-            ways, up_color =  0, curr&(3<<2*(r-1))
-            for color in range(1,4):
-                left_color = prev&(3<<2*r)
-                if color not in [up_color, left_color]:
-                    diff = (r+1)//m
-                    nxt_r, nxt_c = (r+1)%m, c+diff
-                    nxt_curr, nxt_prev = [curr|(color<<(2*r+1)), 0][diff], [prev,curr][diff]
-                    ways = (
-                        ways%MOD + count_ways(nxt_r, nxt_c, nxt_curr, nxt_prev)%MOD
-                    )%MOD
-            if r==0: state[c][prev]=ways
+            elif not r and self.state[c][prev]!=-1: return self.state[c][prev]
+            ways = 0
+            nr = (r+1)%m
+            up, left = curr&3, (prev>>2*(m-r-1))&3 if prev else 0
+            for col in range(1,4):
+                if col not in [up,left]:
+                    nCurr = (curr<<2) | col
+                    if nr:
+                        ways = add(
+                            ways, count_ways(nr,c,nCurr,prev)
+                        )
+                    else:
+                        ways = add(
+                            ways, count_ways(nr,c+1,0,nCurr)
+                        )
+            if not r and c: self.state[c][prev]=ways
             return ways
         return count_ways(0,0,0,0)
+if __name__ == "__main__":
+    sol = Solution()
+    testcases =[
+        [1,1],[1,2],[5,5]
+    ]
+    for [m,n] in testcases:
+        print(f'm={m} n={n} count={sol.colorTheGrid(m,n)}')
