@@ -91,14 +91,12 @@ class Solution:
             ratio
         )
     def maximumLength3202(self, nums: list[int], k: int) -> int:
-        n, mx = len(nums), 2
-        for i in range(n):
-            if mx >= n-i-1: break
-            for j in range(i+1,n):
-                num1, num2 = nums[i], nums[j]
-                subSeq, l = [num1,num2], 2
-                rmod = (num1+num2)%k
-                # Using subSeq[0] we can find subSeq[2] same as with subSeq[1] will conclude subSeq[3]
-                # for i in range(2):
+        n, mx = len(nums), 1
 
+        dp = [[1]*n for _ in range(k)]
+        for i in range(0,n-1):
+            for j in range(i+1,n):
+                mod = (nums[i]+nums[j])%k
+                dp[mod][j] = max(dp[mod][j], dp[mod][i]+1)
+                mx = max(mx, dp[mod][j])
         return mx
