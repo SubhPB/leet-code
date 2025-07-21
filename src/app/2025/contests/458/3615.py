@@ -47,42 +47,53 @@
     label.length == n
     label consists of lowercase English letters.
     There are no duplicate edges.
+
+    python ./src/app/2025/contests/458/3615.py
 '''
 class Solution:
     def maxLen(self, n: int, edges: list[list[int]], label: str) -> int:
+        dp = [
+            [
+                [-1]*n for _ in range(n)
+            ] for _ in range(1<<n)
+        ]
         graph = [[] for _ in range(n)]
         for [u,v] in edges: 
             graph[u].append(v)
             graph[v].append(u)
-        def traverse(l:int,r:int,mask:int):
-            mx = 0
-            for left in graph[l]:
-                if mask&(1<<left): continue
-                for right in graph[r]:
-                    if left!=right and not (mask&(1<<right)):
-                        mx = max(
-                            mx, 2+traverse(left,right,mask|1<<left|1<<right)
-                        )
-            return mx            
-        mx = 1
-        for node in range(n):
-            for l in graph[node]:
-                for r in graph[node]:
-                    if l!=r:
-                        if label[l]==label[node]:
-                            mx = max(
-                                mx, 2+traverse(l,node,1<<l|1<<node)
-                            )
-                        if label[r]==label[node]:
-                            mx = max(
-                                mx, 2+traverse(node,r,1<<r|1<<node)
-                            )
-                        if label[l]==label[r]:
-                            mx = max(
-                                mx, 3+traverse(l,r,1<<l|1<<node|1<<r)
-                            )
-        return mx
 
+        def dfs(mask:int,u:int,v:int):
+            if dp[mask][u][v]>=0: return dp[mask][u][v]
+            pairs = 0
+            for a in graph[u]:
+                if mask&(1<<a): continue
+                for b in graph[v]:
+                    if a==b or mask&(1<<b) or label[a] != label[b]: continue
+                    newMask = mask | 1<<a | 1<<b
+                    pairs = max(
+                        pairs, 1+dfs(newMask, a, b)
+                    )
+            dp[mask][u][v] = pairs
+            dp[mask][v][u] = pairs
+            return pairs
+        
+        best = 1
+        
+        #odd-length palindrome
+        for node in range(n):
+            mask = 1<<node; pairs = dfs(mask,node,node)
+            best = max(best, 1+2*pairs)
+        
+        #even-length palindrome
+        for [u,v] in edges:
+            if label[u]==label[v]:
+                mask = 1<<u|1<<v; pairs = dfs(mask,u,v)
+                best = max(
+                    best, 2*(1+pairs)
+                )
+
+        return best
+        
                        
             
         
@@ -90,10 +101,10 @@ if __name__ == '__main__':
     testcases = []
     add = lambda n,edges,label:testcases.append([n,edges,label])
 
-    # add(n = 3, edges = [[0,1],[1,2]], label = "aba")
-    # add(n = 3, edges = [[0,1],[0,2]], label = "abc")
-    # add(n = 4, edges = [[0,2],[0,3],[3,1]], label = "bbac")
-    # add(n=3,edges=[[1,0],[2,1],[0,2]], label="hjj")
+    add(n = 3, edges = [[0,1],[1,2]], label = "aba")
+    add(n = 3, edges = [[0,1],[0,2]], label = "abc")
+    add(n = 4, edges = [[0,2],[0,3],[3,1]], label = "bbac")
+    add(n=3,edges=[[1,0],[2,1],[0,2]], label="hjj")
     add(n=5,edges=[[4,3],[2,1],[2,4],[0,3],[3,1],[3,2]],label="bbeaa")
 
     for [n,edges,label] in testcases:
