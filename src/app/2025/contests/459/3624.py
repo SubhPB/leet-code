@@ -55,14 +55,14 @@
 
     python ./src/app/2025/contests/459/3624.py
 '''
-
-from functools import cache
 from collections import defaultdict
 
-@cache
 def cntDepth(x:int):
-    cnt = x.bit_count()
-    return 1+cntDepth(cnt) if cnt>=1 and x>1 else 0
+    d = 0
+    while x > 1:
+        x = x.bit_count()
+        d+=1
+    return d
 
 class Solution:
     def popcountDepth(self, nums: list[int], queries: list[list[int]]) -> list[int]:
@@ -94,7 +94,7 @@ class Solution:
         
         res = []
         for query in queries:
-            if query[0]==1:
+            if query[0]==1:  
                 [_,l,r,k] = query
                 res.append(getIndices(l,r,k))
             else:
@@ -104,6 +104,8 @@ class Solution:
                     
                     depth = depths[prevK]
                     left, right = 0, len(depth)-1
+
+                    print(f'Before: num={nums[idx]} val={val} prevK={prevK} newK={newK} depths[prevK]={depths[prevK]} depths[newK]={depths[newK]}')
 
                     while left<right:#deleting idx from depths[prevK]
                         m = (left+right)//2
@@ -129,8 +131,8 @@ class Solution:
                             else:
                                 left = m+1
                         depths[newK] = depths[newK][:l] + [idx] + depths[newK][l:]
-                    
-                    nums[idx] = val
+                    print(f'After: num={nums[idx]} val={val} prevK={prevK} newK={newK} depths[prevK]={depths[prevK]} depths[newK]={depths[newK]}')
+                nums[idx] = val
         return res
 if __name__ == "__main__":
     testcases = []
@@ -138,7 +140,12 @@ if __name__ == "__main__":
     # add(nums = [2,4], queries = [[1,0,1,1],[2,1,1],[1,0,1,0]])
     # add(nums = [3,5,6], queries = [[1,0,2,2],[2,1,4],[1,1,2,1],[1,0,1,0]])
     # add(nums = [1,2], queries = [[1,0,1,1],[2,0,3],[1,0,0,1],[1,0,0,2]])
-    add(nums=[8], queries=[[2,0,8],[1,0,0,2],[2,0,5],[1,0,0,4],[2,0,9],[2,0,9],[1,0,0,2],[2,0,10],[1,0,0,5],[1,0,0,0]])
+    # add(nums=[8], queries=[[2,0,8],[1,0,0,2],[2,0,5],[1,0,0,4],[2,0,9],[2,0,9],[1,0,0,2],[2,0,10],[1,0,0,5],[1,0,0,0]])
+    add(nums=[18,19,9],queries=[
+        [2,0,14],[2,2,4],[2,1,8],[1,1,1,3],
+        # [2,0,19],[1,1,1,5],[2,0,15],[2,1,7],[1,0,1,3],[1,0,0,3],[1,0,0,3],[1,1,2,1],[1,2,2,0],[2,1,15],[1,1,1,1],[2,1,3],[2,1,18],[1,0,1,2]
+    ])
+
 
     for [nums,queries] in testcases:
         print(f'Nums={nums} queries={queries} result={Solution().popcountDepth(nums,queries)}')
