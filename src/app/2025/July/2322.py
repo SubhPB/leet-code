@@ -47,44 +47,43 @@
 from typing import List
 class Solution:
     def minimumScore(self, nums: List[int], edges: List[List[int]]) -> int:
-        n = len(nums)
-        
-        def find(x:int,parents:List[int]):
-            p = x
-            while parents[p]>=0:
-                p = parents[p]
-            if p!=x: parents[x]=p
-            return p
-        def union(x:int,y:int,parents:List[int],xsum:List[int]):
-            [px,py] = [find(node,parents) for node in (x,y)]
-            [sx,sy] = [-parents[p] for p in (px,py)]
-            if px==py: return False
-            if sx>sy:
-                parents[py] = px
-                parents[px] -= sy
-                xsum[px] ^= xsum[py]
-            else:
-                parents[px] = py
-                parents[py] -= sx
-                xsum[py] ^= xsum[px]
-        res = float('inf')
+        n = len(nums); G = [[] for _ in range(n)]
+        for [u,v] in edges: 
+            G[u].append(v); G[v].append(u)
 
+        XOR = [-1]*n; level = [0]*n; parents = [-1]*n
+        def dfs(u:int,parent:int):
+            if parent>=0: level[u]=level[parent]+1
+            parents[u] = parent; XOR[u] = nums[u]
+            for v in G[u]:
+                if v != parent:
+                    dfs(v,u)
+                    XOR[u]^=XOR[v]
+        dfs(0,-1)# calc node levels and xor of each subtree
+
+        def isMutualSubtree(u:int,v:int):
+            if level[u]>level[v]: u,v = v,u
+            # node u is either equal or exist at higher level
+            while level[v] > level[u]:
+                v = parents[v]
+            #Now both v and u are at same level
+            return v==u
+        
+        res = float('inf')
         for e1 in range(n-1):
             for e2 in range(e1+1,n-1):
-                parents = [-1]*n; xsum = [nums[node] for node in range(n)]
-                for ei in range(n-1):
-                    if ei in [e1,e2]: continue
-                    [u,v] = edges[ei]
-                    union(u,v,parents,xsum)
-                    
-                components = []
+                [u1,v1] = sorted(edges[e1],key=lambda x:level[x])
+                [u2,v2] = sorted(edges[e2],key=lambda x:level[x])
+                [v1,v2] = sorted([v1,v2],key=lambda x:level[x])
 
-                for ei in (e1,e2):                    
-                    for node in edges[ei]:
-                        parent = find(node,parents)
-                        components.append(xsum[parent])
-                
-                components.sort()
-                res = min(res, components[-1]-components[0])
-
+                if isMutualSubtree(v1,v2):
+                    scores = sorted([XOR[0]^XOR[v1],XOR[v1]^XOR[v2],XOR[v2]])
+                    res = min(
+                        res, scores[-1]-scores[0]
+                    )
+                else:
+                    scores = sorted([XOR[0]^XOR[v1]^XOR[v2],XOR[v1],XOR[v2]])
+                    res = min(
+                        res, scores[-1]-scores[0]
+                    )
         return res
