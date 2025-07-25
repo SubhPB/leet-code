@@ -51,29 +51,45 @@ class Solution:
         for [u,v] in edges: 
             G[u].append(v); G[v].append(u)
 
-        XOR = [-1]*n; level = [0]*n; parents = [-1]*n
+
+        LIFT = (n-1).bit_length(); dp = [
+            [-1]*n for _ in range(LIFT)
+        ] # dp[lift][node] = 2^lift-th parent of node
+
+        XOR = [-1]*n; level = [-1]*n
+        
         def dfs(u:int,parent:int):
-            if parent>=0: level[u]=level[parent]+1
-            parents[u] = parent; XOR[u] = nums[u]
+            dp[0][u] = parent
+            level[u]=level[parent]+1; XOR[u] = nums[u]
             for v in G[u]:
                 if v != parent:
                     dfs(v,u)
                     XOR[u]^=XOR[v]
         dfs(0,-1)# calc node levels and xor of each subtree
 
+        for lift in range(1,LIFT):
+            for node in range(n):
+                parent = dp[lift-1][node]
+                dp[lift][node] = dp[lift-1][parent]
+        
+        def findParent(ith:int,node:int):
+            i=0
+            while ith and node!=-1:
+                if ith&1: node = dp[i][node]
+                ith>>=1
+                i+=1
+            return node
+
         def isMutualSubtree(u:int,v:int):
-            if level[u]>level[v]: u,v = v,u
-            # node u is either equal or exist at higher level
-            while level[v] > level[u]:
-                v = parents[v]
-            #Now both v and u are at same level
+            diff = level[v]-level[u]
+            if diff>0: v = findParent(diff,v)
             return v==u
         
         res = float('inf')
         for e1 in range(n-1):
             for e2 in range(e1+1,n-1):
-                [u1,v1] = sorted(edges[e1],key=lambda x:level[x])
-                [u2,v2] = sorted(edges[e2],key=lambda x:level[x])
+                [_u1,v1] = sorted(edges[e1],key=lambda x:level[x])
+                [_u2,v2] = sorted(edges[e2],key=lambda x:level[x])
                 [v1,v2] = sorted([v1,v2],key=lambda x:level[x])
 
                 if isMutualSubtree(v1,v2):
