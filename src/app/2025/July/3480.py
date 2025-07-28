@@ -36,22 +36,78 @@
     conflictingPairs[i].length == 2
     1 <= conflictingPairs[i][j] <= n
     conflictingPairs[i][0] != conflictingPairs[i][1]
+
+    python ./src/app/2025/July/3480.py
 '''
 from typing import List
+from collections import defaultdict
 class Solution:
     def maxSubarrays(self, n: int, conflictingPairs: List[List[int]]) -> int:
-        default = (n*(n+1))/2; res = 0
-        visited = set()
+        lp = lambda x: (x*(x+1))//2
+        lpRange = lambda x,y: lp(y) - lp(max(x-1,0))
+        visited = set(); res = 0; default = lp(n)
         for pair in conflictingPairs:
             [a,b] = sorted(pair)
-            if (a,b) not in visited: 
-                diff = b-a; default -= (n-diff)
-                visited.add((a,b))
-        for [a,b] in conflictingPairs:
-            diff = abs(b-a) # Considering this pair to delete, means more subArrays
+            if (a,b) not in visited:
+                diff = b-a; sizes = n-diff
+                preViolation = b+1; postViolation = n-a+2
+
+                default -= (
+                    lpRange(diff+1, n) - diff*sizes - lp(n-preViolation+1) - lp(n-postViolation+1)
+                )
+
+        for pair in conflictingPairs: #If this pair delete means more subArrays
+            [a,b] = sorted(pair); 
+            diff = b-a; sizes = n-diff
+            preViolation = b+1; postViolation = n-a+2
             res = max(
                 res,
-                default + diff
+                default + (
+                    lpRange(diff+1,n) - diff*sizes - lp(n-preViolation+1) - lp(n-postViolation+1)
+                )
             )
+            
         return res
-        
+  
+    def fn(self, n: int, conflictingPairs: List[List[int]]) -> int:
+        table : dict[int,List[int]] = {}
+        for pair in conflictingPairs:
+            [a,b] = sorted(pair)
+            if b not in table: table[b] = [0,0]
+            table[b][0] = max(table[b][0], a)
+            table[b].sort()
+
+        res = 0; default = 0; peakB = 0
+        table[peakB] = [0,0]
+        for num in range(1,n+1):
+            b = max(
+                table.get(num, [0,0])[1], 
+                table[peakB][1]
+            )
+            default += num-b
+            if num in table: peakB = num
+        peakB = 0
+        for num in range(1,n+1):
+            if num in table:
+                [a,b] = table.get(num)
+                a = max(
+                    a,
+                    table.get(peakB)[1]
+                )
+                res = max(
+                    res, 
+                    default + b-a
+                ) # currently there is no way to include subArrays from postElems
+                peakB = num
+
+        return res
+
+if __name__ == '__main__':
+    testcases = []
+    add = lambda n,conflictingPairs: testcases.append([n,conflictingPairs])
+    add(n = 4, conflictingPairs = [[2,3],[1,4]])
+    add(n = 5, conflictingPairs = [[1,2],[2,5],[3,5]])
+    add(n=5,conflictingPairs=[[1,4]])
+    sol = Solution()
+    for [n,pairs] in testcases:
+        print(f'N={n} conflictingPairs={pairs} [1]:{sol.maxSubarrays(n,pairs)} [2]:{sol.fn(n,pairs)}')
