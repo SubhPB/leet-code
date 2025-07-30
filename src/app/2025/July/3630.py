@@ -66,42 +66,38 @@
     1 <= nums[i] <= 10^9
 '''
 from typing import List
+from functools import cache
 class Solution:
     def maximizeXorAndXor(self, nums: List[int]) -> int:
-
-        n = len(nums); XOR = [0]*(n+1)
-        for i in range(1,n+1): XOR[i] = nums[i-1]^XOR[i-1]
-        xor = lambda l,r: XOR[r]^XOR[l] # l-inclusive & r-exclusive
-
-        res = 0
-        for blen in range(n+1):
-            for bstart in range(n-blen+1):
-                
-                AND = nums[bstart] if blen else 0
-                for x in range(bstart+1,bstart+blen): AND&=nums[x]
-
-                if blen and bstart in [0, n-blen]: #special handle-case
-                    if blen<n:
-                        l, r = (0,bstart) if bstart>0 else (blen, n)
-                        for cstart in range(l,r):
-                            res = max(
-                                res, 
-                                xor(l,cstart) + AND + xor(cstart,r)
-                            )
-                    else: res = max(res, AND)
-                else:
-                    res = max(
-                        res, 
-                        xor(0, bstart) + AND + xor(bstart+blen, n)
-                    )
-        return res    
+        n = len(nums); res = 0; 
+        @cache
+        def max_xor_sum(i:int,mask:int,A_XOR:int,XOR:int):
+            if i>=n or A_XOR>XOR: return A_XOR + (XOR ^ A_XOR)
+            elif (mask>>i)&1: return max_xor_sum(i+1,mask,A_XOR,XOR)
+            return max(
+                max_xor_sum(i+1, mask, A_XOR, XOR), #not-selected
+                max_xor_sum(i+1, mask, A_XOR^nums[i], XOR) # selected
+            )
+        
+        for mask in range(2**n):
+            AND = None; XOR = 0; ai = n
+            for i in range(n):
+                if (mask>>i)&1: AND = AND&nums[i] if AND is not None else nums[i]
+                else: XOR ^= nums[i]; ai = min(ai,i)
+            if AND is None: AND = 0
+            xor_sum = max_xor_sum(ai,mask,0,XOR)
+            res = max(
+                res, xor_sum+AND
+            )
+        return res
             
 if __name__ == '__main__':
     testcases = []
     add = lambda nums:testcases.append(nums)
+    add([165,23,102])
     # add([2,3])
     # add([1,3,2])
     # add([2,3,6,7])
-    add([625,165,454,598])
+    # add([625,165,454,598])
     for nums in testcases:
         print(f'Nums={nums} result={Solution().maximizeXorAndXor(nums)}')
