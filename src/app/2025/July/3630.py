@@ -79,6 +79,30 @@ class Solution:
                 max_xor_sum(i+1, mask, A_XOR^nums[i], XOR) # selected
             )
         
+        XOR = [0]*(2**n); AND = [0]*(2**n)
+        for mask in range(2**n):
+            pos = max(0,mask.bit_length()-1); prev = mask^(1<<pos) #bug here!
+            AND[mask] = nums[pos]&AND[prev] if prev else nums[pos]
+            XOR[mask] = XOR[prev]^nums[pos]
+        basis = []
+        def insert_basis(x:int):
+            for b in basis:
+                x = min(x, x^b)
+            if x: basis.append(x)
+        for num in nums: insert_basis(num)
+
+        for mask in range(2**n):
+            # xor = XOR[mask], 
+            # for bit in mask:
+
+            res = max(
+                res, AND[mask]
+            )
+
+
+                
+                
+        
         for mask in range(2**n):
             AND = None; XOR = 0; ai = n
             for i in range(n):

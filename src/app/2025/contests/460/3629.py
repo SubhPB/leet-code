@@ -57,58 +57,55 @@
     1 <= n == nums.length <= 10^5
     1 <= nums[i] <= 10^6
 '''
-from typing import List, Dict
-from functools import cache
-import heapq
+from typing import List
+from collections import deque, defaultdict
 
-def is_prime(n:int):
-    if n<2: return False
-    for d in range(2, int(n**(0.5))+1):
-        if n%d==0: return False
+def is_prime(n: int) -> bool:
+    if n < 2: return False
+    for d in range(2, int(n ** 0.5) + 1):
+        if n % d == 0: return False
     return True
-def prime_multiple(n:int):
-    if is_prime(n): return True
-    if n>2:
-        for d in range(2, int(n**(0.5))+1):
-            if n%d == 0: return True
-    return False
-@cache
-def prime_factors(n:int):
-    factors=[]; i=2
-    while i*i<n:
-        if n%i == 0:
-            factors.append(i)
-            while n%i == 0: n//=i
-        i+=1
-    if n>1: factors.append(n)
-    return factors
 
 class Solution:
     def minJumps(self, nums: List[int]) -> int:
-        n = len(nums); G:Dict[int, List[int]] = {}
-        for i in range(n):
-            if is_prime(nums[i]): 
-                if nums[i] not in G: G[nums[i]] = []
-                G[nums[i]].append(i)
-        pq = [(0, 0)] #(dist, node)[]
-        push = lambda dist,node: heapq.heappush(pq, (dist, -node))
+        n = len(nums)
+        max_val = max(nums)
 
-        dists = [float('inf')]*n
-        while pq:
-            d, u = heapq.heappop(pq); u = -u
-            if u == n-1: return d
-            elif d >= dists[u]: continue
-            dists[u] = d
+        # Build div_map: p -> [i for which nums[i] % p == 0]
+        div_map = defaultdict(list)
+        for i, val in enumerate(nums):
+            for p in range(2, int(val ** 0.5) + 1):
+                if val % p == 0:
+                    div_map[p].append(i)
+                    if p != val // p:
+                        div_map[val // p].append(i)
+            if val > 1:
+                div_map[val].append(i)  # val itself is always a divisor
 
-            if prime_multiple(nums[u]):
-                factors = prime_factors(nums[u])
-                for prime in factors:
-                    if prime not in G: continue
-                    for i in G[prime]:
-                        if i == u: continue
-                        elif dists[i] <= d: push(d, i)
+        # BFS
+        visited = [False] * n
+        used_primes = set()
+        q = deque([(0, 0)])  # (index, jumps)
+        visited[0] = True
 
-            if d < dists[u+1]: push(d+1, u+1)
-            if u>0 and dists[u-1] > d: push(d+1, u-1)
+        while q:
+            i, jumps = q.popleft()
+            if i == n - 1:
+                return jumps
 
-        return n-1
+            # Try adjacent moves
+            for j in [i - 1, i + 1]:
+                if 0 <= j < n and not visited[j]:
+                    visited[j] = True
+                    q.append((j, jumps + 1))
+
+            # Try teleportation
+            val = nums[i]
+            if is_prime(val) and val not in used_primes:
+                for j in div_map[val]:
+                    if not visited[j]:
+                        visited[j] = True
+                        q.append((j, jumps + 1))
+                used_primes.add(val)
+
+        return -1  # should never happen per problem constraints
