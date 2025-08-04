@@ -65,7 +65,20 @@
     order is a permutation of integers from 0 to n - 1.
     1 <= k <= 10^9
 '''
-
+from typing import List
+import bisect
 class Solution:
-    def minTime(self, s: str, order: list[int], k: int) -> int:
-        pass
+    def minTime(self, s: str, order: List[int], k: int) -> int:
+        n = len(s); LP = lambda x: (x*(x+1))//2
+        if LP(n)>=k:
+            prev = [-1,n]; t = 0; cnt = 0
+            while t<n and cnt<k:
+                i = order[t]
+                leftcnt = i - prev[bisect.bisect_left(prev, i)-1] - 1
+                rightcnt = prev[bisect.bisect_right(prev,i)] - i - 1
+                cnt += (1+leftcnt)*(1+rightcnt)
+                bisect.insort(prev,i)
+                if cnt>=k: return t
+                else: t+=1
+                    
+        return -1
