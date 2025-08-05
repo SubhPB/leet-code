@@ -72,13 +72,15 @@ class Solution:
             if l==p: 
                 while l<n and nums[l]>=nums[min(n-1,l+1)]: l+=1
                 p = inc(l)
+            while l+1<p and nums[l]<0: l+=1 #If l starts with -ve value then try if we can neglect curr 'l'
+
             q = dec(p); r = inc(q)
             if l < p < q < r < n:
-                seg1=0; seg2=Tn[q+1]-Tn[p]; seg3=Tn[r+1]-Tn[q+1]
+                seg1=Tn[p]-Tn[l]; seg2=Tn[q+1]-Tn[p]; seg3=Tn[r+1]-Tn[q+1]
                 #maximize seg-1
                 if nums[p]>0: 
-                    seg1 = Tn[p]-Tn[l]; i = neg[bisect_left(neg,p)-1]
-                    while i>=l: 
+                    i = neg[bisect_left(neg,p)-1]
+                    while i>=l and i<l-1: 
                         seg1 = max(seg1, Tn[p]-Tn[i+1])
                         i = neg[bisect_left(neg,i)-1]
                 else: seg1 = nums[p-1] # peak value is -ve, best to just take only one element
@@ -98,7 +100,9 @@ class Solution:
     
 if __name__ == '__main__':
     testcases = [
-        [0,-2,-1,-3,0,2,-1]   
+        [0,-2,-1,-3,0,2,-1],
+        [-432,186,-568,390],
+        [-434,332,-519,-175,917,-316,645]   
     ]
     for nums in testcases:
         print(f'Nums={nums} res={Solution().maxSumTrionic(nums)}')
