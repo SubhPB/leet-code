@@ -50,36 +50,21 @@
     0 <= fruits[i][j] <= 1000
 '''
 from typing import List
-import heapq
 class Solution:
     def maxCollectedFruits(self, fruits: List[List[int]]) -> int:
-        # (r,c) -> n*r + c
-        n=len(fruits); res = sum([fruits[i][i] for i in range(n)])
-        dist = [[0 for _ in range(n)] for _ in range(n)]
-        p2Max = 0; p3Max=0
+        n=len(fruits)
 
-        Q = [(-fruits[0][n-1], 0, 0, n-1)]
-        while Q:
-            dt, st, r, c = heapq.heappop(Q); dt = -dt
-            if (r,c)==(n-2,n-1): 
-                p2Max = dt; break
-            elif dt > dist[r][c] and c>r and st<n-1:
-                dist[r][c]=dt
-                for nc in [c+i for i in (-1,0,1)]:
-                    nr = r+1
-                    if nr<nc<n:
-                        heapq.heappush(Q, (-dt-fruits[nr][nc],st+1,nr,nc))
-
-        Q=[(-fruits[n-1][0], 0, n-1, 0)]
-        while Q:
-            dt, st, r, c = heapq.heappop(Q); dt=-dt
-            if (r,c) == (n-1,n-2):
-                p3Max=dt; break
-            elif dt > dist[r][c] and c<r and st<n-1:
-                dist[r][c]=dt
-                for nr in [r+i for i in (-1,0,1)]:
-                    nc = c+1
-                    if nc<nr<n:
-                        heapq.heappush(Q, (-dt-fruits[nr][nc],st+1,nr,nc))
-                
-        return res + p2Max + p3Max
+        for r in range(n-2, -1, -1):
+            for c in range(n-1, max(n-r-2,r),-1):
+                nr=r+1; mx = 0
+                for nc in [c+ci for ci in (-1,0,1)]:
+                    if nr < nc < n: mx = max(mx, fruits[nr][nc])
+                fruits[r][c]+=mx
+        
+        for c in range(n-2, -1, -1):
+            for r in range(n-1, max(n-c-2, c), -1):
+                nc=c+1; mx = 0
+                for nr in [r+ri for ri in (-1,0,1)]:
+                    if nc<nr<n: mx = max(mx, fruits[nr][nc])
+                fruits[r][c]+=mx
+        return sum([fruits[i][i] for i in range(n)])+fruits[0][n-1]+fruits[n-1][0]
