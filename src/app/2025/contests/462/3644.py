@@ -43,12 +43,14 @@
 from typing import List
 class Solution:
     def sortPermutation(self, nums: List[int]) -> int:
-        m = len(nums)-1
-        for x2 in range(m,-1,-1):
-            if nums[x2]!=x2: break
-        for x1 in range(0,x2):
-            if nums[x1]!=x1: break
+        n = len(nums); res = n; msn = 1 << n.bit_length()
+        pi = (msn-1)&msn
+        for i,x in enumerate(nums):
+            if x!=i and x<pi: res = min(res, x&pi)
+        if res>=msn:
+            '''
+            Real challenge to solve for this case. when res >= msn!
+            '''
+            pass        
 
-        if x1>0: # x1>0 ensures sorting is required and may be possible!
-            pass
-        return 0
+        return res%n
