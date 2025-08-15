@@ -67,24 +67,30 @@
 '''
 from typing import List, Dict
 from bisect import bisect_right as br
+
 class Solution: # Very interesting problem!
     def maxTotal(self, value: List[int], limit: List[int]) -> int:
-        l_map:Dict[int,List[int]] = {}; max_limit = 0
-        I = sorted([i for i in range(n)], key=lambda i:value[i]); n = len(value)
-        for i in I:
-            if limit[i] not in l_map: l_map[limit[i]]=[]
-            l_map[limit[i]].append(value[i]); max_limit = max(max_limit,limit[i])
-        
-        inactive_max = 0; x = 0; res = 0
-        while x<max_limit and l_map.keys():
-            srr = sorted([int(v) for v in l_map.keys()])
-            key = srr[br(srr,inactive_max)]
-            x+=1; res += l_map[key].pop()
-            inactive_max = max(inactive_max, x)
-            if x==key: x-=1
-            if not l_map[key]: del l_map[key]
+        res = 0; n = len(value)
+        I = sorted([i for i in range(n)], key=lambda i:value[i])
+        L:Dict[int,List[int]] = dict()
+        for i in I: 
+            if limit[i] not in L: L[limit[i]]=[]
+            L[limit[i]].append(value[i])
+        max_x=0; x=0; state = [0]*(n+1)
+        while max_x < n:
+            limits = sorted(L.keys())            
+            if not limits or limits[-1]<=max_x: break
+            limit = limits[br(limits, max_x)]
+            res += L[limit].pop()
 
+            if not L[limit]: del L[limit]
+            state[limit]+=1
 
+            x+=1
+            max_x = max(max_x,x)
+
+            cx = x; x-=state[x]
+            state[cx]=0 # relaxing state
+            
         return res
 
-            
