@@ -66,31 +66,25 @@
     1 <= limit[i] <= n
 '''
 from typing import List, Dict
-from bisect import bisect_right as br
 
 class Solution: # Very interesting problem!
     def maxTotal(self, value: List[int], limit: List[int]) -> int:
         res = 0; n = len(value)
-        I = sorted([i for i in range(n)], key=lambda i:value[i])
         L:Dict[int,List[int]] = dict()
-        for i in I: 
+        for i in range(n): 
             if limit[i] not in L: L[limit[i]]=[]
             L[limit[i]].append(value[i])
-        max_x=0; x=0; state = [0]*(n+1)
-        while max_x < n:
-            limits = sorted(L.keys())            
-            if not limits or limits[-1]<=max_x: break
-            limit = limits[br(limits, max_x)]
-            res += L[limit].pop()
 
-            if not L[limit]: del L[limit]
-            state[limit]+=1
+        x=0; limits = sorted(L.keys()); state = [0]*(n+1)
+        for limit in limits:
+            L[limit].sort()
+            while x<limit and L[limit]:
+                res += L[limit].pop()
+                cx = x; x += 1
 
-            x+=1
-            max_x = max(max_x,x)
-
-            cx = x; x-=state[x]
-            state[cx]=0 # relaxing state
-            
+                state[limit]+=1
+                x-=state[cx]
+                state[cx]=0
+                
         return res
 
