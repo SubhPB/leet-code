@@ -32,7 +32,6 @@
     python src/app/2025/contests/462/3646.py
 '''
 from typing import List
-from collections import deque
 
 dp:List[List[int]] = [
     [] for _ in range(sum([2,4,6,8,10]))
@@ -55,36 +54,57 @@ for px in [3,5,7,9]:  # calculating dp evens + one odd scenario
 
 
 class Solution:
+    def findBest(self,n:int, d:int):
+
+        res = 0
+
+        def reverse(arr:List[any]):
+            narr = [arr[i] for i in range(len(arr)-1,-1,-1)]
+            return narr
+        def map(arr:List[any],fn:function):
+            narr = [fn(x) for x in arr]
+            return narr
+
+        def hlfParse(x:List[int|str], m=[]):
+            x = map(x,str); m = map(m,str)
+            return int(''.join(x + m + reverse(x)))
+        
+        for candidate in dp[d]:
+            digits:List[int] = []; m = []
+            for i in range(candidate.bit_length()-1, -1, -1):
+                if candidate&(1<<i):
+                    digits.append(i)
+                    if (i&1): m = [i]
+            
+            hlf = []
+            for x in digits:
+                for i in range(x//2): hlf.append(x)
+
+            maxPossible = hlfParse(hlf,m)
+            if maxPossible > n:
+                res = maxPossible
+                left, right = hlf[:1], hlf[1:]
+                while right:
+                    pq = left[-1]
+                    for dgt in reverse(right):
+                        newLeft = [*left]; newLeft[-1] = dgt; newLeft.append(pq)
+                        newRight = [*right]; newRight.remove(dgt)
+                        tempRes = hlfParse(newLeft+newRight, m)
+                        if tempRes > n:
+                            left = newLeft; right = newRight
+                            res = min(res,tempRes)
+                return res
+        return res
+    
     def specialPalindrome(self, n: int) -> int:
-        d = len(str(n)); res = float('inf')
+        d = len(str(n))
         # Observation: Using 2 odd digits is never possible to get right answer!
         #    To get the minimum result we will try to find smallest candidate of same digit length as of n
         #    If not found then we'll find smallest digit num with the digit length eql 'd+1', which is definitely an answer!
 
-        def hlfParse(x:List[int|str], m=[]):
-            return int(''.join(x + m + x.reverse()))
-        
-        
-        if not d%2:
-            # let's look for a candidate greater and having digit length as of 'd'
-            for candidate in dp[d]:
-                digits:List[int] = []
-                for i in range(candidate.bit_length()-1, -1, -1):
-                    if candidate&(1<<i): digits.append(i)
-                
-                hlf = []
-                for x in digits:
-                    for i in range(x//2): hlf.append(x)
+        # arr.reverse() & x[i] = int not str | FIX! 
 
-                maxPossible = hlfParse(hlf)
-                if n<maxPossible:
-                    res = min(res, maxPossible)
-                    left, right = hlf[:1], deque(hlf[1:])
-                    while right:
-                        for digit in digits:
-                                pass
-
-        else:
-            pass
+        res = self.findBest(n,d)
+        if res <= n: res = self.findBest(n,d+1)
 
         return res
