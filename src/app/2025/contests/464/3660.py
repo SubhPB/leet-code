@@ -47,4 +47,26 @@ from typing import List
 
 class Solution:
     def maxValue(self, nums: List[int]) -> List[int]:
-        pass
+        n = len(nums); left = [0]*n; right = [n-1]*n
+
+        for i in range(n):
+            left[i] = i if nums[i]>nums[left[max(0,i-1)]] else left[max(0,i-1)]
+            j = n-i-1
+            right[j] = j if nums[j]<nums[right[min(j+1,n-1)]] else right[min(j+1,n-1)]
+        
+        x = left[-1]; r = n; mn = nums[right[x]]
+        while x>=0:
+            for i in range(x+1,r): nums[i]=nums[x]
+            if x:
+                r=x; x-=1
+                if nums[left[x]]>mn:
+                    lt=0; rt=x
+                    while lt<rt:
+                        m = (lt+rt)//2
+                        if nums[left[m]]>mn: rt=m
+                        else: lt=m+1
+                    x=lt; mn=min(mn,nums[right[x]])
+                else:
+                    x = left[x]
+
+        return nums
