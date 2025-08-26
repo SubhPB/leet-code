@@ -47,26 +47,27 @@ from typing import List
 
 class Solution:
     def maxValue(self, nums: List[int]) -> List[int]:
-        n = len(nums); left = [0]*n; right = [n-1]*n
+        n=len(nums);res = [*nums]
+        left = [0]*n; right = [n-1]*n
 
-        for i in range(n):
-            left[i] = i if nums[i]>nums[left[max(0,i-1)]] else left[max(0,i-1)]
-            j = n-i-1
-            right[j] = j if nums[j]<nums[right[min(j+1,n-1)]] else right[min(j+1,n-1)]
+        for i in range(1,n):
+            left[i]=left[i-1]
+            if nums[i]>nums[left[i-1]]: left[i]=i
+            r = n-i-1
+            right[r]=right[r+1]
+            if nums[r]<nums[right[r+1]]: right[r]=r
         
-        x = left[-1]; r = n; mn = nums[right[x]]
-        while x>=0:
-            for i in range(x+1,r): nums[i]=nums[x]
-            if x:
-                r=x; x-=1
-                if nums[left[x]]>mn:
-                    lt=0; rt=x
-                    while lt<rt:
-                        m = (lt+rt)//2
-                        if nums[left[m]]>mn: rt=m
-                        else: lt=m+1
-                    x=lt; mn=min(mn,nums[right[x]])
-                else:
-                    x = left[x]
+        rt=n-1
+        while rt>0:
+            x = left[rt]; y = right[x]
+            maxVal = nums[x]; minVal = nums[y]
+            l=0; r=rt
+            while l<r:
+                m=(l+r)//2; z = left[m]
+                minVal = min(minVal, nums[right[r]])
+                if nums[z]>minVal: r=m; l=0
+                else: l=m+1
+            for i in range(l,rt+1): res[i]=maxVal
+            rt=l-1
 
-        return nums
+        return res
