@@ -70,53 +70,50 @@ class Solution:
         init = lambda: [[1]*n for _ in range(m)]
         TL,TR,BR,BL = (init() for _ in range(4))
 
-        # calc BR & BL
-        for x in range(m-2,-1,-1):
+        GET = lambda x,y,T:  T[x][y] if 0<=x<m and 0<=y<n and grid[x][y] != 1 else 0
+
+
+        for x in range(m-1,-1,-1):
             for y in range(n-1,-1,-1):
-                z = grid[x][y]
-                if z!=1:
-                    # BR
-                    if y!=n-1 and grid[x+1][y+1] not in [1,z]:
-                        BR[x][y] += BR[x+1][y+1]
-                    # BL
-                    if y!=0 and grid[x+1][y-1] not in [1,z]:
-                        BL[x][y] += BL[x+1][y-1]
-        # calc TL & TR
-        for x in range(1,m):
-            for y in range(n):
-                z=grid[x][y]
-                if z!=1:
-                    # TL
-                    if y!=0 and grid[x-1][y-1] not in [1,z]:
-                        TL[x][y] += grid[x-1][y-1]
-                    # TR
-                    if y!=n-1 and grid[x-1][y+1] not in [1,z]:
-                        TR[x][y] += grid[x-1][y+1]
+                if grid[x][y]!=1:
+                    if GET(x+1,y+1,BR) and grid[x+1][y+1]!=grid[x][y]:
+                        BR[x][y] += GET(x+1,y+1,BR)
+                    if GET(x+1,y-1,BL) and grid[x+1][y-1] != grid[x][y]:
+                        BL[x][y] += GET(x+1,y-1,BL)
+                else:
+                    BR[x][y] = GET(x+1,y+1,BR)
+                    BL[x][y] = GET(x+1,y-1,BL)
 
         for x in range(m):
             for y in range(n):
-                z = grid[m][n]
-                if z==1:
-                    tempRes = 1; delta = 0
-                    # TL
-                    if x!=0 and y!=0 and grid[x-1][y-1] != 1:
-                        tl = TL[x-1][y-1]; tempRes += tl
-                        nx = x-tl; ny=y-tl
-                        # what would happen if we do 90-degree turn? means TR from grid[x-p][y-p]
-                        if nx!=0 and grid[nx-1][ny+1] != 1:
-                            delta = max(delta, TR[nx-1][ny+1])
-                    # TR
-                    if x!=0 and y!=n-1 and grid[x-1][y+1] != 1:
-                        tr = TR[x+1][y+1]; tempRes += tr
-                        nx = x-tr; ny=y+tr
-                        if ny!=n-1 and nx!=m-1 and grid[nx+1][ny-1] != 1:
-                            delta = max(delta, BL[nx+1][ny-1])
-                    # BR
-                    # if x!=m-1 and y!=n-1 and grid[x]
-                        
-                        
+                if grid[x][y]!=1:
+                    if GET(x-1,y-1,TL) and grid[x-1][y-1] != grid[x][y]:
+                        TL[x][y] += GET(x-1,y-1,TL)
+                    if GET(x-1,y+1,TR) and grid[x-1][y+1] != grid[x][y]:
+                        TR[x][y] += GET(x-1,y+1,TR)
+                else:
+                    TL[x][y] = GET(x-1,y-1,TL)
+                    TR[x][y] = GET(x-1,y+1,TR)
 
 
+        for x in range(m):
+            for y in range(n):
+                if grid[x][y] == 1:
+                    delta = 0; tempRes = 1
+
+                    tl = TL[x][y]; tempRes+=tl; v = GET(x-tl,y-tl,TR)
+                    if tl: delta = max(delta, v-max(0,v-1))
+
+                    tr = TR[x][y]; tempRes+=tr; v = GET(x-tr, y+tr, BR)
+                    if tr: delta = max(delta, v-max(0,v-1))
+
+                    br = BR[x][y]; tempRes+=br; v = GET(x+br, y+br, BL)
+                    if br: delta = max(delta, v-max(0,v-1))
+
+                    bl =BL[x][y]; tempRes+=bl; v = GET(x+bl,y-bl,TL)
+                    if bl: delta = max(delta, v-max(0,v-1))
+
+                    res = max(res, tempRes+delta)
 
         return res
     
