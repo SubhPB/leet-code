@@ -44,15 +44,15 @@
     1 <= nums[i] <= 10^6
 '''
 from typing import List
-from collections import Counter
 class Solution:
     def maxProduct(self, nums: List[int]) -> int:
-        res=0; hsh = Counter(nums)
-        n = len(nums); flip = lambda x: x^((1<<x.bit_length())-1)
+        mxm = max(nums)
+        mxbl = mxm.bit_length(); mxb = (1<<mxbl)-1
+        dp = [0]*(1<<mxbl)
 
-        for x in range((n+1)//2):
-            num = nums[x]; numb = flip(num)
-            while (res<numb*num and numb not in hsh) or numb&num:
-                numb-=1
-            res = max(res, numb*num)
-        return res
+        for num in nums: dp[num]=num
+        for i in range(mxbl):
+            for num in range(mxb+1):
+                if num & (1<<i): dp[num]=max(dp[num],dp[num^(1<<i)])
+        return max([num*dp[mxb^num] for num in nums])
+        
