@@ -30,14 +30,10 @@
     1 <= num1 <= 10^9
     -10^9 <= num2 <= 10^9
 '''
-
 class Solution:
     def makeTheIntegerZero(self, num1: int, num2: int) -> int:
         if num1<=num2: return -1
-        l=1; r=10**9
-        while l<r:
-            m = (l+r)//2; x = (num1-m*(num2)).bit_length()
-            if x<=m: r=m
-            else: l=m+1
-            
-        return 
+        for i in range(1,37):
+            x = num1-i*(num2)
+            if x.bit_count() <= i <= x: return i
+        return -1
