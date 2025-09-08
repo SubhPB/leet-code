@@ -70,14 +70,14 @@ class Solution:
                     if parse(x+strRev(x)) <= n: return 1
                     else: return 0
             else:
+                cnt=0
                 for bn in "01":
-                    return dfs(x+bn,w)
-
+                    cnt+= dfs(x+bn,w)
+                return cnt
             
         for p in range(1,51):
             pow = 2**p
             if pow > n: break
-            w = p+1
-            res += dfs("1",w)
+            w = p+1; res += dfs("1",w)
 
         return res
