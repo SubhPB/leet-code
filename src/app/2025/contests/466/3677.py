@@ -39,45 +39,31 @@
 
     Since "0" is a palindrome, the count is 1.
 
-    
-
     Constraints:
 
     0 <= n <= 10^15
 '''
 class Solution:
     def countBinaryPalindromes(self, n: int) -> int:
-        res=1
-        if n>=1: res+=1
+        if not n: return 1
+        res = 1; w = n.bit_length()
+        for x in range(1,w):
+            m = (x+1)//2; p = m-1
+            res += (1<<p)
+        '''
+            pfx: starting half prefix of the n
+            start: starting prefixes of same length as of pfx & all are small than pfx means they are part of 'res'
+            only one thing left if the palindrome of pfx equals 
+        '''
+        pfx = n>>w//2
+        hlf = (w+1)//2
+        start = 1<<(hlf-1)
 
-        def strRev(x:str):
-            ls = list(x); n = len(x)
-            for i in range(n):
-                ls[i] = x[n-i-1]
-            return ''.join(ls)
-        def parse(x:str):
-            return int(f'0b{x}',2)
-        
-        def dfs(x:str,w:int):
-            hf = w//2
-            if len(x) == hf:
-                if w&1:
-                    cnt = 0
-                    for m in "01":
-                        if parse(x+m+strRev(x)) <=n: cnt+=1
-                    return cnt
-                else:
-                    if parse(x+strRev(x)) <= n: return 1
-                    else: return 0
-            else:
-                cnt=0
-                for bn in "01":
-                    cnt+= dfs(x+bn,w)
-                return cnt
-            
-        for p in range(1,51):
-            pow = 2**p
-            if pow > n: break
-            w = p+1; res += dfs("1",w)
+        res+=pfx-start
+
+        if w&1:
+            if n >= (pfx<<w//2)|int(bin(pfx>>1)[2:][::-1],2): res+=1
+        else:
+            if n >= (pfx<<w//2)|int(bin(pfx)[2:][::-1],2): res+=1
 
         return res
