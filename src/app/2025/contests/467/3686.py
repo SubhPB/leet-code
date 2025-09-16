@@ -41,20 +41,14 @@
 from typing import List
 class Solution:
     def countStableSubsequences(self, nums: List[int]) -> int:
-        n = len(nums); hsh = [0]*n
-        for i,num in enumerate(nums):
-            hsh[i]=hsh[max(0,i-1)]
-            if not num&1: hsh[i]+=1
-        res = 0; M = 10**9+7
-        add = lambda x,y: (x%M + y%M)%M
-        for l in range(n-2):
-            for r in range(l+2,n):
-                x = sum([nums[i]&1 for i in (l,r)])
-                d = hsh[r]-hsh[l]
-                if x == 2:
-                    res = add(res, d)
-                elif x == 1:
-                    res = add(res, r-l-1) # relax by 1
-                else: #-> 0
-                    res = add(res, r-l-d)
+        m = 10**9+7; add = lambda x,y: (x%m+y%m)%m
+        count = [0,0,0,0] #[endsWithOneEven, endsWithTwoEvens, endsWithOneOdd, endsWithTwoOdds]
+        for num in nums:
+            x = 2*(num&1)
+            count[x+1] = add(count[x+1],count[x])
+            for z in range(2,4): count[x] = add(count[x], count[(z+x)%4])
+            count[x] = add(count[x],1)
+
+        res = 0
+        for cnt in count: res = add(res, cnt)
         return res
