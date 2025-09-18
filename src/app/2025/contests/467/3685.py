@@ -51,3 +51,20 @@ class Solution:
                     elif dp[j-num]: dp[j]=True
             res[x-1]=dp[k]
         return res
+ 
+    def subsequenceSumAfterCapping2(self, nums: List[int], k: int) -> List[bool]:
+        nums.sort(); n = len(nums)
+        res = [False]*n
+        for x in range(1,n+1):
+            i=0
+            dp = [not i for i in range(k+1)]
+            while i<n and nums[i]<x:
+                for j in range(k,nums[i]-1,-1):
+                    if dp[j-nums[i]]: dp[j]=True
+                i+=1
+            nes = n-i; ne = 0
+            while not res[x-1] and ne<=nes and k>=ne*x:
+                if dp[k-ne*x]: res[x-1]=True
+                ne+=1
+            
+        return res
