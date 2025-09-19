@@ -39,6 +39,7 @@
         1 <= k <= 4000
 '''
 from typing import List
+# from bisect import bisect_right as br
 class Solution:
     def subsequenceSumAfterCapping(self, nums: List[int], k: int) -> List[bool]:
         nums.sort(); n = len(nums); res = [False]*n
@@ -67,4 +68,30 @@ class Solution:
                 if dp[k-ne*x]: res[x-1]=True
                 ne+=1
             
+        return res
+
+    def subsequenceSumAfterCapping3(self, nums: List[int], k: int) -> List[bool]:#MostOptimal
+        nums.sort()
+        n = len(nums); res = [False]*n
+        dp = [[not c for c in range(k+1)] for r in range(n+1)]
+        def br(x:int):
+            l=0; r=n
+            while l<r:
+                m = (l+r)//2
+                if nums[m]<x:
+                    r = m
+                else:
+                    l = m+1
+            return l
+        for nm in range(1,n+1):
+            num = nums[nm-1]
+            for sm in range(1,k+1):
+                dp[nm][sm] = dp[nm-1][sm] or (
+                    sm>=num and dp[nm-1][sm-num]
+                )
+        for x in range(1,n+1):
+            inc = br(nums,x); exc = n-inc; ne = 0
+            while not res[x-1] and ne<=exc and k>=x*ne:
+                if dp[inc][k-x*ne]: res[x-1] = True
+                ne+=1
         return res
