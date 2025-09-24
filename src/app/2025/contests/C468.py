@@ -58,3 +58,39 @@ class Solution:
                 k+=1; i+=1
                 used[k]=True
         return max(0,blocks-1)
+    
+    def minSplitMergeII(self, nums1: List[int], nums2: List[int]) -> int:
+        n = len(nums1)
+        def generateCombinations(arr:List[int]):
+            ans=[]
+            for start in range(n): # start index
+                pickArray = []
+                for end in range(start, n):  # end index
+                    pickArray.append(arr[end]) # elements picked for rearrangement
+
+
+                    #calculate remaining array elements
+                    remArr = []
+                    for k in range(start):
+                        # from [0,start) ~ add elements before 'pickArray'
+                        remArr.append(arr[k])
+                    
+                    # pickArray E [start, ...end]
+                    
+                    for k in range(end+1,n):
+                        # from (end, n] ~ add elements after 'pickArray'
+                        remArr.append(arr[k])
+
+                    remLen = len(remArr)
+                    
+                    for k in range(0,remLen+1):
+                        # iterate through all possible insertion points for 'pick_array' into 'rem_arr'
+                        resArr = list(remArr)
+                        for elem in pickArray[::-1]:#reverse iterate
+                            # insert at position 'k'
+                            resArr.insert(k,elem)
+                        ans.append(resArr)
+            return ans
+       
+
+        return -1
