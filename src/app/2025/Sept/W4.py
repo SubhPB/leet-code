@@ -1,4 +1,5 @@
 from typing import List
+from bisect import bisect_right as br    
 
 class Solution:
     '''
@@ -82,3 +83,29 @@ class Solution:
             for col in range(row+1):
                 dp[col] = triangle[row][col] + min(dp[col], dp[col+1])
         return dp[0]
+    '''
+    611. Valid Triangle Number
+    Given an integer array nums, return the number of triplets chosen from the array that can make triangles
+    if we take them as side lengths of a triangle.
+
+    Example 1:
+
+    Input: nums = [2,2,3,4]
+    Output: 3
+    Explanation: Valid combinations are: 
+    2,3,4 (using the first 2)
+    2,3,4 (using the second 2)
+    2,2,3
+    
+    Constraints:
+
+    1 <= nums.length <= 1000
+    0 <= nums[i] <= 1000
+    '''
+    def triangleNumber(self, nums: List[int]) -> int:
+        res=0;n=len(nums);nums.sort()
+        for l in range(n-1):
+            for r in range(l+1,n):
+                a=nums[l];b=nums[r]
+                res+=n-br(nums,a+b)
+        return res
