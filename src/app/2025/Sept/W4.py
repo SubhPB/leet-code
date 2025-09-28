@@ -1,5 +1,5 @@
 from typing import List
-from bisect import bisect_right as br    
+from bisect import bisect_left as bl    
 
 class Solution:
     '''
@@ -107,5 +107,7 @@ class Solution:
         for l in range(n-1):
             for r in range(l+1,n):
                 a=nums[l];b=nums[r]
-                res+=n-br(nums,a+b)
+                l = bl(nums,a+b)
+                # l, <...déjàCompté>, r, <...ilFautCompter>, l, ...
+                res+=max(0,l-r-1)
         return res
