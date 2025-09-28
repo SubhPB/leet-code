@@ -89,7 +89,6 @@ class Solution:
     if we take them as side lengths of a triangle.
 
     Example 1:
-
     Input: nums = [2,2,3,4]
     Output: 3
     Explanation: Valid combinations are: 
@@ -111,3 +110,26 @@ class Solution:
                 # l, <...déjàCompté>, r, <...ilFautCompter>, l, ...
                 res+=max(0,l-r-1)
         return res
+    '''
+    976. Largest Perimeter Triangle
+    Given an integer array nums, return the largest perimeter of a triangle with a non-zero area, formed from three of these lengths. 
+    If it is impossible to form any triangle of a non-zero area, return 0.
+    
+    Example 1:
+    Input: nums = [2,1,2]
+    Output: 5
+    Explanation: You can form a triangle with three side lengths: 1, 2, and 2.
+
+    Constraints:
+
+    3 <= nums.length <= 10^4
+    1 <= nums[i] <= 10^6
+    '''
+    def largestPerimeter(self, nums: List[int]) -> int:
+        nums.sort()
+        for i in range(len(nums)-3,-1,-1):
+            a=nums[i]+nums[i+1]; b=nums[i+2]
+            if a>b: return a+b
+        return 0
+
+    
