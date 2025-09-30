@@ -131,5 +131,35 @@ class Solution:
             a=nums[i]+nums[i+1]; b=nums[i+2]
             if a>b: return a+b
         return 0
+    '''
+    2221. Find Triangular Sum of an Array
+
+    You are given a 0-indexed integer array nums, where nums[i] is a digit between 0 and 9 (inclusive).
+
+    The triangular sum of nums is the value of the only element present in nums after the following process terminates:
+
+    Let nums comprise of n elements. If n == 1, end the process. Otherwise, create a new 0-indexed integer array newNums of length n - 1.
+    For each index i, where 0 <= i < n - 1, assign the value of newNums[i] as (nums[i] + nums[i+1]) % 10, where % denotes modulo operator.
+    Replace the array nums with newNums.
+    Repeat the entire process starting from step 1.
+    Return the triangular sum of nums.
+    Constraints:
+    1 <= nums.length <= 1000
+    0 <= nums[i] <= 9
+    '''
+    def triangularSum(self, nums: List[int]) -> int:
+        n=len(nums); muls = [1]
+        for x in range(2,1+n):
+            prev = 1
+            for i in range(1,len(muls)):
+                temp=muls[i]
+                muls[i] = (temp + prev)%10
+                prev=temp%10
+            muls.append(1)
+        res=0
+        for i,m in enumerate(muls):
+            prod = (m%10 * nums[i])%10
+            res = (res%10 + prod)%10
+        return res
 
     
