@@ -1,4 +1,5 @@
 from typing import List
+import math
 from bisect import bisect_left as bl    
 
 class Solution:
@@ -20,26 +21,6 @@ class Solution:
     Explanation:
 
     version1's second revision is "2" and version2's second revision is "10": 2 < 10, so version1 < version2.
-
-    Example 2:
-
-    Input: version1 = "1.01", version2 = "1.001"
-
-    Output: 0
-
-    Explanation:
-
-    Ignoring leading zeroes, both "01" and "001" represent the same integer "1".
-
-    Example 3:
-
-    Input: version1 = "1.0", version2 = "1.0.0.0"
-
-    Output: 0
-
-    Explanation:
-
-    version1 has less revisions, which means every missing revision are treated as "0".
 
     Constraints:
 
@@ -148,18 +129,10 @@ class Solution:
     0 <= nums[i] <= 9
     '''
     def triangularSum(self, nums: List[int]) -> int:
-        n=len(nums); muls = [1]
-        for x in range(2,1+n):
-            prev = 1
-            for i in range(1,len(muls)):
-                temp=muls[i]
-                muls[i] = (temp + prev)%10
-                prev=temp%10
-            muls.append(1)
-        res=0
-        for i,m in enumerate(muls):
-            prod = (m%10 * nums[i])%10
-            res = (res%10 + prod)%10
+        n=len(nums); res=0
+        for c,num in enumerate(nums): #lucas alg.
+            prd = (math.comb(n-1,c)%10 * num)%10
+            res = (res + prd)%10
         return res
 
     
