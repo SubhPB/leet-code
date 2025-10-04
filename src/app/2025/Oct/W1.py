@@ -37,16 +37,17 @@ class Solution:
         0 <= heightMap[i][j] <= 2 * 10^4
     '''
     def trapRainWater(self, heightMap: List[List[int]]) -> int:
-        maxHeight=0; ans=0
+        maxHeight=0; ans=0; heights = set()
         m=len(heightMap); n=len(heightMap[0])
 
-        for heights in heightMap:
-            maxHeight = max(maxHeight, max(heights))
+        for r in range(m):
+            for c in range(n):
+                h = heightMap[r][c]
+                maxHeight = max(maxHeight,h)
+                heights.add(h)
 
         # dummy value
         heightMap[m-1].append(0)
-        
-        # prevMinHeight = 2 * 10**4 # may use later
 
         def neighbors(x:int,y:int):
             N = []
@@ -58,17 +59,18 @@ class Solution:
                 N.append((m-1,n))
             return N
 
-        for height in range(maxHeight+1):
+        for height in sorted(list(heights)):
             #Guarantee: minHeight among heightMap >= height
+            traversed = set()
             for r in range(m):
                 for c in range(n):
-                    if height == heightMap[r][c]:
+                    if height == heightMap[r][c] and (r,c) not in traversed:
                         q = deque([(r,c)]); rq = []
-                        traversed = set()
                         threshold = 2 * 10**4
                         while len(q):
-                            rq.append(q.popleft())
-                            currX,currY = rq[-1]
+                            currX,currY = q.popleft()
+                            if (currX, currY) in traversed: continue
+                            rq.append((currX,currY))
                             for x,y in neighbors(currX,currY):
                                 if (x,y) in traversed: continue
                                 ht = heightMap[x][y]
@@ -77,9 +79,9 @@ class Solution:
                                 else: 
                                     threshold = min(threshold,ht)
                             traversed.add((currX,currY))
-                        for nx,ny in rq:
-                            ans += max(0, threshold-height)
-                            heightMap[nx][ny] = threshold
-                        
+                        if threshold>height:
+                            for nx,ny in rq:
+                                ans += threshold-height
+                                heightMap[nx][ny] = threshold
+          
         return ans
-
