@@ -1,6 +1,7 @@
 from collections import deque
-import heapq
 from typing import List
+from bisect import bisect_right as br
+import heapq
 
 class Solution:
     '''
@@ -252,29 +253,19 @@ class Solution:
     def avoidFlood(self, rains: List[int]) -> List[int]:
         n=len(rains)
         res=[-1]*n; zeros = []
-
-        sets=deque([])
-        s=set(); stn=0
+        filled={}
         for i in range(n):
-            if not rains[i]:
-                sets.appendleft(s)
-                s=set()
+            lake=rains[i]
+            if not lake:
+                res[i]=1
                 zeros.append(i)
             else:
-                s.add(rains[i])
-                stn+=1
-        sets.appendleft(s)
-        
-        m=len(sets)
-        if stn != n-m+1: return []
-
-        for zeroat in zeros:
-            s1=sets.pop(); s2=sets.pop()
-            intersec = s1&s2; l = len(intersec)
-            # print(f's1={s1} and s2={s2} intersec={intersec}')
-            # Need to make two global sets! to resolve a specfic&major edgecase
-            if l>1: return []
-            res[zeroat] = intersec.pop() if l else 1
-            sets.append(s1|s2)#safe-union
-        
+                if lake in filled:
+                    m=len(zeros); at=filled[lake]
+                    x=br(zeros,at)
+                    if x!=m:
+                        res[zeros[x]]=lake
+                        zeros = zeros[:x]+zeros[x+1:]
+                    else: return []
+                filled[lake]=i
         return res
