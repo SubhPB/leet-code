@@ -81,7 +81,7 @@ class Solution:
     1 <= n, m <= 5000
     1 <= mana[i], skill[i] <= 5000
     '''  
-    def minTime(self, skill: List[int], mana: List[int]) -> int:
+    def minTimeBinarySearch(self, skill: List[int], mana: List[int]) -> int:
         n=len(skill)
 
         def go(nums:List[int],potion:int,startTime:int):
@@ -108,4 +108,20 @@ class Solution:
                         bestStartTime=startTime+1
                 nums=go(nums,potion,bestStartTime)
             # print(f'potion#={i} nums={nums}')
+        return nums[-1]
+
+    def minTimeOptimal(self, skill: List[int], mana: List[int]) -> int:
+        n=len(skill);nums=[0]*n
+        for i,potion in enumerate(mana):
+            if not i:
+                for j,ws in enumerate(skill):
+                    nums[j]=ws*potion+nums[j-1]
+            else:
+                for j,ws in enumerate(skill):
+                    if not j:
+                        nums[j]+=potion*ws
+                    else:
+                        nums[j]=max(nums[j],nums[j-1])+potion*ws
+                for j in range(n-2,-1,-1):
+                    nums[j]=nums[j+1]-potion*skill[j+1]
         return nums[-1]
