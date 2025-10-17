@@ -1,3 +1,5 @@
+from typing import List
+
 class Solution:
     '''
     You are given a string s consisting only of the characters 'a', 'b', and 'c'.
@@ -71,5 +73,102 @@ class Solution:
         res=max(res,longestTriplet())
         return res
 
+    '''
+    3715. Sum of Perfect Square Ancestors
+    You are given an integer n and an undirected tree rooted at node 0 with n nodes numbered from 0 to n - 1. This is represented by a 2D array edges of length n - 1, where edges[i] = [ui, vi] indicates an undirected edge between nodes ui and vi.
+
+    You are also given an integer array nums, where nums[i] is the positive integer assigned to node i.
+    Define a value ti as the number of ancestors of node i such that the product nums[i] * nums[ancestor] is a perfect square.
+    Return the sum of all ti values for all nodes i in range [1, n - 1].
+    Note:
+    In a rooted tree, the ancestors of node i are all nodes on the path from node i to the root node 0, excluding i itself.    
+   
+    Example 1:
+
+    Input: n = 3, edges = [[0,1],[1,2]], nums = [2,8,2]
+
+    Output: 3
+
+    Explanation:
+    i	Ancestors	nums[i] * nums[ancestor]	Square Check	ti
+    1	[0]	nums[1] * nums[0] = 8 * 2 = 16	16 is a perfect square	1
+    2	[1, 0]	nums[2] * nums[1] = 2 * 8 = 16
+    nums[2] * nums[0] = 2 * 2 = 4	Both 4 and 16 are perfect squares	2
+    Thus, the total number of valid ancestor pairs across all non-root nodes is 1 + 2 = 3.
+
+    Example 2:
+
+    Input: n = 3, edges = [[0,1],[0,2]], nums = [1,2,4]
+
+    Output: 1
+
+    Explanation:
+
+    i	Ancestors	nums[i] * nums[ancestor]	Square Check	ti
+    1	[0]	nums[1] * nums[0] = 2 * 1 = 2	2 is not a perfect square	0
+    2	[0]	nums[2] * nums[0] = 4 * 1 = 4	4 is a perfect square	1
+    Thus, the total number of valid ancestor pairs across all non-root nodes is 1.
+
+
+    Constraints:
+
+    1 <= n <= 10^5
+    edges.length == n - 1
+    edges[i] = [ui, vi]
+    0 <= ui, vi <= n - 1
+    nums.length == n
+    1 <= nums[i] <= 10^5
+    The input is generated such that edges represents a valid tree.
+    '''
         
-            
+    def sumOfAncestors(self, n: int, edges: List[List[int]], nums: List[int]) -> int:
+
+        graph=[[] for _ in range(n)]; res=0 
+        for [u,v] in edges: 
+            graph[u].append(v)
+            graph[v].append(u)
+
+        freq={0:0} # zero refers count of all even exponents
+        traversed={}
+        def dfs(node:int):
+            nonlocal res, traversed
+            if node in traversed: return 
+            frs=self.prime_factors(nums[node]);key = []
+            for fr in frs:
+                if frs[fr]&1: key.append(fr)
+            key= tuple(sorted(key)) if key else 0
+
+            if key not in freq: freq[key]=0
+            freq[key]+=1
+
+            traversed[node]=True
+            # run dfs...
+            for c in graph[node]: dfs(c)
+
+            freq[key]-=1
+            res+=freq[key]
+            if not freq[key]: del freq[key]
+        dfs(0)
+        return res
+    
+    def prime_factors(self,n):
+        if not hasattr(self,'cache'): self.cache={}
+        if n in self.cache: return self.cache[n]
+        orig=n;factors={}
+        
+        # Handle 2 separately
+        while n % 2 == 0:
+            factors[2] = factors.get(2, 0) + 1
+            n //= 2
+        
+        # Check only odd numbers now
+        d = 3
+        while d * d <= n:
+            while n % d == 0:
+                factors[d] = factors.get(d, 0) + 1
+                n //= d
+            d += 2  # skip even numbers
+        
+        if n > 1: factors[n] = factors.get(n, 0) + 1
+        self.cache[orig]=factors
+        return factors
