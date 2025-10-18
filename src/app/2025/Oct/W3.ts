@@ -137,5 +137,33 @@
             return n
         };
 
+        function maxDistinctElements(nums: number[], k: number): number {
+            /**
+             * 3397. Maximum Number of Distinct Elements After Operations
+
+            You are given an integer array nums and an integer k.
+            You are allowed to perform the following operation on each element of the array at most once:
+            Add an integer in the range [-k, k] to the element.
+            Return the maximum possible number of distinct elements in nums after performing the operations.
+
+            Example 1:
+            Input: nums = [1,2,2,3,3,4], k = 2
+            Output: 6
+            Explanation:
+            nums changes to [-1, 0, 1, 2, 3, 4] after performing operations on the first four elements.
+
+            1 <= nums.length <= 10^5
+            1 <= nums[i] <= 10^9
+            0 <= k <= 10^9
+             */
+            nums.sort((a,b)=>a-b)
+            let n = nums.length, idx=-1e9;
+            for(let num of nums){
+                const ndx=Math.max(idx+1,num-k);
+                if (ndx>num+k) n-=1;
+                else idx=ndx; // idx assigned!
+            };
+            return n;
+        };
     }
 )()
