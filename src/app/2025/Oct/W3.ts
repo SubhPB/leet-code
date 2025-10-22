@@ -202,19 +202,23 @@
             1 <= a <= 9
             1 <= b <= s.length - 1
              */
-            const nums=s.split('').map(num=>parseInt(num));
-            for(let x=0;x<s.length;x++){
-                let least = nums[x];
-                for(let i=1;i<10;i++) least=Math.min(least,(nums[x]+a*i)%10);
-                nums[x]=least;
+            let nums:number[]=[]; const n=s.length;
+            for(let i=0; i<n; i++){
+                const num=parseInt(s[i]); let least=num;
+                const x = i+b*(Math.floor((n-i-1)/b))
+                if (i%2 || x%2 || ((x+b)%n)%2){
+                    for(let j=1; j<10; j++) least=Math.min(least, (num+a*j)%10)
+                };
+                nums.push(least)
             };
-            console.log(nums)
-            let val=nums[0].toString(), res=nums[0];
-            for(let r=1;r<s.length;r++){
-                val = val[s.length-1]+val.substring(1,s.length);
-                res=Math.min(res,parseInt(val))
+            let res=nums.join('');
+            for(let i=0; i<n; i++){
+                nums=[...nums.slice(n-b,n),...nums.slice(0,n-b)];
+                if (parseInt(nums.join('')) < parseInt(res)){
+                    res=nums.join('')
+                }
             };
-            return res.toString();
+            return res;
         };
     }
 )()
