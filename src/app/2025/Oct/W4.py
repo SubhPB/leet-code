@@ -1,4 +1,3 @@
-
 from typing import List
 from collections import Counter
 from bisect import bisect_right as br, bisect_left as bl
@@ -79,7 +78,8 @@ class Solution:
             for i in range(1,len(x)): nx.append((x[i-1]+x[i])%10)
             x=nx
         return x[0]==x[1]
-    def c():
+    def nextBeautifulNumber(self, n: int) -> int:
+
         '''
   
         An integer x is numerically balanced if for every digit d in the number x, there are exactly d occurrences of that digit in x.
@@ -111,3 +111,44 @@ class Solution:
 
         0 <= n <= 10^6
         '''
+        
+        L:List[int]=[[] for l in range(9)]
+        def findNums(digit:int, length:int):
+            digitlength=sum([int(d) for d in str(digit)])
+            if digitlength==length: L[length].append(digit)
+            else:
+                for d in range(1+digit%10,9):
+                    if digitlength+d<9: 
+                        findNums(digit*10+d,length)
+                    
+
+        for digit in range(1,9):
+            for targetlength in range(digit,9):
+                findNums(digit,targetlength)
+
+        combs=[set() for l in range(9)]
+
+        def go(fulldigit:List[str]): #permutation!
+            n=len(fulldigit)
+            def gocomb(i:int, digitcomb:List[str]):
+                if i<n:
+                    for j in range(i,n):
+                        digitcomb[i],digitcomb[j]=digitcomb[j],digitcomb[i]
+                        gocomb(i+1,digitcomb)
+                        digitcomb[i],digitcomb[j]=digitcomb[j],digitcomb[i]
+                else: combs[n].add(int(''.join(digitcomb)))
+            gocomb(0,fulldigit)
+    
+        for length in range(1,9):
+            for digit in L[length]:
+                fulldigit=''.join([''.join([d for _ in range(int(d))]) for d in str(digit)])
+                go([d for d in fulldigit])
+            combs[length]=list(combs[length])
+            combs[length].sort()
+
+        digitlength=len(str(n))
+        if combs[digitlength][-1]>n:
+            return combs[digitlength][br(combs[digitlength],n)]
+            # for num in combs[digitlength]: linear approach
+            #     if num>n: return num
+        else: return combs[digitlength+1][0]
