@@ -1,3 +1,4 @@
+from typing import List
 class Solution:
     '''
     3723. Maximize Sum of Squares of Digits
@@ -62,5 +63,13 @@ class Solution:
         1 <= sum <= 2 * 10^6
     '''
     def maxSumOfSquares(self,num:int,sum:int)->str:
-        pass
+        if sum>9*num: return ""
+        res=[]
+        while sum:
+            d=min(sum,9)
+            q=sum//d; sum%=d
+            for i in range(q): res.append(str(d))
+        
+        return ''.join(res)+''.join(["0"]*max(0,num-len(res)))
+
         
