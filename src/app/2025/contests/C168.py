@@ -88,3 +88,42 @@ class Solution:
             if x <= nums2[-1] <= y: df=1
             else: df=min(df, 1+abs(x-nums2[-1]), 1+abs(y-nums2[-1]))
         return res+df
+    '''
+    3725. Count Ways to Choose Coprime Integers from Rows
+
+    You are given a m x n matrix mat of positive integers.
+    Return an integer denoting the number of ways to choose exactly one integer from each row of mat such that the greatest common divisor of all chosen integers is 1.
+    Since the answer may be very large, return it modulo 10^9 + 7.
+
+    Example 1:
+
+    Input: mat = [[1,2],[3,4]]
+    Output: 3
+
+    Explanation:
+    Chosen integer in the first row	Chosen integer in the second row	Greatest common divisor of chosen integers
+    1	3	1
+    1	4	1
+    2	3	1
+    2	4	2
+    3 of these combinations have a greatest common divisor of 1. Therefore, the answer is 3.
+
+    Constraints:
+
+    1 <= m == mat.length <= 150
+    1 <= n == mat[i].length <= 150
+    1 <= mat[i][j] <= 150
+    '''
+    def countCoprime(self, mat: List[List[int]]) -> int:
+        m=len(mat);mod=10**9+7
+        plus = lambda x,y:(x%mod +y%mod)%mod
+        dp=[min(row) for row in mat]; combs=[1]*m
+        for i,tmin in enumerate(dp):
+            for ri in range(m):
+                if ri==i: continue
+                cnt=0
+                for ci in range(m):
+                    x=mat[ri][ci]
+                    if x%tmin: cnt=plus(cnt,combs[ci])
+                combs[ri]=cnt
+        return sum(combs)
