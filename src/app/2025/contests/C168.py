@@ -80,5 +80,11 @@ class Solution:
         1 <= nums1[i], nums2[i] <= 10^5
     '''
     def minOperations(self, nums1: List[int], nums2: List[int]) -> int:
-        pass
-        
+        res=0; df=10**5
+        for i in range(len(nums1)):
+            x,y=nums1[i],nums2[i]
+            if x>y: x,y = y,x
+            res+=y-x
+            if x <= nums2[-1] <= y: df=1
+            else: df=min(df, 1+abs(x-nums2[-1]), 1+abs(y-nums2[-1]))
+        return res+df
