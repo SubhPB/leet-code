@@ -152,3 +152,21 @@ class Solution:
             # for num in combs[digitlength]: linear approach
             #     if num>n: return num
         else: return combs[digitlength+1][0]
+
+    def modifiedList(self, nums, head):
+        nums=Counter(nums); res=[]
+        while head is not None:
+            if head.val not in nums: res.append(head.val)
+            head=head.next
+        def go(i,node):
+            if i!=len(res):
+                node.next=ListNode(res[i])
+                go(i+1,node.next)
+        head=ListNode(res[0] if res else 0)
+        go(1,head)
+        return head
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
