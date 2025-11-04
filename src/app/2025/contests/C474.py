@@ -39,3 +39,27 @@ class Solution:
             b=max(b,abs(num))
             if a<b: a,b=b,a
         return (10**5)*a*b
+    '''
+    3733. Minimum Time to Complete All Deliveries
+
+    You are given two integer arrays of size 2: d = [d1, d2] and r = [r1, r2].
+    Two delivery drones are tasked with completing a specific number of deliveries. Drone i must complete di deliveries.
+    Each delivery takes exactly one hour and only one drone can make a delivery at any given hour.
+    Additionally, both drones require recharging at specific intervals during which they cannot make deliveries. Drone i must recharge every ri hours (i.e. at hours that are multiples of ri).
+    Return an integer denoting the minimum total time (in hours) required to complete all deliveries.
+
+    Example 1:
+    Input: d = [3,1], r = [2,3]
+    Output: 5
+    Explanation:
+    The first drone delivers at hours 1, 3, 5 (recharges at hours 2, 4).
+    The second drone delivers at hour 2 (recharges at hour 3).
+
+    Constraints:
+    d = [d1, d2]
+    1 <= di <= 10^9
+    r = [r1, r2]
+    2 <= ri <= 3 * 10^4
+    '''
+    def minimumTime(self, d: List[int], r: List[int]) -> int:
+        pass
