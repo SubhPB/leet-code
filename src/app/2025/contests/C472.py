@@ -21,13 +21,13 @@ class Solution:
     1 <= nums[i] <= 10^5
     '''
     def longestBalanced(self, nums: List[int]) -> int:
-        e,o=0,0;freq={(0,0):-1};res=0
-        for i,num in enumerate(nums):
-            if not num in freq:
-                if num%2: o+=1 
-                else: e+=1
-                freq[num]=1
-            if not (e,o) in freq: freq[(e,o)]=i
-            x=min(e,o)
-            if x and (e-x,o-x) in freq: res=max(res,i-freq[(e-x,o-x)])
+        n=len(nums);res=0
+        for i in range(n):
+            cnt=[0,0];freq={}
+            for j in range(i,n):
+                num=nums[j]
+                if num not in freq:
+                    freq[num]=1
+                    cnt[num%2]+=1
+                if cnt[0]==cnt[1]: res=max(res,j-i+1)
         return res
