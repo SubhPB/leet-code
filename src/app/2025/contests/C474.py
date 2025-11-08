@@ -1,4 +1,5 @@
 from typing import List
+import math
 class Solution:
     '''
     3732. Maximum Product of Three Elements After One Replacement
@@ -62,4 +63,17 @@ class Solution:
     2 <= ri <= 3 * 10^4
     '''
     def minimumTime(self, d: List[int], r: List[int]) -> int:
-        pass
+        [r1,r2]=r;[d1,d2]=d;lcm=math.lcm(*r)
+        left=d1+d2; right=left*2
+        while left<right:
+            t=(left+right)//2; bOnc=t//lcm
+            d1Onc,d2Onc=t//r1, t//r2
+            A=d2Onc-bOnc # drone1 is free but drone2 is on charge
+            B=d1Onc-bOnc # drone2 is free but drone1 is on charge
+            bFree=t-A-B-bOnc # both charge
+            A=min(0,A-d1) # 'A' could never be used by 2nd drone
+            B=min(0,B-d2) # 'B' could never be used by 1st drone
+            if bFree+B+A >=0: right=t
+            else: left=t+1
+
+        return left
