@@ -38,15 +38,13 @@ class Solution:
     1 <= m, n <= 100
     '''
     def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
-        dp=[[0]*(n+1) for _ in range(m+1)];res=0
+        dp=[[0]*(n+1) for _ in range(m+1)]
         for s in strs:
-            ones=s.count('1');zeros=len(s)-ones
-            for r in range(m+1):
-                if r+zeros>m:continue
-                for c in range(n+1):
-                    if c+ones>n:continue
-                    dp[r+zeros][c+ones]=max(
-                        1+dp[r][c],dp[r+zeros][c+ones]
+            x=s.count('1');y=len(s)-x
+            for i in range(m,y-1,-1):
+                for j in range(n,x-1,-1):
+                    dp[i][j]=max(
+                        dp[i][j],
+                        1+dp[i-y][j-x]
                     )
-                    res=max(res,dp[r+zeros][c+ones])
-        return res
+        return dp[m][n]
