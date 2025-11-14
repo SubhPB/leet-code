@@ -76,18 +76,9 @@ class Solution:
     0 <= nums[i] <= 10^5
     '''
     def minOperations(self, nums: List[int]) -> int:
-        n=len(nums);freq={};res=0
-        for i in range(n):
-            if nums[i] not in freq:
-                freq[nums[i]]=[]
-            freq[nums[i]].append(i)
-        for idxs in freq.values():
-            m=len(idxs); num=nums[idxs[0]]
-            if not num:continue
-            res+=1
-            for i in range(m-1):
-                for j in range(idxs[i],idxs[i+1]):
-                    if nums[j]<num:
-                        res+=1;i+=1
-                        break
+        n=len(nums);res=0;st=[]
+        for num in nums:
+            while st and st[-1]>num: st.pop()
+            if not st or st[-1]<num: 
+                st.append(num);res+=min(1,num)
         return res
