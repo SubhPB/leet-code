@@ -26,4 +26,5 @@ class Solution:
         s[i] is either 'a' or 'b'
     '''
     def minLengthAfterRemovals(self, s: str) -> int:
-        pass
+        a=s.count('a');b=len(s)-a
+        return abs(a-b)
