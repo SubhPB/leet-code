@@ -80,8 +80,7 @@ class Solution:
             if nums[i]>=nums[i-1]: toright[i]+=toright[i-1]
             prefix[i]=prefix[i-1]+toright[i]
             j=n-i-1
-            if nums[j]<=nums[j+1]: toleft[j]+=max(1,toleft[j+1])
-        # print(f'toright={toright} toleft={toleft} prefix={prefix}')
+            if nums[j]<=nums[j+1]: toleft[j]=1+toleft[j+1]
         for i,[l,r] in enumerate(queries):
             queries[i]=prefix[r]-prefix[l]-(toright[l]-1)*min(toleft[l],r-l)+1
         return queries
