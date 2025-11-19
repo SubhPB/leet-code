@@ -1,3 +1,4 @@
+from typing import List
 class Solution:
     '''
         3746. Minimum String Length After Balanced Removals
@@ -53,3 +54,34 @@ class Solution:
             res+=(digits[i]-1)*(9**(l-i-1))
             i+=1
         return res
+    '''
+    3748. Count Stable Subarrays
+    You are given an integer array nums.
+    A subarray of nums is called stable if it contains no inversions, i.e., there is no pair of indices i < j such that nums[i] > nums[j].
+    You are also given a 2D integer array queries of length q, where each queries[i] = [li, ri] represents a query. For each query [li, ri], compute the number of stable subarrays that lie entirely within the segment nums[li..ri].
+    Return an integer array ans of length q, where ans[i] is the answer to the ith query.​​​​​​​​​​​​​​
+    Note:
+    A single element subarray is considered stable.
+    
+    Example 1:
+    Input: nums = [3,1,2], queries = [[0,1],[1,2],[0,2]]
+    Output: [2,3,4]
+
+    Constraints:
+    1 <= nums.length <= 10^5
+    1 <= nums[i] <= 10^5
+    1 <= queries.length <= 10^5
+    queries[i] = [li, ri]
+    0 <= li <= ri <= nums.length - 1
+    '''
+    def countStableSubarrays(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        n=len(nums);toright=[1]*n;toleft=[0]*n;prefix=[1]*n
+        for i in range(1,n):
+            if nums[i]>=nums[i-1]: toright[i]+=toright[i-1]
+            prefix[i]=prefix[i-1]+toright[i]
+            j=n-i-1
+            if nums[j]<=nums[j+1]: toleft[j]+=max(1,toleft[j+1])
+        # print(f'toright={toright} toleft={toleft} prefix={prefix}')
+        for i,[l,r] in enumerate(queries):
+            queries[i]=prefix[r]-prefix[l]-(toright[l]-1)*min(toleft[l],r-l)+1
+        return queries
