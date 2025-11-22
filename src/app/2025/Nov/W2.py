@@ -112,3 +112,31 @@ class Solution:
                 res+=1
                 p1,p2=p2,r
         return res
+    '''
+    3738. Longest Non-Decreasing Subarray After Replacing at Most One Element
+
+    You are given an integer array nums.
+    You are allowed to replace at most one element in the array with any other integer value of your choice.
+    Return the length of the longest non-decreasing subarray that can be obtained after performing at most one replacement.
+    An array is said to be non-decreasing if each element is greater than or equal to its previous one (if it exists).
+
+    Example 1:
+    Input: nums = [1,2,3,1,2]
+    Output: 4
+    Explanation:
+    Replacing nums[3] = 1 with 3 gives the array [1, 2, 3, 3, 2].
+    The longest non-decreasing subarray is [1, 2, 3, 3], which has a length of 4.
+
+    Constraints:
+    1 <= nums.length <= 10^5
+    -109 <= nums[i] <= 10^9​​​​​​​
+    '''
+    def longestSubarray(self, nums: List[int]) -> int:
+        res,x,y=0,-1,-1; nums.append(nums[-1]-1)
+        for z in range(1,len(nums)):
+            res=max(res,z-y)
+            if nums[z-1]>nums[z]:
+                if y and nums[y-1]<=nums[y+1]:
+                    res=max(res,z-x-1)
+                x=y;y=z
+        return min(res,len(nums)-1)
