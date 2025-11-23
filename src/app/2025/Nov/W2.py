@@ -132,11 +132,15 @@ class Solution:
     -109 <= nums[i] <= 10^9​​​​​​​
     '''
     def longestSubarray(self, nums: List[int]) -> int:
-        res,x,y=0,-1,-1; nums.append(nums[-1]-1)
-        for z in range(1,len(nums)):
-            res=max(res,z-y)
-            if nums[z-1]>nums[z]:
-                if y and nums[y-1]<=nums[y+1]:
-                    res=max(res,z-x-1)
-                x=y;y=z
-        return min(res,len(nums)-1)
+        gamma=[];n=len(nums)
+        for i in range(1,n):
+            if nums[i]<nums[i-1]: gamma.append(i)
+        if not gamma: return n
+        m=len(gamma)
+        for i,z in enumerate(gamma):
+            b=z-(gamma[i-1] if i else -1)
+            f=(gamma[i+1] if i<m-1 else n)-z
+            res=max(res,b,f)
+            if 0<i<m-1 and nums[z-1]<=nums[z+1]:
+                res=max(res,f+b-1)
+        return res
