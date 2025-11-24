@@ -144,3 +144,22 @@ class Solution:
             if 0<i<m-1 and nums[z-1]<=nums[z+1]:
                 res=max(res,f+b-1)
         return res
+    '''
+    1018. Binary Prefix Divisible By 5
+    You are given a binary array nums (0-indexed).
+    We define xi as the number whose binary representation is the subarray nums[0..i] (from most-significant-bit to least-significant-bit).
+    For example, if nums = [1,0,1], then x0 = 1, x1 = 2, and x2 = 5.
+    Return an array of booleans answer where answer[i] is true if xi is divisible by 5.
+
+    Constraints:
+    1 <= nums.length <= 10^5
+    nums[i] is either 0 or 1.
+    '''
+    def prefixesDivBy5(self, nums: List[int]) -> List[bool]:
+        x=0;b=1
+        for i in range(len(nums)):
+            x+=nums[i]*b
+            print(x)
+            nums[i]=not x%5
+            b+=1
+        return nums
