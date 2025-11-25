@@ -156,10 +156,8 @@ class Solution:
     nums[i] is either 0 or 1.
     '''
     def prefixesDivBy5(self, nums: List[int]) -> List[bool]:
-        x=0;b=1
-        for i in range(len(nums)):
-            x+=nums[i]*b
-            print(x)
+        x=0;n=len(nums)
+        for i in range(n):
+            x<<=1;x+=nums[i]
             nums[i]=not x%5
-            b+=1
         return nums
