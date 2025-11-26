@@ -132,17 +132,16 @@ class Solution:
     -109 <= nums[i] <= 10^9​​​​​​​
     '''
     def longestSubarray(self, nums: List[int]) -> int:
-        gamma=[];n=len(nums)
+        res=1;n=len(nums);xums=[1]*n
+        for i in range(n-2,-1,-1):
+            res=max(res,1+xums[i+1])
+            if i>0 and nums[i]<=nums[i+1]: xums[i]=1+xums[i+1]
         for i in range(1,n):
-            if nums[i]<nums[i-1]: gamma.append(i)
-        if not gamma: return n
-        m=len(gamma)
-        for i,z in enumerate(gamma):
-            b=z-(gamma[i-1] if i else -1)
-            f=(gamma[i+1] if i<m-1 else n)-z
-            res=max(res,b,f)
-            if 0<i<m-1 and nums[z-1]<=nums[z+1]:
-                res=max(res,f+b-1)
+            res=max(res,1+xums[i-1])
+            if i!=n-1 and nums[i-1]<=nums[i+1]:
+                res=max(res,xums[i-1]+xums[i+1]+1)
+            if nums[i]>=nums[i-1]: xums[i]=1+xums[i-1]
+            else: xums[i]=1
         return res
     '''
     1018. Binary Prefix Divisible By 5
