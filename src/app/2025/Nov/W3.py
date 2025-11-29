@@ -68,14 +68,9 @@ class Solution:
     '''
     def totalWaviness(self, num1: int, num2: int) -> int:
         E=0
-        def eva(s:str,i:int):
-            n=len(s)
-            if n>2:
-                arr=sorted([int(s[j]) for j in range(i-1,i+2)])
-                return int(s[i]!=str(arr[1]))
-            return 0
-        for num in range(num1,num2+1):
+        for num in range(num1,1+num2):
             num=str(num);n=len(num)
-            E+=eva(num,n//2)
-            if not n%2: E+=eva(num,n//2-1)
+            for i in range(1,n-1):
+                arr=sorted([num[i+j] for j in (-1,0,1)],key=lambda x:int(x))
+                E+=int(arr[1]!=num[i])
         return E
