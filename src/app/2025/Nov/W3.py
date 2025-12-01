@@ -117,10 +117,13 @@ class Solution:
         Esum=target & abs(output[i]) ~ permutation 
         '''
         y=(n*(n+1))//2;nums=[x for x in range(n,0,-1)]
-        if -target<=y<=target: 
+        if -y<=target<=y: 
             for i in range(n):
+                if y==target: break
                 yi=y-2*nums[i]
-                # if yi> will think again about the algo!
-            nums.sort()
-            return nums
+                if yi>=target: 
+                    y=yi; nums[i]*=-1
+            if y==target:
+                nums.sort()
+                return nums
         return []
