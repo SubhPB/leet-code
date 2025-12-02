@@ -127,3 +127,59 @@ class Solution:
                 nums.sort()
                 return nums
         return []
+    '''
+    3753. Total Waviness of Numbers in Range II
+
+    You are given two integers num1 and num2 representing an inclusive range [num1, num2].
+    The waviness of a number is defined as the total count of its peaks and valleys:
+    A digit is a peak if it is strictly greater than both of its immediate neighbors.
+    A digit is a valley if it is strictly less than both of its immediate neighbors.
+    The first and last digits of a number cannot be peaks or valleys.
+    Any number with fewer than 3 digits has a waviness of 0.
+    Return the total sum of waviness for all numbers in the range [num1, num2].
+    
+    Example 1:
+    Input: num1 = 120, num2 = 130
+    Output: 3
+    Explanation:
+    In the range [120, 130]:
+    120: middle digit 2 is a peak, waviness = 1.
+    121: middle digit 2 is a peak, waviness = 1.
+    130: middle digit 3 is a peak, waviness = 1.
+    All other numbers in the range have a waviness of 0.
+    Thus, total waviness is 1 + 1 + 1 = 3.
+    
+    Constraints:
+
+    1 <= num1 <= num2 <= 10^15
+    '''
+    def totalWaviness(self, num1: int, num2: int) -> int:
+        waviness=[0]*1000;E=0
+        for x in range(1,10):
+            for y in range(10):
+                for z in range(10):
+                    E+=int(y>max(x,z))+int(y<min(x,z))
+                    waviness[x*100+y*10+z]=E
+        n1,n2=len(str(num1)),len(str(num2))
+        if n2<=3: return waviness[num2]-waviness[num1-1] #+ovw
+
+        # will continue later...
+        # def cnt(num):
+        #     nums=[int(x) for x in str(num)]
+        #     for 
+        #0->num1&0->num2
+        cnt1=0
+        if n1<=3: cnt1=waviness[num1-1]
+        nums=[int(x) for x in str(num1)]
+        for i in range(2,n1):
+            [z,y,x]=[nums[i-j] for j in range(3)]
+            cnt1+=waviness[x*100+y*10+z]
+        
+
+        for num in [num1,num2]:
+            nums=[int(x) for x in str(num)]
+
+            for i in range(len(nums)-2):
+                [x,y,z]=[nums[j+i] for j in range(3)]
+                cnt+=waviness[x*100+y*10+z]
+        
