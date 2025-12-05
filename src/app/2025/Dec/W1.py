@@ -48,3 +48,36 @@ class Solution:
             queries[i]=ADD(concs[r],-MUL(concs[l-1],10**(n2-n1)))
             queries[i]=MUL(queries[i],sums[r]-sums[l-1])
         return queries
+    '''
+    3759. Count Elements With at Least K Greater Values
+
+    You are given an integer array nums of length n and an integer k.
+    An element in nums is said to be qualified if there exist at least k elements in the array that are strictly greater than it.
+    Return an integer denoting the total number of qualified elements in nums.
+
+    Example 1:
+    Input: nums = [3,1,2], k = 1
+    Output: 2
+
+    Explanation:
+
+    The elements 1 and 2 each have at least k = 1 element greater than themselves.
+    ​​​​​​​No element is greater than 3. Therefore, the answer is 2.
+
+    Constraints:
+
+    1 <= n == nums.length <= 10^5
+    1 <= nums[i] <= 10^9
+    0 <= k < n
+    '''
+    def countElements(self, nums: List[int], k: int) -> int:
+        n=len(nums);nums.sort()
+        nums.append(nums[-1]+1)
+        if nums[n-k-1]!=nums[n-k]: return n-k
+        l=0;r=n
+        while l<r:
+            m=(l+r)//2
+            if nums[m]>=nums[n-k-1]: r=m
+            else: l=m+1
+        return l
+        
