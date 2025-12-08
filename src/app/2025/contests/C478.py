@@ -36,15 +36,18 @@ class Solution:
         for i in range(1,n):
             if nums[i]%k == nums[i-1]%k: mods[i]+=mods[i-1]
         for i,[l,r] in enumerate(queries):
-            if l-r+1>mods[i]: queries[i]=-1
+            if r-l+1>mods[r]: queries[i]=-1
             else:
                 arr=sorted(nums[l:r+1])
                 s=0;left=0;right=r-l;lw=1;rw=1
+
                 while arr[left]!=arr[right]:
-                    lnext=arr[left+1]//k; rnext=arr[right-1]//k # <- new factor need to add!
-                    if rw*rnext<lw*lnext: 
-                        s+=rw*rnext; rw+=1; right-=1
+                    lsteps=lw*(arr[left+1]//k - arr[left]//k)
+                    rsteps=rw*(arr[right]//k - arr[right-1]//k)
+                    if rsteps<lsteps:
+                        right-=1; rw+=1
                     else:
-                        s+=lw*lnext; lw+=1; left+=1
+                        left+=1; lw+=1
+                    s+=min(lsteps,rsteps)
                 queries[i]=s
         return queries
