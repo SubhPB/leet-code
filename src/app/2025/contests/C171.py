@@ -76,4 +76,55 @@ class Solution:
             for i in range(k-n+m):
                 res-=technique2[idxs[i]]-technique1[idxs[i]]
         return res
-        
+    '''
+    3768. Minimum Inversion Count in Subarrays of Fixed Length
+    You are given an integer array nums of length n and an integer k.
+    An inversion is a pair of indices (i, j) from nums such that i < j and nums[i] > nums[j].
+    The inversion count of a subarray is the number of inversions within it.
+    Return the minimum inversion count among all subarrays of nums with length k.
+    
+    Example 1:
+    Input: nums = [3,1,2,5,4], k = 3
+    Output: 0
+    Explanation:
+    We consider all subarrays of length k = 3 (indices below are relative to each subarray):
+    [3, 1, 2] has 2 inversions: (0, 1) and (0, 2).
+    [1, 2, 5] has 0 inversions.
+    [2, 5, 4] has 1 inversion: (1, 2).
+    The minimum inversion count among all subarrays of length 3 is 0, achieved by subarray [1, 2, 5].
+
+    Constraints:
+    1 <= n == nums.length <= 10^5
+    1 <= nums[i] <= 10^9
+    1 <= k <= n
+    '''
+    def minInversionCount(self, nums: List[int], k: int) -> int:
+        n=len(nums);ln=[]
+        temp=0;i=0
+        def add(num:int):
+            nonlocal ln
+            l=0; r=len(ln)
+            while l<r:
+                m=(l+r)//2
+                if ln[m]<=num: l=m+1
+                else: r=m
+            ln=ln[:l]+[num]+ln[l:]
+            return l
+        def delete(num:int):
+            nonlocal ln
+            l=0;r=len(ln)-1
+            while l<r:
+                m=(l+r+1)//2
+                if ln[m]<=num:
+                    l=m
+                else: r=m-1
+            ln=ln[:l]+ln[l+1:]
+            return l
+        while i<k:
+            temp+=len(ln)-add(nums[i]); i+=1
+        res=temp
+        for i in range(k,n):
+            temp-=delete(nums[i-k])
+            temp+=len(ln)-add(nums[i])
+            res=min(res,temp)
+        return res
