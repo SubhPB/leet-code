@@ -99,32 +99,35 @@ class Solution:
     1 <= k <= n
     '''
     def minInversionCount(self, nums: List[int], k: int) -> int:
-        n=len(nums);ln=[]
-        temp=0;i=0
-        def add(num:int):
+        ln=[];i=0;n=len(nums)
+        def left(num:int):
+            nonlocal ln
+            l=-1;r=len(ln)
+            while l<r:
+                m=(l+r+1)//2
+                if ln[m]<num: l=m
+                else: r=m-1
+            return l
+        def right(num:int):
             nonlocal ln
             l=0; r=len(ln)
             while l<r:
                 m=(l+r)//2
-                if ln[m]<=num: l=m+1
-                else: r=m
-            ln=ln[:l]+[num]+ln[l:]
+                if ln[m]>num:
+                    r=m
+                else:
+                    l=m+1
             return l
-        def delete(num:int):
-            nonlocal ln
-            l=0;r=len(ln)-1
-            while l<r:
-                m=(l+r+1)//2
-                if ln[m]<=num:
-                    l=m
-                else: r=m-1
-            ln=ln[:l]+ln[l+1:]
-            return l
+        temp=0
         while i<k:
-            temp+=len(ln)-add(nums[i]); i+=1
+            x=left(nums[i])
+            ln=ln[:x+1]+[nums[i]]+ln[x+1:]
+            temp+=x+1; i+=1
         res=temp
-        for i in range(k,n):
-            temp-=delete(nums[i-k])
-            temp+=len(ln)-add(nums[i])
-            res=min(res,temp)
+        for j in range(i,n):
+            prev=nums[j-k]; x=left(prev)
+            temp-=x+1;ln=ln[:x+1]+ln[x+2:]
+            curr=nums[j]; y=right(curr)
+            temp+=n-y; ln=ln[:y]+[curr]+ln[y:]
+
         return res
