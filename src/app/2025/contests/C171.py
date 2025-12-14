@@ -98,36 +98,34 @@ class Solution:
     1 <= nums[i] <= 10^9
     1 <= k <= n
     '''
+class Solution:
     def minInversionCount(self, nums: List[int], k: int) -> int:
-        ln=[];i=0;n=len(nums)
-        def left(num:int):
-            nonlocal ln
-            l=-1;r=len(ln)
-            while l<r:
-                m=(l+r+1)//2
-                if ln[m]<num: l=m
-                else: r=m-1
-            return l
-        def right(num:int):
-            nonlocal ln
-            l=0; r=len(ln)
+        n=len(nums);temp=0; bs=[]
+        def left(bs:List[int],num:int):
+            l=0;r=len(bs)
             while l<r:
                 m=(l+r)//2
-                if ln[m]>num:
-                    r=m
-                else:
-                    l=m+1
+                if bs[m]<num: l=m+1
+                else: r=m
+            # bs=bs[:l]+[num]+bs[l:]
             return l
-        temp=0
-        while i<k:
-            x=left(nums[i])
-            ln=ln[:x+1]+[nums[i]]+ln[x+1:]
-            temp+=x+1; i+=1
+        def right(bs:List[int],num:int):
+            l=0;r=len(bs)
+            while l<r:
+                m=(l+r)//2
+                if bs[m]<=num: l=m+1
+                else: r=m
+            # bs=bs[:r-1]+bs[r:]
+            return l
+        for i in range(k): 
+            r=right(bs,nums[i]);temp+=len(bs)-r
+            bs=bs[:r]+[nums[i]]+bs[r:]
         res=temp
-        for j in range(i,n):
-            prev=nums[j-k]; x=left(prev)
-            temp-=x+1;ln=ln[:x+1]+ln[x+2:]
-            curr=nums[j]; y=right(curr)
-            temp+=n-y; ln=ln[:y]+[curr]+ln[y:]
-
+        
+        for i in range(k,n):
+            l=left(bs,nums[i-k])
+            temp-=l;bs=bs[:l]+bs[l+1:]
+            r=right(bs,nums[i])
+            temp+=k-1-r;bs=bs[:r]+[nums[i]]+bs[r:]
+            res=min(res,temp)
         return res
