@@ -34,14 +34,16 @@ class Solution:
         i,j,p=n-1,n-1,0
         while i>=0:
             # print(f'({i},{j}) hp:{hp}->thishp:{hp-damage[i]} nowp:{p} nowres={res} bool:{hp-damage[i]>=requirement[i]}')
+
             hp-=damage[i]
             if hp>=requirement[i]:
-                p+=1; res+=p; i-=1
-            else:
+                i-=1; p+=1; res+=p
+            elif hp>=0:
+                i-=1; res+=p
+            else: # hp:-ve
                 hp+=damage[i]
                 if i!=j: hp+=damage[j]
                 if damage[j]<=requirement[j]: p-=1
                 j-=1
             i=min(i,j)
-        # print(res)
         return res
