@@ -30,20 +30,21 @@ class Solution:
     1 <= damage[i], requirement[i] <= 10^4
     '''
     def totalScore(self, hp: int, damage: List[int], requirement: List[int]) -> int:
-        n=len(damage);res=0
-        i,j,p=n-1,n-1,0
-        while i>=0:
-            # print(f'({i},{j}) hp:{hp}->thishp:{hp-damage[i]} nowp:{p} nowres={res} bool:{hp-damage[i]>=requirement[i]}')
-
-            hp-=damage[i]
-            if hp>=requirement[i]:
-                i-=1; p+=1; res+=p
-            elif hp>=0:
-                i-=1; res+=p
-            else: # hp:-ve
-                hp+=damage[i]
-                if i!=j: hp+=damage[j]
-                if damage[j]<=requirement[j]: p-=1
-                j-=1
-            i=min(i,j)
+        n=len(damage);pf=[0]*(n+1); res=0
+        for i in range(n): pf[i]+=damage[i]+pf[i-1]
+        '''
+        => hp-(d1+d2+...+dr) >= req[r]
+        => hp-(pf[j]-pf[i-1]) >= req[r]
+        => pf[i-1] >= req[r]+pf[r]-hp
+        => score(r) = r-i+1
+        '''
+        def bs(target:int,r:int):
+            l=-1
+            while l<r:
+                m=(l+r)//2
+                if pf[m]>=target: r=m
+                else: l=m+1
+            return l
+        for r in range(n):
+            res+=r-bs(requirement[r]+pf[r]-hp,r)
         return res
