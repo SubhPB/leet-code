@@ -48,3 +48,48 @@ class Solution:
         for r in range(n):
             res+=r-bs(requirement[r]+pf[r]-hp,r)
         return res
+    '''
+    3772. Maximum Subgraph Score in a Tree
+    You are given an undirected tree with n nodes, numbered from 0 to n - 1. It is represented by a 2D integer array edges​​​​​​​ of length n - 1, where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the tree.
+    You are also given an integer array good of length n, where good[i] is 1 if the ith node is good, and 0 if it is bad.
+    Define the score of a subgraph as the number of good nodes minus the number of bad nodes in that subgraph.
+    For each node i, find the maximum possible score among all connected subgraphs that contain node i.
+    Return an array of n integers where the ith element is the maximum score for node i.
+    A subgraph is a graph whose vertices and edges are subsets of the original graph.
+    A connected subgraph is a subgraph in which every pair of its vertices is reachable from one another using only its edges.
+    Example 1:
+    Tree Example 1
+    Input: n = 3, edges = [[0,1],[1,2]], good = [1,0,1]
+    Output: [1,1,1]
+    Explanation:
+    Green nodes are good and red nodes are bad.
+    For each node, the best connected subgraph containing it is the whole tree, which has 2 good nodes and 1 bad node, resulting in a score of 1.
+    Other connected subgraphs containing a node may have the same score.
+
+    Constraints:
+    2 <= n <= 10^5
+    edges.length == n - 1
+    edges[i] = [ai, bi]
+    0 <= ai, bi < n
+    good.length == n
+    0 <= good[i] <= 1
+    The input is generated such that edges represents a valid tree.
+    '''
+    def maxSubgraphScore(self, n: int, edges: List[List[int]], good: List[int]) -> List[int]:
+        G=[[] for _ in range(n)]
+        res=[0]*n; mins=[n]*n
+        for [u,v] in edges:
+            G[u].append(v); G[v].append(u)
+        def dfs(node:int,parent:int):
+            res[node]=[-1,1][good[node]]
+            for neighbor in G[node]:
+                if neighbor!=parent:
+                    score=dfs(neighbor,node)
+                    mins[node]=min(mins[node],score)
+                    res[node]+=score
+            return res[node]
+        dfs(0,-1)
+        # print(f'res={res}; mins={mins}')
+        for node in range(n):
+            res[node]=max(res[0],res[node],res[0]-mins[node]) 
+        return res
