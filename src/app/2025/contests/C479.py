@@ -77,19 +77,24 @@ class Solution:
     '''
     def maxSubgraphScore(self, n: int, edges: List[List[int]], good: List[int]) -> List[int]:
         G=[[] for _ in range(n)]
-        res=[0]*n; mins=[n]*n
         for [u,v] in edges:
             G[u].append(v); G[v].append(u)
+        res=[0]*n
         def dfs(node:int,parent:int):
-            res[node]=[-1,1][good[node]]
+            res[node] = 1 if good[node] else -1
             for neighbor in G[node]:
                 if neighbor!=parent:
                     score=dfs(neighbor,node)
-                    mins[node]=min(mins[node],score)
-                    res[node]+=score
+                    res[node]+=max(0,score)
             return res[node]
         dfs(0,-1)
-        # print(f'res={res}; mins={mins}')
-        for node in range(n):
-            res[node]=max(res[0],res[node],res[0]-mins[node]) 
+        def dfs2(node:int,parent:int):
+            if 0<=parent<n:
+                res[node]=max(
+                    res[node],
+                    res[parent] + (-1 if res[node]<0 else 0)
+                )
+            for neighbor in G[node]:
+                if neighbor!=parent: dfs2(neighbor, node)
+        dfs2(0,-1)
         return res
