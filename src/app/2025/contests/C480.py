@@ -24,14 +24,18 @@ class Solution:
     There is at most one negative value in balance initially.
     '''
     def minMoves(self, balance: List[int]) -> int:
-        left=0; m=0; t=sum(balance)
+        n=len(balance); x=0; t=0
+        for i in range(n):
+            if balance[i]<0: x=i
+            t+=balance[i]
         if t<0: return -1
-        for i,bal in enumerate(balance):
-            left+=bal
-            if left<0:
-                balance[i+1]+=left
-                m-=left; left=0
-            elif t-left<0:
-                m+=min(left,left-t); balance[i+1]+=min(left,left-t)
-                left-=min(left,left-t)
+        l=x-1;r=x+1;m=0
+        while balance[x]<0:
+            ls=(x-l)%n; rs=(r-x)%n
+            if ls<=rs:
+                temp=min(-balance[x], balance[l%n])
+                balance[x]+=temp; m+=temp*ls;l-=1
+            else:
+                temp=min(-balance[x],balance[r%n])
+                balance[x]+=temp; m+=temp*rs; r+=1
         return m
