@@ -1,5 +1,10 @@
 import heapq
 from typing import List
+
+'''^^^^^^^^^^^^^^^^^^^^^^#3782^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'''
+maxn=10**15; maxops=(maxn-1).bit_length(); cache=[1]*(maxops+1)
+for i in range(1,maxops+1): cache[i]=2*cache[i-1]
+
 class Solution:
     '''
     3780. Maximum Sum of Three Numbers Divisible by Three
@@ -63,3 +68,35 @@ class Solution:
             heapq.heappush(hq,-nums[i])
             if int(s[i]): res-=heapq.heappop(hq)
         return res
+    '''
+    3782. Last Remaining Integer After Alternating Deletion Operations
+    You are given an integer n.
+    We write the integers from 1 to n in a sequence from left to right. Then, alternately apply the following two operations until only one integer remains, starting with operation 1:
+    Operation 1: Starting from the left, delete every second number.
+    Operation 2: Starting from the right, delete every second number.
+    Return the last remaining integer.
+
+    Example 1:
+    Input: n = 8
+    Output: 3
+    Explanation:
+
+    Write [1, 2, 3, 4, 5, 6, 7, 8] in a sequence.
+    Starting from the left, we delete every second number: [1, 2, 3, 4, 5, 6, 7, 8]. The remaining integers are [1, 3, 5, 7].
+    Starting from the right, we delete every second number: [1, 3, 5, 7]. The remaining integers are [3, 7].
+    Starting from the left, we delete every second number: [3, 7]. The remaining integer is [3].
+
+    Constraints:
+    1 <= n <= 10^15
+    '''
+    def lastInteger(self, n: int) -> int:
+        l=1;r=n;x=0
+        while l!=r:
+            q=(r-l)//cache[x]
+            if q%2: # odd -> delete
+                if x%2: #rtl
+                    l+=cache[x]
+                else: #ltr
+                    r-=cache[x]
+            x+=1
+        return l 
