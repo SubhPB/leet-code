@@ -56,5 +56,10 @@ class Solution:
     1 <= cost1, cost2, costBoth <= 10^6
     0 <= need1, need2 <= 10^9
     '''
-    def minimumCost(self, cost1: int, cost2: int, costBoth: int, need1: int, need2: int) -> int:
-        pass
+    def minimumCost(self, c1: int, c2: int, cb: int, n1: int, n2: int) -> int:
+        fn=lambda x:max(0,x)
+        return min(
+            c1*n1+c2*n2,
+            cb*n1+fn(n2-n1)*c2,
+            cb*n2+fn(n1-n2)*c1
+        )
