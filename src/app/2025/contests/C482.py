@@ -63,3 +63,26 @@ class Solution:
             cb*n1+fn(n2-n1)*c2,
             cb*n2+fn(n1-n2)*c1
         )
+    '''
+    3790. Smallest All-Ones Multiple
+    You are given a positive integer k.
+    Find the smallest integer n divisible by k that consists of only the digit 1 in its decimal representation (e.g., 1, 11, 111, ...).
+    Return an integer denoting the number of digits in the decimal representation of n. If no such n exists, return -1.
+
+    Example 1:
+    Input: k = 3
+    Output: 3
+    Explanation:
+    n = 111 because 111 is divisible by 3, but 1 and 11 are not. The length of n = 111 is 3.
+
+    Constraints:
+    2 <= k <= 10^5
+    '''
+    def minAllOneMultiple(self, k: int) -> int:
+        mods=[0]*k; n=1; x=1
+        while k%2:
+            m=n%k
+            if not m: return x
+            if mods[m]: return -1
+            mods[m]=1; n=m*10+1; x+=1
+        return -1
