@@ -86,3 +86,24 @@ class Solution:
             if mods[m]: return -1
             mods[m]=1; n=m*10+1; x+=1
         return -1
+    '''
+    3791. Number of Balanced Integers in a Range
+
+    You are given two integers low and high.
+    An integer is called balanced if it satisfies both of the following conditions:
+
+    It contains at least two digits.
+    The sum of digits at even positions is equal to the sum of digits at odd positions (the leftmost digit has position 1).
+    Return an integer representing the number of balanced integers in the range [low, high] (both inclusive).
+
+    Example 1:
+    Input: low = 1, high = 100
+    Output: 9
+    Explanation:
+    The 9 balanced numbers between 1 and 100 are 11, 22, 33, 44, 55, 66, 77, 88, and 99.
+
+    Constraints:
+    1 <= low <= high <= 10^15
+    '''
+    def countBalanced(self, low: int, high: int) -> int:
+        pass
