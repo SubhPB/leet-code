@@ -1,3 +1,15 @@
+'''------------#1411------------'''
+M=10**9+7; N=5001
+MUL=lambda x,y: (x%M*y%M)%M
+ADD = lambda x,y: (x%M+y%M)%M
+transform = lambda d,u: [
+    ADD(MUL(3,d),MUL(2,u)),
+    ADD(MUL(2,d),MUL(2,u))
+]
+cache=[[6,6] for _ in range(N)]; cache[0]=[0,0]
+for n in range(2,N): cache[n]=transform(*cache[n-1])
+'''------------#1411------------'''
+
 class Solution:
     '''
     1411. Number of Ways to Paint N × 3 Grid
@@ -22,4 +34,4 @@ class Solution:
     1 <= n <= 5000
     '''
     def numOfWays(self, n: int) -> int:
-        pass
+        return ADD(*cache[n])
