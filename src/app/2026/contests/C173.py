@@ -17,4 +17,19 @@ class Solution:
     1 <= k <= 10^9
     '''
     def minLength(self, nums: List[int], k: int) -> int:
-        return -1
+        n=len(nums); res=n+1; s={}
+        i=0;j=0;t=0
+        while j<=n:
+            if t>=k:
+                res=min(res,j-i)
+                s[nums[i]]-=1
+                if not s[nums[i]]: 
+                    del s[nums[i]]; t-=nums[i]
+                i+=1
+            else:
+                if j<n:
+                    if nums[j] not in s:
+                        s[nums[j]]=0; t+=nums[j]
+                    s[nums[j]]+=1
+                j+=1
+        return res if res<=n else -1
