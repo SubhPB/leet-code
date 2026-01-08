@@ -58,4 +58,14 @@ class Solution:
     The values of restrictions[i][0] are unique.
     '''
     def findMaxVal(self, n: int, restrictions: List[List[int]], diff: List[int]) -> int:
-        pass
+        inf=10**9+7; a=[inf]*(n); a[0]=0
+        for [idx,val] in restrictions: a[idx]=val
+        for idx in range(1,n): a[idx]=min(
+            a[idx],a[idx-1]+diff[idx-1]
+        )
+        for idx in range(n-2,-1,-1): a[idx]=min(
+            a[idx],a[idx+1]+diff[idx]
+        )
+        # using a[0] as res, just to avoid initializing an extra variable.
+        for num in a: a[0]=max(a[0],num)
+        return a[0]
