@@ -69,3 +69,29 @@ class Solution:
         # using a[0] as res, just to avoid initializing an extra variable.
         for num in a: a[0]=max(a[0],num)
         return a[0]
+    '''
+    3797. Count Routes to Climb a Rectangular Grid
+
+    You are given a string array grid of size n, where each string grid[i] has length m. The character grid[i][j] is one of the following symbols:
+    '.': The cell is available.
+    '#': The cell is blocked.
+    You want to count the number of different routes to climb grid. Each route must start from any cell in the bottom row (row n - 1) and end in the top row (row 0).
+    However, there are some constraints on the route.
+    You can only move from one available cell to another available cell.
+    The Euclidean distance of each move is at most d, where d is an integer parameter given to you. The Euclidean distance between two cells (r1, c1), (r2, c2) is sqrt((r1 - r2)2 + (c1 - c2)2).
+    Each move either stays on the same row or moves to the row directly above (from row r to r - 1).
+    You cannot stay on the same row for two consecutive turns. If you stay on the same row in a move (and this move is not the last move), your next move must go to the row above.
+    Return an integer denoting the number of such routes. Since the answer may be very large, return it modulo 109 + 7.
+
+    Example 1:
+    Input: grid = ["..","#."], d = 1
+    Output: 2
+
+    Constraints:
+    1 <= n == grid.length <= 750
+    1 <= m == grid[i].length <= 750
+    grid[i][j] is '.' or '#'.
+    1 <= d <= 750
+    '''
+    def numberOfRoutes(self, grid: List[str], d: int) -> int:
+        pass
