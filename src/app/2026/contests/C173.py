@@ -94,4 +94,37 @@ class Solution:
     1 <= d <= 750
     '''
     def numberOfRoutes(self, grid: List[str], d: int) -> int:
-        pass
+        m=len(grid); n=len(grid[0])
+        M=10**9+7; dy=[int(grid[0][c]!='#') for c in range(n)]
+        ADD=lambda a,b:(a%M+b%M)%M
+        for r in range(m):
+            #vertical...
+            if r>0:
+                for ct in range(n):
+                    y=0
+                    if grid[r][ct]!='#':
+                        for cn in range(n):
+                            if grid[r-1][cn]!='#' and d*d-1>=(ct-cn)*(ct-cn):
+                                y = ADD(y,dy[ct])
+                    dy[ct]=y
+
+            # horizontal...
+            dx=[0]*n
+            for ct in range(n):
+                x=0
+                if grid[r][ct]!='#':
+                    for cn in range(
+                        max(0,ct-d),
+                        min(n,d+ct+1)
+                    ):
+                        if cn!=ct and grid[r][cn]!='#':
+                            x = ADD(x,dy[cn])
+                dx[ct]=x
+            print(f'Before: {dy}')
+            for c in range(n):
+                dy[c]=ADD(dy[c],dx[c])  
+            print(f'After: {dy}')
+        res=0 
+        for x in dy: res=ADD(res,x)
+        return res
+        
