@@ -66,11 +66,14 @@ class Solution:
                 m+=1; x+=int(s[i])
         if 2*flipCost<=min(swapCost,crossCost): return m*flipCost
         cost=0; inf=10**9+7
-        while x>0:
+        while x>0 and m!=max(x,m-x):
            sc = swapCost if m-x-1>0 else inf
            cc = crossCost if x-1>0 else inf
            cost+=min(sc,cc)
            if sc<cc: x-=1
            else: x-=2
            m-=2
-        return cost+m*flipCost
+        return cost+min(
+            m*flipCost, 
+            ((m+1)//2)*crossCost + (m%2)*flipCost
+        )
