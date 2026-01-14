@@ -59,21 +59,16 @@ class Solution:
     s and t consist only of the characters '0' and '1'.
   
     '''
-    def minimumCost(self, s: str, t: str, flipCost: int, swapCost: int, crossCost: int) -> int:
-        n=len(s); m=0; x=0
+    def minimumCost(self, s: str, t: str, fc: int, sc: int, cc: int) -> int:
+        n=len(s); m=0; x=0; cost=0
         for i in range(n): 
             if s[i]!=t[i]: 
                 m+=1; x+=int(s[i])
-        if 2*flipCost<=min(swapCost,crossCost): return m*flipCost
-        cost=0; inf=10**9+7
-        while x>0 and m!=max(x,m-x):
-           sc = swapCost if m-x-1>0 else inf
-           cc = crossCost if x-1>0 else inf
-           cost+=min(sc,cc)
-           if sc<cc: x-=1
-           else: x-=2
-           m-=2
+        if 2*fc>sc: 
+            swaps=min(x,m-x)
+            cost+=swaps*sc
+            m-=2*swaps
         return cost+min(
-            m*flipCost, 
-            ((m+1)//2)*crossCost + (m%2)*flipCost
+            m*fc,
+            (m//2)*(sc+cc)+(m%2)*fc
         )
