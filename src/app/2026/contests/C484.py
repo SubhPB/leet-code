@@ -73,3 +73,27 @@ class Solution:
             freq[idx]=freq.get(idx,0)+1
         for idx in freq: res+=(freq[idx]*(freq[idx]-1))//2
         return res
+    '''
+    3806. Maximum Bitwise AND After Increment Operations
+
+    You are given an integer array nums and two integers k and m.
+    You may perform at most k operations. In one operation, you may choose any index i and increase nums[i] by 1.
+    Return an integer denoting the maximum possible bitwise AND of any subset of size m after performing up to k operations optimally.
+
+    Example 1:
+    Input: nums = [3,1,2], k = 8, m = 2
+    Output: 6
+    Explanation:
+    We need a subset of size m = 2. Choose indices [0, 2].
+    Increase nums[0] = 3 to 6 using 3 operations, and increase nums[2] = 2 to 6 using 4 operations.
+    The total number of operations used is 7, which is not greater than k = 8.
+    The two chosen values become [6, 6], and their bitwise AND is 6, which is the maximum possible.
+    
+    Constraints:
+    1 <= n == nums.length <= 5*10^4
+    1 <= nums[i] <= 10^9
+    1 <= k <= 10^9
+    1 <= m <= n
+    '''
+    def maximumAND(self, nums: List[int], k: int, m: int) -> int:
+        pass
