@@ -31,3 +31,52 @@ class Solution:
         for i in range(n):
             if nums[i]!=target[i]: freq[nums[i]]=1+freq.get(nums[i],0)
         return len(freq)
+    '''
+    3811. Number of Alternating XOR Partitions
+
+    You are given an integer array nums and two distinct integers target1 and target2.
+    A partition of nums splits it into one or more contiguous, non-empty blocks that cover the entire array without overlap.
+    A partition is valid if the bitwise XOR of elements in its blocks alternates between target1 and target2, starting with target1.
+    Formally, for blocks b1, b2, …:
+
+    XOR(b1) = target1
+    XOR(b2) = target2 (if it exists)
+    XOR(b3) = target1, and so on.
+    Return the number of valid partitions of nums, modulo 109 + 7.
+    Note: A single block is valid if its XOR equals target1.
+
+    Example 1:
+    Input: nums = [2,3,1,4], target1 = 1, target2 = 5
+    Output: 1
+    Explanation:​​​​​​​
+
+    The XOR of [2, 3] is 1, which matches target1.
+    The XOR of the remaining block [1, 4] is 5, which matches target2.
+    This is the only valid alternating partition, so the answer is 1.
+
+    Constraints:
+    1 <= nums.length <= 10^5
+    0 <= nums[i], target1, target2 <= 10^5
+    target1 != target2
+    '''
+    def alternatingXOR(self, nums: List[int], target1: int, target2: int) -> int:
+        xors=dict(); n=len(nums)
+        res=0; xor=0; M=10**9+7
+        add=lambda x,y: (x%M+y%M)%M
+        dp=[[0,0] for _ in range(n)]
+        for i,num in enumerate(nums):
+            num^=xor
+            if xor not in xors: xors[xor]=[]
+            x1=xor^target1
+            # supposing tail ends at i-th index with xor target1
+            if x1==target1: dp[i][1]=add(dp[i][1],1)
+            for j in xors.get(x1,[]):
+                dp[i][1]=add(dp[i][1], dp[j][0])
+            res=add(res,dp[i][1])
+            # supposing tail ends at i-th index with xor target2
+            x2=xor^target2
+            for j in xors.get(x2,[]):
+                dp[i][0]=add(dp[i][0], dp[j][1])
+            xors[xor].append(i)
+            res=add(res,dp[i][0])
+        return res
