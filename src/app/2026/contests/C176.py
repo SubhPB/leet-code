@@ -60,23 +60,24 @@ class Solution:
     target1 != target2
     '''
     def alternatingXOR(self, nums: List[int], target1: int, target2: int) -> int:
-        xors=dict(); n=len(nums)
-        res=0; xor=0; M=10**9+7
+        xors={0:[-1]}
+        x=0; M=10**9+7; n=len(nums)
         add=lambda x,y: (x%M+y%M)%M
-        dp=[[0,0] for _ in range(n)]
+
+        dp=[[0,0] for _ in range(n+1)]
+        dp[-1][1]=1 # dp[n:-1][1:tailendsWithXorEqTarget2] : BASECASE
+
         for i,num in enumerate(nums):
-            num^=xor
-            if xor not in xors: xors[xor]=[]
-            x1=xor^target1
-            # supposing tail ends at i-th index with xor target1
-            if x1==target1: dp[i][1]=add(dp[i][1],1)
-            for j in xors.get(x1,[]):
-                dp[i][1]=add(dp[i][1], dp[j][0])
-            res=add(res,dp[i][1])
-            # supposing tail ends at i-th index with xor target2
-            x2=xor^target2
-            for j in xors.get(x2,[]):
-                dp[i][0]=add(dp[i][0], dp[j][1])
-            xors[xor].append(i)
-            res=add(res,dp[i][0])
-        return res
+            x^=num; left=x^target1
+            # Assuming tail has xor equals target1
+            for j in xors.get(left,[]):
+                dp[i][0]=add(dp[i][0],dp[j][1])
+
+            left=x^target2
+            # Assuming tail ends having xor equals targte2
+            for j in xors.get(left,[]):
+                dp[i][1]=add(dp[i][1],dp[j][0]) 
+            
+            if x not in xors: xors[x]=[]
+            xors[x].append(i)
+        return add(dp[n-1][0], dp[n-1][1])
