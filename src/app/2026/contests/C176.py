@@ -60,24 +60,14 @@ class Solution:
     target1 != target2
     '''
     def alternatingXOR(self, nums: List[int], target1: int, target2: int) -> int:
-        xors={0:[-1]}
-        x=0; M=10**9+7; n=len(nums)
+        d1,d2={},{0:1}
+        x=0;M=10**9+7;n=len(nums)
         add=lambda x,y: (x%M+y%M)%M
-
-        dp=[[0,0] for _ in range(n+1)]
-        dp[-1][1]=1 # dp[n:-1][1:tailendsWithXorEqTarget2] : BASECASE
-
         for i,num in enumerate(nums):
-            x^=num; left=x^target1
-            # Assuming tail has xor equals target1
-            for j in xors.get(left,[]):
-                dp[i][0]=add(dp[i][0],dp[j][1])
-
-            left=x^target2
-            # Assuming tail ends having xor equals targte2
-            for j in xors.get(left,[]):
-                dp[i][1]=add(dp[i][1],dp[j][0]) 
-            
-            if x not in xors: xors[x]=[]
-            xors[x].append(i)
-        return add(dp[n-1][0], dp[n-1][1])
+            x^=num
+            bt1=d2.get(x^target1,0)
+            bt2=d1.get(x^target2,0)
+            d1[x]=add(d1.get(x,0),bt1)
+            d2[x]=add(d2.get(x,0),bt2)
+            if i==n-1: return add(bt1,bt2)
+        return -1
