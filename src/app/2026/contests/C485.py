@@ -23,22 +23,18 @@ class Solution:
     1 <= budget <= 2 * 10^5
     '''
     def maxCapacity(self, costs: List[int], capacity: List[int], budget: int) -> int:
-        capacity.append(0)
-        n=len(costs); idx=[i for i in range(n)]
-        idx.sort(key=lambda i:costs[i])
-        mx1,mx2=0,-1; res=0
-        for i,ci in enumerate(idx):
-            [_,mx2,mx1]=sorted([mx1,mx2,ci], key=lambda x:capacity[x])
-            idx[i]=[ci,mx1,mx2]
-        for [ci,mx1,_mx2] in idx:
-            rem=budget-costs[ci]
-            l=0; r=n-1
-            if rem>=0:
-                while l<r: 
+        n=len(costs); dp=[0]*n; res=0
+        idx=sorted([i for i in range(n)], key=lambda i:costs[i])
+        for i in range(1,n): dp[i]=max(dp[i-1],capacity[idx[i]-1])
+        for i in idx:
+            rem=budget-costs[i]
+            if rem<0: continue
+            elif rem<costs[0]: res=max(res,capacity[i])
+            else:
+                l=0; r=i
+                while l<r:
                     m=(l+r+1)//2
-                    if costs[idx[m][0]]<=rem: l=m
-                    else: r=m-1 
-                res=max(
-                    res, capacity[ci]+capacity[idx[l][1+int(idx[l][1]==ci)]]
-                )
+                    if costs[idx[m]]<=rem: l=m
+                    else: r=m-1
+                res=max(res,capacity[i]+dp[idx[l]])
         return res
