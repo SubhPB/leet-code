@@ -1,4 +1,5 @@
 from typing import List
+from collections import deque
 class Solution:
     '''
     3814. Maximum Capacity Within Budget
@@ -64,4 +65,21 @@ class Solution:
     s contains lowercase English letters only
     '''
     def lexSmallestAfterDeletion(self, s: str) -> str:
-        pass
+        nums=[ord(i) for i in s]
+        dt={}; n=len(s)
+        for i,num in enumerate(nums):
+            if num not in dt: dt[num]=deque()
+            dt[num].append(i)
+        nums=sorted(list(set(nums)));l=0;r=len(nums)-1
+        while l<r:
+            if len(dt[nums[l]])==1: l+=1
+            elif len(dt[nums[r]])==1: r-=1
+            else:
+                if dt[nums[r]][0]<dt[nums[l]][0]:
+                    dt[nums[r]].popleft()
+                else:
+                    dt[nums[l]].pop()
+        res=[""]*n
+        for num in dt:
+            res[dt[num][0]]=chr(num)
+        return ''.join(res)
