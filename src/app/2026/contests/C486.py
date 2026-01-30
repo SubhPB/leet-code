@@ -1,6 +1,9 @@
 from typing import List
 from collections import deque
 
+cache=[1]*51 # Cache permutation for #3821
+for i in range(1,51): cache[i]=cache[i-1]*i
+
 class Solution:
     '''
     3819. Rotate Non Negative Elements
@@ -107,4 +110,13 @@ class Solution:
     The answer is strictly less than 2^50
     '''
     def nthSmallest(self, n: int, k: int) -> int:
-        pass
+        C=lambda x,y: int(cache[x]/(cache[y]*cache[x-y]))
+        l=k; res=0
+        while k>0:    
+            ns=n-C(l-1,k-1)
+            if ns>0:
+                l+=1; n=ns
+            else:
+                res+=(1<<(l-1))
+                k-=1; l=k
+        return res
