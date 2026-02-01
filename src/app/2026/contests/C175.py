@@ -34,4 +34,22 @@ class Solution:
                     r=m
                     continue
             l=m+1
-        return l
+        return 
+    '''
+    3825. Longest Strictly Increasing Subsequence With Non-Zero Bitwise AND
+
+    You are given an integer array nums.
+    Return the length of the longest strictly increasing subsequence in nums whose bitwise AND is non-zero. If no such subsequence exists, return 0.
+
+    Example 1:
+    Input: nums = [5,4,7]
+    Output: 2
+    Explanation:
+    One longest strictly increasing subsequence is [5, 7]. The bitwise AND is 5 AND 7 = 5, which is non-zero. 
+
+    Constraints:
+    1 <= nums.length <= 10^5
+    0 <= nums[i] <= 10^9
+    '''
+    def longestSubsequence(self, nums: List[int]) -> int:
+        pass    
