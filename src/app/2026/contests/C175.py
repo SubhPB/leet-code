@@ -52,4 +52,15 @@ class Solution:
     0 <= nums[i] <= 10^9
     '''
     def longestSubsequence(self, nums: List[int]) -> int:
-        pass    
+        res=1
+        for i in range(30):
+            temp=[]
+            for num in nums:
+                if (num>>i)&1: temp.append(num)
+            n=len(temp); dp=[1]*n
+            for l in range(n-1,-1,-1):
+                for r in range(l+1,n,1):
+                    if temp[l]<temp[r]:
+                        dp[l]=max(dp[l],dp[r]+1)
+                res=max(res,dp[l])
+        return res
