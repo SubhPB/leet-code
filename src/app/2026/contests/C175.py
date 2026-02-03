@@ -64,3 +64,32 @@ class Solution:
                         dp[l]=max(dp[l],dp[r]+1)
                 res=max(res,dp[l])
         return res
+
+    '''
+    3826. Minimum Partition Score
+
+    You are given an integer array nums and an integer k.
+    Your task is to partition nums into exactly k subarrays and return an integer denoting the minimum possible score among all valid partitions.
+    The score of a partition is the sum of the values of all its subarrays.
+    The value of a subarray is defined as sumArr * (sumArr + 1) / 2, where sumArr is the sum of its elements.
+
+    Example 1:
+    Input: nums = [5,1,2,1], k = 2
+    Output: 25
+    Explanation:
+    We must partition the array into k = 2 subarrays. One optimal partition is [5] and [1, 2, 1].
+    The first subarray has sumArr = 5 and value = 5 × 6 / 2 = 15.
+    The second subarray has sumArr = 1 + 2 + 1 = 4 and value = 4 × 5 / 2 = 10.
+    The score of this partition is 15 + 10 = 25, which is the minimum possible score.
+    Constraints:
+
+    1 <= nums.length <= 1000
+    1 <= nums[i] <= 10^4
+    1 <= k <= nums.length
+    '''
+    def minPartitionScore(self, nums: List[int], k: int) -> int:
+        '''
+        res = 0.5[E(Si*Si) + E(Si)] { Where: 1<=i<=k
+        indirectly question transforms into that E(Si) is fixed but real question is to maximize the value of E(Si*Si)
+        '''
+        pass
