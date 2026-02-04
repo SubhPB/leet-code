@@ -92,4 +92,21 @@ class Solution:
         res = 0.5[E(Si*Si) + E(Si)] { Where: 1<=i<=k
         indirectly question transforms into that E(Si) is fixed but real question is to maximize the value of E(Si*Si)
         '''
-        pass
+        n=len(nums); s=[0]*(n+1); idxs=[0,n]; t=0
+        for i in range(1,n+1): s[i]+=s[i-1]+nums[i-1]
+
+        for bar in range(k-1):
+            li=0; mn=10**9; mni=0
+            for i in range(n):
+                l=idxs[li]; r=idxs[li+1]
+                if r==i:
+                    li+=1
+                elif l!=i:
+                    temp=(s[r]-s[i])**2 + (s[i]-s[l])**2
+                    if temp<mn: 
+                        mn=temp; mni=i
+            idxs.append(mni)
+            idxs.sort()
+        for i in range(1,len(idxs)):
+            t+=(s[idxs[i]]-s[idxs[i-1]])**2
+        return (s[n]+t)//2
