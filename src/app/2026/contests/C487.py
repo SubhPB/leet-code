@@ -37,3 +37,31 @@ class Solution:
                 else: l=mni
             t+=1
         return nums[l]
+    '''
+    3830. Longest Alternating Subarray After Removing At Most One Element
+
+    You are given an integer array nums.
+
+    A subarray nums[l..r] is alternating if one of the following holds:
+
+    nums[l] < nums[l + 1] > nums[l + 2] < nums[l + 3] > ...
+    nums[l] > nums[l + 1] < nums[l + 2] > nums[l + 3] < ...
+    In other words, if we compare adjacent elements in the subarray, then the comparisons alternate between strictly greater and strictly smaller.
+    You can remove at most one element from nums. Then, you select an alternating subarray from nums.
+    Return an integer denoting the maximum length of the alternating subarray you can select.
+    A subarray of length 1 is considered alternating.
+
+    Example 1:
+    Input: nums = [2,1,3,2]
+    Output: 4
+    Explanation:
+    Choose not to remove elements.
+    Select the entire array [2, 1, 3, 2], which is alternating because 2 > 1 < 3 > 2.
+
+    Constraints:
+    2 <= nums.length <= 10^5
+    1 <= nums[i] <= 10^5
+    '''
+    def longestAlternating(self, nums: List[int]) -> int:
+        # to be continued...
+        pass
