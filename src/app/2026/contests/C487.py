@@ -63,11 +63,15 @@ class Solution:
     1 <= nums[i] <= 10^5
     '''
     def longestAlternating(self, nums: List[int]) -> int:
-        n=len(nums); res=2; db=[[1,1] for _ in range(n)]; df=[]
-        if nums[0]!=nums[1]: 
-            db[1]=[2,1]; db[0]=[1,2]
-        else: df.append(1)
+        n=len(nums); res=2; tk=[1]*n
+        if nums[0]!=nums[1]: tk[1]=2
         for i in range(2,n):
-            [n3,n2,n1]=[nums[i-x] for x in range(3)]
-            # if n1>n2<n3: dp[]
+            [n1,n2,n3]=[nums[i-x] for x in range(3)]
+            if n1<n2>n3 or n1>n2<n3: 
+                tk[i]+=tk[i-1]
+            else: tk[i]+=1
+        for i in range(n-2,1,-1):
+            res=max(res,tk[i])
+            [n1,n2,n3]=[nums[i+x] for x in range(3)]
+            # ...
         return res
