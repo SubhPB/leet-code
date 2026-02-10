@@ -22,21 +22,7 @@ class Solution:
     1 <= nums[i] <= 10^5
     '''
     def finalElement(self, nums: List[int]) -> int:
-        l=0;r=len(nums)-1;t=1
-        while l<r:
-            mxi=l;mni=l
-            for i in range(l,r+1):
-                if nums[mxi]<=nums[i]:mxi=i
-                if nums[mni]>=nums[i]:mni=i
-            if mxi==mni: break
-            if t%2: #Alice's turn
-                if mni<mxi: l=mxi
-                else: r=mxi
-            else: #Bob's turn
-                if mni<mxi: r=mni
-                else: l=mni
-            t+=1
-        return nums[l]
+        return max(nums[0],nums[-1])
     '''
     3830. Longest Alternating Subarray After Removing At Most One Element
 
