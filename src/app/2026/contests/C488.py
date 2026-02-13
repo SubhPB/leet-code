@@ -71,3 +71,36 @@ class Solution:
                     else: r=m
                 res+=((i-l+1)*(i-l+2))//2
         return res
+    '''
+    3836. Maximum Score Using Exactly K Pairs
+
+    You are given two integer arrays nums1 and nums2 of lengths n and m respectively, and an integer k.
+    You must choose exactly k pairs of indices (i1, j1), (i2, j2), ..., (ik, jk) such that:
+    0 <= i1 < i2 < ... < ik < n
+    0 <= j1 < j2 < ... < jk < m
+    For each chosen pair (i, j), you gain a score of nums1[i] * nums2[j].
+    The total score is the sum of the products of all selected pairs.
+    Return an integer representing the maximum achievable total score.
+
+    Example 1:
+    Input: nums1 = [1,3,2], nums2 = [4,5,1], k = 2
+    Output: 22
+    Explanation:
+    One optimal choice of index pairs is:
+    (i1, j1) = (1, 0) which scores 3 * 4 = 12
+    (i2, j2) = (2, 1) which scores 2 * 5 = 10
+    This gives a total score of 12 + 10 = 22.
+
+    Constraints:
+    1 <= n == nums1.length <= 100
+    1 <= m == nums2.length <= 100
+    -106 <= nums1[i], nums2[i] <= 10^6
+    1 <= k <= min(n, m)
+    '''
+    def maxScore(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        n=len(nums1);m=len(nums2)
+        i1=sorted([i for i in range(n)], key=lambda i:-nums1[i])[:k]
+        i2=sorted([i for i in range(m)], key=lambda i:-nums2[i])[:k]
+        i1.sort(); i2.sort()
+
+        return sum([nums1[i1[i]]*nums2[i2[i]] for i in range(k)])
