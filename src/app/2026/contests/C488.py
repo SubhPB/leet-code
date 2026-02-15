@@ -98,13 +98,20 @@ class Solution:
     1 <= k <= min(n, m)
     '''
     def maxScore(self, nums1: List[int], nums2: List[int], k: int) -> int:
-        '''
-        create a 'dp' state carries the parameters -> dp[i-th][j-th][k-th]
-        referring max res when subArr starts from ith of nums1 & jth of nums2 at k-th value!
-        '''
-        n=len(nums1);m=len(nums2)
-        i1=sorted([i for i in range(n)], key=lambda i:-nums1[i])[:k]
-        i2=sorted([i for i in range(m)], key=lambda i:-nums2[i])[:k]
-        i1.sort(); i2.sort()
-
-        return sum([nums1[i1[i]]*nums2[i2[i]] for i in range(k)])
+        n=len(nums1);m=len(nums2);inf=10**15
+        dp=[
+            [
+                [
+                    0 if (z==0) else -inf for z in range(k+1)
+                ] for y in range(m+1)
+            ] for x in range(n+1)
+        ]
+        for z in range(1,k+1):
+            for x in range(n-z,-1,-1):
+                for y in range(m-z,-1,-1):
+                    dp[x][y][z]=max(
+                        nums1[x]*nums2[y]+dp[x+1][y+1][z-1],
+                        dp[x+1][y][z],
+                        dp[x][y+1][z]
+                    )
+        return dp[0][0][k]
