@@ -100,18 +100,19 @@ class Solution:
     def maxScore(self, nums1: List[int], nums2: List[int], k: int) -> int:
         n=len(nums1);m=len(nums2);inf=10**15
         dp=[
-            [
-                [
-                    0 if (z==0) else -inf for z in range(k+1)
-                ] for y in range(m+1)
-            ] for x in range(n+1)
+            [0 if x!=n and y!=m else -inf for y in range(m+1)] for x in range(n+1)
         ]
         for z in range(1,k+1):
-            for x in range(n-z,-1,-1):
-                for y in range(m-z,-1,-1):
-                    dp[x][y][z]=max(
-                        nums1[x]*nums2[y]+dp[x+1][y+1][z-1],
-                        dp[x+1][y][z],
-                        dp[x][y+1][z]
-                    )
-        return dp[0][0][k]
+            temp=[[*row] for row in dp]
+            for x in range(n,-1,-1):
+                for y in range(m,-1,-1):
+                    if x+z<=n and y+z<=m:
+                        temp[x][y]=max(
+                            nums1[x]*nums2[y]+(dp[x+1][y+1] if z>1 else 0),
+                            temp[x+1][y],
+                            temp[x][y+1]
+                        )
+                    else:
+                        temp[x][y]=-inf
+            dp=temp
+        return dp[0][0]
