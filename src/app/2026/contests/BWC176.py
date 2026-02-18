@@ -33,3 +33,33 @@ class Solution:
             if len(key)>=k: dt[key]=1+dt.get(key,0)
         for key in dt: res+=int(dt[key]>1)
         return res
+    '''
+    3840. House Robber V
+
+    You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed and is protected by a security system with a color code.
+    You are given two integer arrays nums and colors, both of length n, where nums[i] is the amount of money in the ith house and colors[i] is the color code of that house.
+    You cannot rob two adjacent houses if they share the same color code.
+    Return the maximum amount of money you can rob.
+
+    Example 1:
+    Input: nums = [1,4,3,5], colors = [1,1,2,2]
+    Output: 9
+    Explanation:
+    Choose houses i = 1 with nums[1] = 4 and i = 3 with nums[3] = 5 because they are non-adjacent.
+    Thus, the total amount robbed is 4 + 5 = 9.
+
+    Constraints:
+    1 <= n == nums.length == colors.length <= 10^5
+    1 <= nums[i], colors[i] <= 10^5
+    '''
+    def rob(self, nums: List[int], colors: List[int]) -> int:
+        n=len(nums); x=2; 
+        for i in range(2): nums.append(0)
+        for i in range(1,n):
+            if colors[i]!=colors[i-1]: x=1
+            if x>2:
+                nums[i]+=max(nums[i-2],nums[i-3])
+            else:
+                nums[i]+=max(nums[i-x],nums[i-x-1])
+            x+=1
+        return max(nums[n-1],nums[n-2])
