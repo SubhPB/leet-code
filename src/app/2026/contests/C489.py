@@ -47,5 +47,25 @@ class Solution:
     2 <= s.length <= 2500
     s consists of only lowercase English letters.
     '''
+class Solution:
     def almostPalindromic(self, s: str) -> int:
-        pass
+        res=1; n=len(s)
+        def EA(i:int,j:int):
+            nonlocal res, s, n
+            mxp=min(i+1,n-j)*2
+            if mxp+2>res: 
+                for x in range(mxp//2):
+                    if s[i-x]!=s[j+x]:
+                        return x
+            return mxp
+        for i in range(1,n):
+            # print(f'i={i} & A:{EA(i-1,i+1)+1+1} & B:{EA(i-2,i+1)+1}')
+            if res>=n: break
+            res=max(
+                res, EA(i-1,i+1)+1+1
+            )
+            if i<n-1 and s[i-1]==s[i]:
+                res=max(res,EA(i-2,i+1)+2+1)
+            else:
+                res=max(res,EA(i-2,i+1)+2)
+        return min(res,n)
