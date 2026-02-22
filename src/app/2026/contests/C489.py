@@ -49,23 +49,16 @@ class Solution:
     '''
 class Solution:
     def almostPalindromic(self, s: str) -> int:
-        res=1; n=len(s)
-        def EA(i:int,j:int):
-            nonlocal res, s, n
-            mxp=min(i+1,n-j)*2
-            if mxp+2>res: 
-                for x in range(mxp//2):
-                    if s[i-x]!=s[j+x]:
-                        return x
-            return mxp
-        for i in range(1,n):
-            # print(f'i={i} & A:{EA(i-1,i+1)+1+1} & B:{EA(i-2,i+1)+1}')
-            if res>=n: break
-            res=max(
-                res, EA(i-1,i+1)+1+1
-            )
-            if i<n-1 and s[i-1]==s[i]:
-                res=max(res,EA(i-2,i+1)+2+1)
-            else:
-                res=max(res,EA(i-2,i+1)+2)
-        return min(res,n)
+        n=len(s); dp=[[0]*(n+1) for _ in range(n+1)]
+        for i in range(1,n+1):
+            for j in range(n-1,-1,-1):
+                if s[i-1]==s[j]:
+                    dp[i][j]=1+dp[i-1][j+1]
+                else:
+                    dp[i][j]=max(dp[i-1][j],dp[i][j+1])
+        for i in range(1,n+1):
+            for j in range(n-1,-1,-1):
+                if s[i-1]==s[j]:
+                    dp[i][j]=1+dp[i-1][j+1]
+              
+        return min(n,1+dp[n][0])
