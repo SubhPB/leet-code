@@ -62,3 +62,24 @@ class Solution:
                     dp[i][j]=1+dp[i-1][j+1]
               
         return min(n,1+dp[n][0])
+    '''
+    3845. Maximum Subarray XOR with Bounded Range
+
+    You are given a non-negative integer array nums and an integer k.
+    You must select a subarray of nums such that the difference between its maximum and minimum elements is at most k. The value of this subarray is the bitwise XOR of all elements in the subarray.
+    Return an integer denoting the maximum possible value of the selected subarray.
+
+    Example 1:
+    Input: nums = [5,4,5,6], k = 2
+    Output: 7
+    Explanation:
+    Select the subarray [5, 4, 5, 6].
+    The difference between its maximum and minimum elements is 6 - 4 = 2 <= k.
+    The value is 4 XOR 5 XOR 6 = 7.
+    Constraints:
+    1 <= nums.length <= 4 * 10^4
+    0 <= nums[i] < 2^15
+    0 <= k < 2^15
+    '''
+    def maxXor(self, nums: list[int], k: int) -> int:
+        pass
