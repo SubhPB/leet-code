@@ -49,19 +49,23 @@ class Solution:
     '''
 class Solution:
     def almostPalindromic(self, s: str) -> int:
-        n=len(s); dp=[[0]*(n+1) for _ in range(n+1)]
+        n=len(s); dp=[[[0]*(n+1) for _ in range(n+1)] for t in range(2)]; r=0
         for i in range(1,n+1):
             for j in range(n-1,-1,-1):
                 if s[i-1]==s[j]:
-                    dp[i][j]=1+dp[i-1][j+1]
+                    dp[0][i][j]=2+dp[0][i-1][j+1]
+        for i in range(1,n+1):
+            for j in range(n-1,-1,-1):
+                if s[i-1]==s[j]:
+                    dp[1][i][j]=2+max(
+                        dp[1][i-1][j],
+                        dp[1][i][j+1]
+                    )
                 else:
-                    dp[i][j]=max(dp[i-1][j],dp[i][j+1])
-        for i in range(1,n+1):
-            for j in range(n-1,-1,-1):
-                if s[i-1]==s[j]:
-                    dp[i][j]=1+dp[i-1][j+1]
-              
-        return min(n,1+dp[n][0])
+                    dp[1][i][j]=1+dp[0][i-1][j+1]
+                r=max(r,dp[1][i][j])
+        # for r in dp: print(r)
+        return min(n,r)
     '''
     3845. Maximum Subarray XOR with Bounded Range
 
