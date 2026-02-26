@@ -62,7 +62,8 @@ class Solution:
                     return max(
                         plen(l-1,r), plen(l,r+1)
                     )
-            return r-l-1
+            x=r-l-1
+            return x + int(x!=n) 
         for i in range(n):
             res=max(
                 res, 
