@@ -91,4 +91,13 @@ class Solution:
     0 <= k < 2^15
     '''
     def maxXor(self, nums: list[int], k: int) -> int:
+        '''
+        > sliding window to track the subarray <=k ...(1)
+        > xum to query xor of any subarray in O(1) ...(2)
+        > A subarray say x = [l...r] that satisfies above conditions:
+            > x[l+1...r], x[l+2...r] ... x[r-1...r] should satisfy the conditions.
+            > Vice versa for x = [l...r] who does not satisfy any of the conditions then,
+                > x[l...r], x[l+1...r] ... x[r-1...r] all must has to be invalid too.
+        > for possible subarray compute the best possible XOR by TRIE data structure.
+        '''
         pass
