@@ -20,6 +20,12 @@ class Solution:
     1 <= n <= 10^9
     '''
     def isDigitorialPermutation(self, n: int) -> bool:
-        fx=[1]*10
+        fx=[1]*10; fd={}
         for i in range(1,10): fx[i]=i*fx[i-1]
-        return n==sum([fx[int(x)] for x in str(n)])
+        x=sum([fx[int(d)] for d in str(n)])
+        for d in str(x): fd[d]=1+fd.get(d,0)
+        if len(str(x))!=len(str(n)): return False
+        for d in str(n):
+            if not fd.get(d,0): return False
+            fd[d]-=1;  
+        return True
