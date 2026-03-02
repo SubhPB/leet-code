@@ -29,3 +29,32 @@ class Solution:
             if not fd.get(d,0): return False
             fd[d]-=1;  
         return True
+    '''
+    3849. Maximum Bitwise XOR After Rearrangement
+
+    You are given two binary strings s and t​​​​​​​, each of length n.
+    You may rearrange the characters of t in any order, but s must remain unchanged.
+    Return a binary string of length n representing the maximum integer value obtainable by taking the bitwise XOR of s and rearranged t.
+
+    Example 1:
+    Input: s = "101", t = "011"
+    Output: "110"
+    Explanation:
+
+    One optimal rearrangement of t is "011".
+    The bitwise XOR of s and rearranged t is "101" XOR "011" = "110", which is the maximum possible.
+
+    Constraints:
+    1 <= n == s.length == t.length <= 2 * 10^5
+    s[i] and t[i] are either '0' or '1'.
+    '''
+    def maximumXor(self, s: str, t: str) -> str:
+        r=0; n=len(s)
+        x=t.count("1"); y=n-x
+        for i,d in enumerate(s):
+            if int(d) and y:
+                r+=(1<<(n-i-1)); y-=1
+            elif (not int(d)) and x:
+                r+=(1<<(n-i-1)); x-=1
+        if not r: return "0"*n
+        return "0"*(n-r.bit_length())+bin(r)[2:]
