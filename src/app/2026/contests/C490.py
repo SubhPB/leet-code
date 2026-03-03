@@ -49,12 +49,46 @@ class Solution:
     s[i] and t[i] are either '0' or '1'.
     '''
     def maximumXor(self, s: str, t: str) -> str:
-        r=0; n=len(s)
+        n=len(s); r=['0']*n
         x=t.count("1"); y=n-x
         for i,d in enumerate(s):
             if int(d) and y:
-                r+=(1<<(n-i-1)); y-=1
+                r[i]='1'; y-=1
             elif (not int(d)) and x:
-                r+=(1<<(n-i-1)); x-=1
-        if not r: return "0"*n
-        return "0"*(n-r.bit_length())+bin(r)[2:]
+                r[i]='1'; x-=1
+        return ''.join(r)
+    '''
+    3850. Count Sequences to K
+    You are given an integer array nums, and an integer k.
+    Start with an initial value val = 1 and process nums from left to right. At each index i, you must choose exactly one of the following actions:
+    Multiply val by nums[i].
+    Divide val by nums[i].
+    Leave val unchanged.
+    After processing all elements, val is considered equal to k only if its final rational value exactly equals k.
+    Return the count of distinct sequences of choices that result in val == k.
+    Note: Division is rational (exact), not integer division. For example, 2 / 4 = 1 / 2.
+    
+    Example 1:
+    Input: nums = [2,3,2], k = 6
+    Output: 2
+    Explanation:
+    The following 2 distinct sequences of choices result in val == k:
+    Sequence	Operation on nums[0]	Operation on nums[1]	Operation on nums[2]	Final val
+    1	Multiply: val = 1 * 2 = 2	Multiply: val = 2 * 3 = 6	Leave val unchanged	6
+    2	Leave val unchanged	Multiply: val = 1 * 3 = 3	Multiply: val = 3 * 2 = 6	
+
+    Constraints:
+    1 <= nums.length <= 19
+    1 <= nums[i] <= 6
+    1 <= k <= 10^15
+    '''
+    def countSequences(self, nums: List[int], k: int) -> int:
+        fx={}; f = lambda x: fx.get(float(x),0.0)
+        for e in nums:
+            tx={}; e=float(e)
+            for x in list(fx.keys()):
+                tx[x*e]=f(x)+f(x*e)
+                tx[x/e]=f(x)+f(x/e)
+            for x in tx: fx[x]=tx[x]
+            fx[e]=1.0+f(e)
+        return int(f(k))
