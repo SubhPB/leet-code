@@ -1,3 +1,5 @@
+import math
+from typing import List
 class Solution:
     '''
     3848. Check Digitorial Permutation
@@ -83,12 +85,11 @@ class Solution:
     1 <= k <= 10^15
     '''
     def countSequences(self, nums: List[int], k: int) -> int:
-        fx={}; f = lambda x: fx.get(float(x),0.0)
-        for e in nums:
-            tx={}; e=float(e)
-            for x in list(fx.keys()):
-                tx[x*e]=f(x)+f(x*e)
-                tx[x/e]=f(x)+f(x/e)
-            for x in tx: fx[x]=tx[x]
-            fx[e]=1.0+f(e)
-        return int(f(k))
+        cache={}
+        def λ(n:int,d:int,i:int):
+            if i>=len(nums): return int(n==k*d)
+            g=math.gcd(n,d); n//=g; d//=g
+            if (n,d,i) not in cache: 
+                cache[(n,d,i)]=λ(n*nums[i],d,i+1)+λ(n,d*nums[i],i+1)+λ(n,d,i+1)
+            return cache[(n,d,i)]
+        return λ(1,1,0)
