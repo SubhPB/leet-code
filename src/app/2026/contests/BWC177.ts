@@ -64,24 +64,42 @@ class BiweeklyContest177 {
     */
     makeParityAlternating(nums: number[]): number[] {
         const inf=10**9+1, n=nums.length;
-        let ε=0, θ=0, εx=-inf;
-        let εn=inf, θx=-inf, θn=inf;
-        /** Catch: one operation can either add or subtract.
-         * But this works for addition only.
-         */
+        if (n<=1) return [0,0];
+        let ε=0, θ=0;
         for(let i=0; i<n; i++){
             if (nums[i]%2){
                 ε+=(i+1)%2; θ+=i%2;
             } else {
                 θ+=(i+1)%2; ε+=i%2
             };
-            εx=Math.max(εx,nums[i] + nums[i]%2 ? (i+1)%2 : i%2); 
-            εn=Math.min(εn,nums[i] + nums[i]%2 ? (i+1)%2 : i%2);
-            θx=Math.max(θx,nums[i] + nums[i]%2 ? i%2 : (i+1)%2);
-            θn=Math.min(θn,nums[i] + nums[i]%2 ? i%2 : (i+1)%2);
         };
-        if (ε<θ) return [ε,εx-εn] 
-        else if (ε>θ) return [θ,θx-θn] 
-        return [ε,Math.min(εx-εn,θx-θn)] 
+        const λ = (i:number) => (x:number) => {
+            if (nums[i]%2) return x ? i%2 : (i+1)%2;
+            return x ? (i+1)%2 : i%2
+        };
+        const idxs = Array.from({length:n},(_,i)=>i);
+        idxs.sort((a,b)=>nums[a]-nums[b]);
+        if (ε<θ){
+            return [
+                ε,
+                Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(0), nums[idxs[n-2]])
+                - Math.min(nums[idxs[0]]+λ(idxs[0])(0), nums[idxs[1]])
+            ] 
+        } else if (ε>θ){
+            return [
+                θ,
+                Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(1), nums[idxs[n-2]])
+                - Math.min(nums[idxs[0]]+λ(idxs[0])(1), nums[idxs[1]])
+            ] 
+        };
+        return [
+            ε,
+            Math.min(
+                Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(0), nums[idxs[n-2]]-λ(idxs[n-2])(0))
+                - Math.min(nums[idxs[0]]+λ(idxs[0])(0), nums[idxs[1]]+λ(idxs[1])(0)),
+                Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(1), nums[idxs[n-2]]-λ(idxs[n-2])(1))
+                - Math.min(nums[idxs[0]]+λ(idxs[0])(1), nums[idxs[1]]+λ(idxs[1])(1))            
+            )
+        ] 
     };
 }
