@@ -79,17 +79,21 @@ class BiweeklyContest177 {
         };
         const idxs = Array.from({length:n},(_,i)=>i);
         idxs.sort((a,b)=>nums[a]-nums[b]);
-        if (ε<θ){
+        if (nums[idxs[0]]==nums[idxs[n-1]]) {
+            return [Math.min(ε,θ),1]
+        } else if (ε<θ){
             return [
                 ε,
-                Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(0), nums[idxs[n-2]])
-                - Math.min(nums[idxs[0]]+λ(idxs[0])(0), nums[idxs[1]])
+                Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(0), nums[idxs[n-2]]-λ(idxs[n-2])(0))
+                - Math.min(nums[idxs[0]]+λ(idxs[0])(0), nums[idxs[1]]+λ(idxs[1])(0))
             ] 
         } else if (ε>θ){
             return [
                 θ,
-                Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(1), nums[idxs[n-2]])
-                - Math.min(nums[idxs[0]]+λ(idxs[0])(1), nums[idxs[1]])
+                Math.max(
+                    nums[idxs[n-1]]-λ(idxs[n-1])(1), nums[idxs[n-2]]-λ(idxs[n-2])(1)
+                )
+                - Math.min(nums[idxs[0]]+λ(idxs[0])(1), nums[idxs[1]]+λ(idxs[1])(1))
             ] 
         };
         return [
@@ -100,7 +104,7 @@ class BiweeklyContest177 {
                 Math.max(nums[idxs[n-1]]-λ(idxs[n-1])(1), nums[idxs[n-2]]-λ(idxs[n-2])(1))
                 - Math.min(nums[idxs[0]]+λ(idxs[0])(1), nums[idxs[1]]+λ(idxs[1])(1))            
             )
-        ] 
+        ]; 
     };
     /**
      * 3855. Sum of K-Digit Numbers in a Range
