@@ -1,5 +1,12 @@
 
 class BiweeklyContest177 {
+    /**Cache to use for #3855 */
+    kx = 10**9; m=this.kx+7; p = Array.from({length: this.kx},()=>1);
+    constructor(){
+        for(let i=1; i<this.kx; i++) this.p[i]=(10*this.p[i-1])%this.m;
+        for(let i=1; i<this.kx; i++) this.p[i]=(this.p[i] + this.p[i-1])%this.m;
+    }
+
     /**
      * 3853. Merge Close Characters
     You are given a string s consisting of lowercase English letters and an integer k.
@@ -134,6 +141,7 @@ class BiweeklyContest177 {
         1 <= k <= 10^9
      */
     sumOfNumbers(l: number, r: number, k: number): number {
-        return -1;
+        const x = (r*(r+1))/2 - (l*(l-1))/2;
+        return (x*this.p[k-1])%this.m
     };
 }
