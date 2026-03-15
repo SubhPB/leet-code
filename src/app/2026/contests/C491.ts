@@ -60,7 +60,25 @@ class Contest491 { //#3857-59
          * for each bit starting left to right, for each row check if atleast 1x bit fits inside the temp mask,
          * if any row it fails then conclude that we can't remove the bit else it is removable
          */
-        return -1;  
+        const bl = 1+Math.floor(Math.log2(10**5))
+        let mask = (1<<bl)-1; 
+        const [m,n] = [grid.length,grid[0].length];
+        for(let i=bl-1; i>=0; i--){
+            let temp:number = mask^(1<<i);
+            for(let r=0; r<m; r++){
+                let c=0;
+                console.log(`mask=${mask}; temp=${temp}; ${grid[r][c]}`)
+                while (c<n && !(temp&(1<<i))){
+                    if ((grid[r][c]|temp) === temp) break;
+                    c+=1
+                };
+                if ((grid[r][c]|temp) !== temp){
+                    temp|=(1<<i); break;
+                };
+            };
+            mask=temp;
+        };
+        return mask;
     };
     /**
      * 3859. Count Subarrays With K Distinct Integers
