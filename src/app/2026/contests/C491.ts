@@ -103,6 +103,43 @@ class Contest491 { //#3857-59
     1 <= k, m <= nums.length
     */
     countSubarrays(nums: number[], k: number, m: number): number {
-        return -1
+        let r=0, [i,j]=[0,0], [u,x]=[0,k];
+        const n=nums.length, fx:{[x:number]:number}={};
+        while (j<n){
+            if (!(nums[j] in fx)) fx[nums[j]]=0;
+
+            if (u===k && !fx[nums[j]]){
+                while (u===k){
+                    fx[nums[i]]-=1;
+                    if (!fx[nums[i]]) u-=1;
+                    if (fx[nums[i]]===m-1) x+=1;
+                    if (u===k && !x){
+                        console.log(`I (${i},${j}) subarr=${nums.slice(i,j+1)}`)
+                        r+=1
+                    }
+                    i+=1;
+                }
+            } else {
+                if (!fx[nums[j]]) u+=1;
+                fx[nums[j]]+=1;
+                if (fx[nums[j]]===m) x-=1;
+                if (u===k && !x) {
+                    console.log(`II (${i},${j}) subarr=${nums.slice(i,j+1)}`);
+                    r+=1
+                }
+                j+=1;
+            };
+        };
+        while (u===k && !x){
+            fx[nums[i]]-=1;
+            if (!fx[nums[i]]) u-=1;
+            if (fx[nums[i]]===m-1) x+=1;
+            i+=1;
+            if (u===k && !x) {
+                console.log(`III (${i},${j}) subarr=${nums.slice(i,j+1)}`);
+                r+=1
+            }
+        }
+        return r;
     };
 }
