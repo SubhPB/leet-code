@@ -22,3 +22,44 @@ class Solution:
             Π*=nums[i]
             if Π>x: break
         return γ
+    '''
+    3863. Minimum Operations to Sort a String
+    You are given a string s consisting of lowercase English letters.
+    In one operation, you can select any substring of s that is not the entire string and sort it in non-descending alphabetical order.
+    Return the minimum number of operations required to make s sorted in non-descending order. If it is not possible, return -1.
+
+    Example 1:
+    Input: s = "dog"
+    Output: 1
+
+    1 <= s.length <= 10^5
+    s consists of only lowercase English letters.
+    '''
+    def minOperations(self, s: str) -> int:
+        n=len(s);sm='z';lg='a'
+        res=3;b=True
+
+        if n<=2: return -1 if s[0]>s[-1] else 0
+        for i in range(1,n-1):
+            b&=(s[i-1]<=s[i]<=s[i+1])
+            if sm>s[i]:sm=s[i]
+            if lg<s[i]:lg=s[i]
+
+        if b: return 0
+        elif s[i]<=sm and s[i]<=s[-1]: return 1
+        elif s[-1]>=lg and s[-1]>=s[0]: return 1
+
+        def fn(x,y,z):
+            ops=0;v=list((x,y,z))
+            for i in [1,2,1]:
+                if v[i]<v[i-1]:
+                    v[i],v[i-1]=v[i-1],v[i]
+                    ops+=1
+            return ops
+        
+        if s[i]>sm:
+            res=min(res,1+fn(sm,lg if lg>s[i] else s[i],s[-1]))
+        if lg>s[-1]:
+            res=min(res,1+fn(s[0],sm if sm<s[-1] else s[-1],lg))
+
+        return res
