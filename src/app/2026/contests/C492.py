@@ -36,30 +36,29 @@ class Solution:
     s consists of only lowercase English letters.
     '''
     def minOperations(self, s: str) -> int:
-        n=len(s);sm='z';lg='a'
-        res=3;b=True
-
-        if n<=2: return -1 if s[0]>s[-1] else 0
+        n=len(s);b=1
+        if n<=2:
+            return -1 if s[0]>s[-1] else 0
+        sm=ord('z');lg=ord('a')
         for i in range(1,n-1):
-            b&=(s[i-1]<=s[i]<=s[i+1])
-            if sm>s[i]:sm=s[i]
-            if lg<s[i]:lg=s[i]
-
-        if b: return 0
-        elif s[i]<=sm and s[i]<=s[-1]: return 1
-        elif s[-1]>=lg and s[-1]>=s[0]: return 1
-
-        def fn(x,y,z):
-            ops=0;v=list((x,y,z))
+            b&=int(s[i]>=s[max(1,i-1)])
+            sm=min(sm,ord(s[i]))
+            lg=max(lg,ord(s[i]))
+        x=ord(s[0]);z=ord(s[-1])
+        def calc(x:int,y:int,z:int):
+            nums=list((x,y,z));ops=0
             for i in [1,2,1]:
-                if v[i]<v[i-1]:
-                    v[i],v[i-1]=v[i-1],v[i]
+                if nums[i]<nums[i-1]:
+                    nums[i],nums[i-1]=nums[i-1],nums[i]
                     ops+=1
             return ops
-        
-        if s[i]>sm:
-            res=min(res,1+fn(sm,lg if lg>s[i] else s[i],s[-1]))
-        if lg>s[-1]:
-            res=min(res,1+fn(s[0],sm if sm<s[-1] else s[-1],lg))
-
-        return res
+        if n==3: 
+            return calc(x,sm,z)
+        elif b:
+            if x<=sm: return calc(x,lg,z)
+            else: return calc(max(x,lg),sm,z)
+        return 1+min(
+            calc(min(x,sm),max(x,lg),z),
+            calc(x,min(sm,z),max(lg,z))
+        )
+            
