@@ -1,3 +1,7 @@
 node_modules/
 .vscode
 sh/
+
+*.ignorer.*
+*.incomplète.*
+*.ça-ira.*
