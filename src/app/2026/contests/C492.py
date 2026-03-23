@@ -90,4 +90,16 @@ class Solution:
     1 <= encCost, flatCost <= 10^5
     '''
     def minCost(self, s: str, encCost: int, flatCost: int) -> int:
-        pass
+        n=len(s); pf=[0]*(n+1)
+        for i in range(n): pf[i]+=pf[i-1]+int(s[i])
+        def minfn(l:int,r:int):
+            nonlocal pf,n,s,encCost,flatCost
+            m=r-l+1; x=pf[r]-pf[l-1]
+            if not x: return flatCost
+            elif m%2: return m*x*encCost
+            return min(
+                m*x*encCost,
+                minfn(l,(l+r)//2)
+                + minfn(1+(l+r)//2, r)
+            )
+        return minfn(0,n-1)
