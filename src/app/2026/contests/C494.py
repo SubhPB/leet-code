@@ -1,3 +1,6 @@
+from functools import reduce
+from typing import List
+from collections import deque
 class Solution:
     '''
     3875. Construct Uniform Parity Array I
@@ -54,5 +57,43 @@ class Solution:
             else:
                 e+=1; en=min(en,num)
         return e in [0,len(nums1)] or en>on
-            
-                
+    '''
+    3877. Minimum Removals to Achieve Target XOR
+
+    You are given an integer array nums and an integer target.
+    You may remove any number of elements from nums (possibly zero).
+    Return the minimum number of removals required so that the bitwise XOR of the remaining elements equals target. If it is impossible to achieve target, return -1.
+    The bitwise XOR of an empty array is 0.
+
+    Example 1:
+    Input: nums = [1,2,3], target = 2
+    Output: 1
+    Explanation:
+    Removing nums[1] = 2 leaves [nums[0], nums[2]] = [1, 3].
+    The XOR of [1, 3] is 2, which equals target.
+    It is not possible to achieve XOR = 2 in less than one removal, therefore the answer is 1.
+
+    Constraints:
+    1 <= nums.length <= 40
+    0 <= nums[i] <= 10^4
+    0 <= target <= 10^4
+    '''
+    def minRemovals(self, nums: List[int], target: int) -> int:
+        target^=reduce(lambda a,b:a^b, nums) 
+        if target == 0:  return 0
+        queue, seen = deque([0]), {0}                 
+        res, n = 1, 1
+
+        while queue:                                    
+            for _ in range(n):
+                prv = queue.popleft()
+                for num in nums:
+                    cur = prv ^ num
+                    if cur == target: return res        
+                    if cur in seen: continue            
+                    seen.add(cur)
+                    queue.append(cur)
+            res += 1
+            n = len(queue)
+
+        return -1                                    
