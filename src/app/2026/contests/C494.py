@@ -97,3 +97,31 @@ class Solution:
             n = len(queue)
 
         return -1                                    
+    '''
+    3878. Count Good Subarrays
+
+    You are given an integer array nums.
+    A subarray is called good if the bitwise OR of all its elements is equal to at least one element present in that subarray.
+    Return the number of good subarrays in nums.
+    Here, the bitwise OR of two integers a and b is denoted by a | b.
+
+    Example 1:
+    Input: nums = [4,2,3]
+    Output: 4
+    Explanation:
+    The subarrays of nums are:
+    Subarray	Bitwise OR	Present in Subarray
+    [4]	4 = 4	Yes
+    [2]	2 = 2	Yes
+    [3]	3 = 3	Yes
+    [4, 2]	4 | 2 = 6	No
+    [2, 3]	2 | 3 = 3	Yes
+    [4, 2, 3]	4 | 2 | 3 = 7	No
+    Thus, the good subarrays of nums are [4], [2], [3] and [2, 3]. Thus, the answer is 4.
+
+    Constraints:
+    1 <= nums.length <= 10^5
+    0 <= nums[i] <= 10^9
+    '''
+    def countGoodSubarrays(self, nums: list[int]) -> int:
+        return -1
