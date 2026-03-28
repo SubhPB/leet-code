@@ -124,4 +124,23 @@ class Solution:
     0 <= nums[i] <= 10^9
     '''
     def countGoodSubarrays(self, nums: list[int]) -> int:
-        return -1
+        ls = lambda x: (x*(x+1))//2
+        x=[nums[0]];c=[1]; res=0
+        for i in range(1,len(nums)):
+            if nums[i]!=nums[i-1]:
+                x.append(nums[i-1])
+                c.append(0)
+            c[-1]+=1
+        '''
+        Tout se passe bien, n'oubliez pas le condition de l'énoncé de la question.
+        <<Sliding window?>>
+        '''
+        for i in range(len(x)):
+            res+=ls(c[i])
+            l=i;r=i
+            while l>=0 and nums[i]|nums[l]==nums[i]:
+                l-=1
+            while r<len(x) and nums[i]|nums[r]==nums[i]:
+                r+=1
+            res+=c[i]*(r-i-1 + i-l-1)
+        return res
