@@ -17,8 +17,7 @@ class Solution:
     1 <= n <= 10^15
     '''
     def countCommas(self, n: int) -> int:
-        l=len(str(n)); r=0
-        if l<=3: return 0
-        for i in range(4,l):
-            r+=(i//4)*9*(10**(i-1))
-        return r+1+(n-10**(l-1))*l//4
+        r=0; thl=[10**3,10**6,10**9,10**12,10**15]
+        for t in thl:
+            if n>=t: r+=n-(t-1)
+        return r
