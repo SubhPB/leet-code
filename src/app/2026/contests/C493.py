@@ -1,3 +1,4 @@
+from typing import List
 class Solution:
     '''
     3871. Count Commas in Range II
@@ -21,3 +22,42 @@ class Solution:
         for t in thl:
             if n>=t: r+=n-(t-1)
         return r
+    '''
+    3872. Longest Arithmetic Sequence After Changing At Most One Element
+    You are given an integer array nums.
+    A subarray is arithmetic if the difference between consecutive elements in the subarray is constant.
+    You can replace at most one element in nums with any integer. Then, you select an arithmetic subarray from nums.
+    Return an integer denoting the maximum length of the arithmetic subarray you can select.
+
+    Example 1:
+
+    Input: nums = [9,7,5,10,1]
+    Output: 5
+
+    Explanation:
+    Replace nums[3] = 10 with 3. The array becomes [9, 7, 5, 3, 1].
+    Select the subarray [9, 7, 5, 3, 1], which is arithmetic because consecutive elements have a common difference of -2.
+    Example 2:
+
+
+    Constraints:
+    4 <= nums.length <= 10^5
+    1 <= nums[i] <= 10^5
+    '''
+    def longestArithmetic(self, nums: List[int]) -> int:
+        r=0; z=[-1 if nums[2]+nums[0]==2*nums[1] else 0]; n=len(nums)
+        for i in range(2,n):
+            if nums[i-1]*2 != nums[i]+nums[i-2]:
+                z.append(i)
+        if z[-1]!=n-1: z.append(n-1)
+        for i in range(1,len(z)):
+            lx=z[i-1]; ri=z[i]
+            r=max(
+                r,
+                ri-lx+1
+                +int(
+                    (0<lx<ri-1 and 3*nums[lx+1]-nums[lx-1] == 2*nums[lx+2])
+                    or (ri<n-2 and 3*nums[ri]-nums[ri+2] == 2*nums[ri-1])
+                )
+            )
+        return min(n,r)
