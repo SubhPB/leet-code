@@ -45,10 +45,11 @@ class Solution:
     1 <= nums[i] <= 10^5
     '''
     def longestArithmetic(self, nums: List[int]) -> int:
-        r=0; z=[-1 if nums[2]+nums[0]==2*nums[1] else 0]; n=len(nums)
-        for i in range(2,n):
+        r=0; z=[-1]; n=len(nums); i=2
+        while i<n:
             if nums[i-1]*2 != nums[i]+nums[i-2]:
-                z.append(i)
+                z.append(i-1); i+=1
+            i+=1
         if z[-1]!=n-1: z.append(n-1)
         for i in range(1,len(z)):
             lx=z[i-1]; ri=z[i]
@@ -56,8 +57,8 @@ class Solution:
                 r,
                 ri-lx+1
                 +int(
-                    (0<lx<ri-1 and 3*nums[lx+1]-nums[lx-1] == 2*nums[lx+2])
-                    or (ri<n-2 and 3*nums[ri]-nums[ri+2] == 2*nums[ri-1])
+                    (lx>1 and 3*nums[lx-1]-2*nums[lx-2] == nums[lx+1])
+                    or (ri<n-2 and 3*nums[ri]-2*nums[ri-1] == nums[ri+2])
                 )
             )
         return min(n,r)
