@@ -51,8 +51,10 @@ class Solution:
                 z.append(i-1); i+=1
             i+=1
         if z[-1]!=n-1: z.append(n-1)
+        #print(f'z={z}')
         for i in range(1,len(z)):
-            lx=z[i-1]; ri=z[i]
+            lx=z[i-1]
+            lx-=int(lx<n-2 and nums[lx+2]==2*nums[lx+1]-nums[lx]); ri=z[i]
             r=max(
                 r,
                 ri-lx+1
