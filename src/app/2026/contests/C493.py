@@ -46,20 +46,19 @@ class Solution:
     '''
     def longestArithmetic(self, nums: List[int]) -> int:
         r=0;i=0;n=len(nums)
+        p=1
         while i<n:
             j=i+1
             while j<n-1 and 2*nums[j]==nums[j+1]+nums[j-1]:
                 j+=1
-            r=max(
-                r,
-                (j-i+1)+1
-                +int(
-                    (0<i-1<n-2 and nums[i-2]==3*nums[i]-2*nums[i+1])
-                    or (j+2<n and nums[j+2]==3*nums[j]-2*nums[j-1])
-                )
+            res=max(
+                res,
+                (j-i+1)
+                + (i-p) if (i>1 and nums[i-2]==3*nums[i]-2*nums[i+1]) else 0
             )
-            i=j
-        return min(r,n)
+            p=i; i=j
+
+        return r
     '''
     3873. Maximum Points Activated with One Addition
 
