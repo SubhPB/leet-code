@@ -45,20 +45,25 @@ class Solution:
     1 <= nums[i] <= 10^5
     '''
     def longestArithmetic(self, nums: List[int]) -> int:
-        r=0;i=0;n=len(nums)
-        p=1
-        while i<n:
-            j=i+1
-            while j<n-1 and 2*nums[j]==nums[j+1]+nums[j-1]:
-                j+=1
-            res=max(
-                res,
-                (j-i+1)
-                + (i-p) if (i>1 and nums[i-2]==3*nums[i]-2*nums[i+1]) else 0
-            )
-            p=i; i=j
+        n=len(nums); res=3
+        l=-1;x=-1
+        for r in range(1,n-1):
+            if nums[r+1]-nums[r]!=nums[r]-nums[r-1]:
+                if 2<x<n-1 and 0<x<n-2 and 3*nums[x+2]+nums[x-2]==4*nums[x+1]:
+                    res=max(
+                        res,
+                        r-l
+                    )
+                res=max(
+                    res,
+                    r-x+int(
+                        (0<x<n-2 and nums[x-1]==3*nums[x+1]-2*nums[x+2])
+                        or (2<x<n-1 and nums[x+1] == 3*nums[x-1]-2*nums[x-2])
+                    )
+                )
+                l=x; x=r
 
-        return r
+        return min(n,res)
     '''
     3873. Maximum Points Activated with One Addition
 
