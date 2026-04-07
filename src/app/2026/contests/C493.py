@@ -44,26 +44,22 @@ class Solution:
     4 <= nums.length <= 10^5
     1 <= nums[i] <= 10^5
     '''
-    def longestArithmetic(self, nums: List[int]) -> int:
-        n=len(nums); res=3
-        l=-1;x=-1
-        for r in range(1,n-1):
-            if nums[r+1]-nums[r]!=nums[r]-nums[r-1]:
-                if 2<x<n-1 and 0<x<n-2 and 3*nums[x+2]+nums[x-2]==4*nums[x+1]:
-                    res=max(
-                        res,
-                        r-l
-                    )
-                res=max(
-                    res,
-                    r-x+int(
-                        (0<x<n-2 and nums[x-1]==3*nums[x+1]-2*nums[x+2])
-                        or (2<x<n-1 and nums[x+1] == 3*nums[x-1]-2*nums[x-2])
-                    )
-                )
-                l=x; x=r
-
-        return min(n,res)
+    def longestArithmetic(self, e: List[int]) -> int:
+        n=len(e); res=0; seg=[2]*n; seg[0]=1; seg[-1]=1
+        for i in range(2,n-1):
+            if e[i]-e[i-1]==e[i-1]-e[i-2]:
+                seg[i]=1+seg[i-1]
+        for i in range(n-1,-1,-1):
+            res=max(
+                res,
+                1+ seg[i-1] if i>0 else 0,
+                1+ seg[i+1] if i<n-1 else 0,
+                1+ (seg[i-1]+seg[i+1]) if 0<i<n-1 and not (e[i-1]-e[i+1])%2 else 0
+            )
+            if i<n-2 and e[i+2]-e[i+1]==e[i+1]-e[i]:
+                seg[i]=1+seg[i+1]
+            elif i==n-2: seg[i]=2
+        return res
     '''
     3873. Maximum Points Activated with One Addition
 
