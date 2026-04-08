@@ -52,13 +52,14 @@ class Solution:
         for i in range(n-1,-1,-1):
             res=max(
                 res,
-                1+ seg[i-1] if i>0 else 0,
-                1+ seg[i+1] if i<n-1 else 0,
-                1+ (seg[i-1]+seg[i+1]) if 0<i<n-1 and not (e[i-1]-e[i+1])%2 else 0
+                1+ (seg[i-1] if i>0 else 0),
+                1+ (seg[i+1] if i<n-1 else 0),
+                1+ ((seg[i-1]+seg[i+1]) if 1<i<n-1 and 3*e[i-1]-2*e[i-2]==e[i+1]  else 0),
+                1+ ((seg[i-1]+seg[i+1]) if 0<i<n-2 and 3*e[i+1]-2*e[i+2]==e[i-1] else 0)
             )
             if i<n-2 and e[i+2]-e[i+1]==e[i+1]-e[i]:
                 seg[i]=1+seg[i+1]
-            elif i==n-2: seg[i]=2
+            elif i!=n-1: seg[i]=2
         return res
     '''
     3873. Maximum Points Activated with One Addition
