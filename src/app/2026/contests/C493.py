@@ -45,22 +45,31 @@ class Solution:
     1 <= nums[i] <= 10^5
     '''
     def longestArithmetic(self, e: List[int]) -> int:
-        n=len(e); res=0; seg=[2]*n; seg[0]=1; seg[-1]=1
+        n=len(e)
+        seg=[2]*n; seg[0]=1; seg[-1]=1
         for i in range(2,n-1):
             if e[i]-e[i-1]==e[i-1]-e[i-2]:
                 seg[i]=1+seg[i-1]
-        for i in range(n-1,-1,-1):
+        res=1+seg[n-2]
+        for i in range(n-2,0,-1):
+            if (e[i+1]-e[i-1])%2==0:
+                if i>1 and 3*e[i-1]-2*e[i-2]==e[i+1]:
+                    res=max(res, 2+seg[i-1])
+                if i<n-2 and 3*e[i+1]-2*e[i+2]==e[i-1]:
+                    res=max(res, 2+seg[i+1])
+                if 1<i<n-2 and e[i+2]-e[i+1]==e[i-1]-e[i-2]:
+                    res=max(
+                        res,1+seg[i-1]+seg[i+1]
+                    )         
             res=max(
-                res,
-                1+ (seg[i-1] if i>0 else 0),
-                1+ (seg[i+1] if i<n-1 else 0),
-                1+ ((seg[i-1]+seg[i+1]) if 1<i<n-1 and 3*e[i-1]-2*e[i-2]==e[i+1]  else 0),
-                1+ ((seg[i-1]+seg[i+1]) if 0<i<n-2 and 3*e[i+1]-2*e[i+2]==e[i-1] else 0)
+                res,1+max(seg[i-1],seg[i+1])
             )
             if i<n-2 and e[i+2]-e[i+1]==e[i+1]-e[i]:
                 seg[i]=1+seg[i+1]
-            elif i!=n-1: seg[i]=2
+            else: seg[i]=2
+        res=max(res,1+seg[1])
         return res
+        
     '''
     3873. Maximum Points Activated with One Addition
 
