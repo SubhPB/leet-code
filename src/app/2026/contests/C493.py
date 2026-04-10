@@ -52,18 +52,18 @@ class Solution:
                 seg[i]=1+seg[i-1]
         res=1+seg[n-2]
         for i in range(n-2,0,-1):
-            if (e[i+1]-e[i-1])%2==0:
-                if i>1 and 3*e[i-1]-2*e[i-2]==e[i+1]:
-                    res=max(res, 2+seg[i-1])
-                if i<n-2 and 3*e[i+1]-2*e[i+2]==e[i-1]:
-                    res=max(res, 2+seg[i+1])
-                if 1<i<n-2 and e[i+2]-e[i+1]==e[i-1]-e[i-2]:
-                    res=max(
-                        res,1+seg[i-1]+seg[i+1]
-                    )         
-            res=max(
-                res,1+max(seg[i-1],seg[i+1])
-            )
+            
+            res=max(res,1+seg[i-1],1+seg[i+1])
+            dl=None; dr=None
+            if i>1: dl=e[i-1]-e[i-2]
+            if i<n-2: dr=e[i+2]-e[i+1]
+            if dl is not None and e[i+1]-e[i-1]==2*dl:
+                res=max(res, 2+seg[i-1])
+            if dr is not None and e[i+1]-e[i-1]==2*dr:
+                res=max(res, 2+seg[i+1])
+            if all([x is not None for x in (dl,dr)]) and dl==dr and e[i+1]-e[i-1]==2*dl:
+                res=max(res, 1+seg[i-1]+seg[i+1])
+
             if i<n-2 and e[i+2]-e[i+1]==e[i+1]-e[i]:
                 seg[i]=1+seg[i+1]
             else: seg[i]=2
