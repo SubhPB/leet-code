@@ -95,4 +95,33 @@ class Solution:
     points contains all distinct coordinates.
     '''
     def maxActivated(self, points: list[list[int]]) -> int:
-        pass
+        n=len(points); parent=[-1]*n
+        points.sort(key= lambda p: p[0])
+        idy={points[0][1]:0}
+        def find(a:int):
+            p=a
+            while parent[p]>=0: p=parent[p]
+            if a!=p: parent[a]=p
+            return p
+        def union(a:int,b:int): 
+            pa=find(a);pb=find(b)
+            sa=parent[pa]; sb=parent[pb]
+            if pa!=pb:
+                if sa<=sb:
+                    parent[pa]+=parent[pb]
+                    parent[pb]=pa
+                else:
+                    parent[pb]+=parent[pa]
+                    parent[pa]=pb
+                return True
+            return False
+        for i in range(1,n):
+            [x,y]=points[i]
+            if points[i-1][0]==x:
+                union(i-1,i)
+            if y in idy: union(idy[y],i)
+            else: idy[y]=i
+        a=0;b=0
+        for i in range(n): 
+            [a,b,_]=sorted([a,b,parent[i]])
+        return abs(a+b)+1
