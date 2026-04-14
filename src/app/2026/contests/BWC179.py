@@ -29,7 +29,7 @@ class Solution:
         self.mod=10**9+7
         for i in range(2,10**5+1):
             self.perm[i]=(i%self.mod * self.perm[i-1]%self.mod)%self.mod
-    def exp(self,b:int,p:int):
+    def exp(self,b:int,p:int): # log(n)
         r=1
         while p>0:
             if p%2: r=self.mul(r,b)
@@ -41,8 +41,7 @@ class Solution:
     def mul(self,a:int,b:int):
         return (a%self.mod * b%self.mod)%self.mod
     def C(self,n,r):
-        print(f'C({n},{r}): ({self.perm[n]} * {self.exp(self.perm[n-r], self.mod-2)} * {self.exp(self.perm[r],self.mod-2)})')
-        if n<=r: return 1 # should not occur
+        if n<=r: return 0
         return self.mul(
                 self.mul(
                     self.perm[n],
@@ -51,11 +50,9 @@ class Solution:
                 self.exp(self.perm[r],self.mod-2)
             )
     def countVisiblePeople(self, n: int, pos: int, k: int) -> int:
-        res= self.mul(self.C(pos,0), self.C(n-pos-1,k))
-        print(f'C({pos},0) * C({n-pos-1},{k}) = {self.C(pos,0)}*{self.C(n-pos-1,k)}')
+        res=0
         if pos not in [0,n-1]:
-            for i in range(1,1+min(pos,k)):
-                # print(f'{pos}C{i}: {self.C(pos,i)}; {n-pos}C{k-i}: {self.C(n-pos,k-i)}')
+            for i in range(min(pos,k)):
                 res=self.add(
                     res,
                     self.mul(
