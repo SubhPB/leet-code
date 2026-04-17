@@ -1,3 +1,13 @@
+'''#3883'''
+dt=[[] for _ in range(51)]; mod=10**9+7
+for i in range(5001):
+    dgtsum=sum([int(x) for x in str(i)])
+    if dgtsum<=50: dt[dgtsum].append(i)
+    
+def add(x:int,y:int):
+    return (x%mod + y%mod)%mod
+'''#3883'''
+
 class Solution:
     '''
     3881. Direction Assignments with Exactly K Visible People
@@ -76,4 +86,48 @@ class Solution:
                 dp[i][j][x]=min(right,down)
             return dp[i][j][x]
         return dfs(0,0,0)
-        
+    '''
+    3883. Count Non Decreasing Arrays With Given Digit Sums
+
+    You are given an integer array digitSum of length n.
+    An array arr of length n is considered valid if:
+        0 <= arr[i] <= 5000
+        it is non-decreasing.
+        the sum of the digits of arr[i] equals digitSum[i].
+    Return an integer denoting the number of distinct valid arrays. Since the answer may be large, return it modulo 109 + 7.
+    An array is said to be non-decreasing if each element is greater than or equal to the previous element, if it exists.
+
+    Example 1:
+    Input: digitSum = [25,1]
+    Output: 6
+    Explanation:
+
+    Numbers whose sum of digits is 25 are 799, 889, 898, 979, 988, and 997.
+    The only number whose sum of digits is 1 that can appear after these values while keeping the array non-decreasing is 1000.
+    Thus, the valid arrays are [799, 1000], [889, 1000], [898, 1000], [979, 1000], [988, 1000], and [997, 1000].
+    Hence, the answer is 6.
+
+    Constraints:
+    1 <= digitSum.length <= 1000
+    0 <= digitSum[i] <= 50
+    '''
+    def countArrays(self, digitSum: list[int]) -> int:
+        dpv=dt[digitSum[-1]]; m=len(dpv); n=len(digitSum)
+        Ev=[m-i for i in range(m)]
+        if m: 
+            for i in range(n-2,-1,-1):
+                dpc=dt[digitSum[i]]
+                mc=len(dpc); Ec=[0]*mc
+                for j in range(mc-1,-1,-1):
+                    #bs
+                    l=0; r=m
+                    while l<r:
+                        mid=(l+r)//2
+                        if dpv[mid]<dpc[j]: l=mid+1
+                        else: r=mid
+                    if l!=m:
+                        Ec[j]=add((Ec[j+1] if j<mc-1 else 0), Ev[l])
+                if not (Ec[0] if Ec else 0): return 0
+                dpv=[*dpc]; Ev=[*Ec]; m=mc
+            return Ev[0] 
+        return 0
