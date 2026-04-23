@@ -24,7 +24,25 @@ class Solution:
     1 <= nums[i] <= 10**5
     '''
     def sortableIntegers(self, nums: list[int]) -> int:
-        pass
+        res=0; n=len(nums)
+        for l in range(n):
+            if n%(l+1): continue
+            pmx=0
+            for i in range(0,n,l+1):
+                cmx=nums[i]; brk=False
+                for j in range(i+1,l+i+1):
+                    cmx=max(nums[j],pmx)
+                    if pmx>nums[j]:
+                        res-=(l+1); break
+                    if nums[j]>nums[j-1]:
+                        if brk:
+                            res-=(l+1); break
+                        else: brk=True
+                if brk and nums[i]<nums[l+i]:
+                    res-=(l+1)
+                pmx=cmx
+                res+=l+1
+        return res
     '''
     3887. Incremental Even-Weighted Cycle Queries
     You are given a positive integer n.
@@ -51,4 +69,5 @@ class Solution:
     wi = 0 or wi = 1
     '''
     def numberOfEdgesAdded(self, n: int, edges: List[List[int]]) -> int:
+        # incomplete...
         pass
