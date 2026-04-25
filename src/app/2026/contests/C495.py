@@ -23,25 +23,24 @@ class Solution:
     1 <= n == nums.length <= 10**5
     1 <= nums[i] <= 10**5
     '''
+    def λ(self, nums:int, length:int):
+        n=len(nums); prv=0
+        for i in range(0,n,length):
+            curr=nums[i]; brk=nums[i]<nums[i+length-1]
+            if prv>curr: return False
+            for j in range(i+1,i+length):
+                if nums[j]<nums[j-1]:
+                    if brk: return False
+                    brk=True
+                curr=max(curr,nums[j])
+                if prv>nums[j]: return False
+            prv=curr
+        return True
     def sortableIntegers(self, nums: list[int]) -> int:
-        #incorrect
         res=0; n=len(nums)
         for l in range(n):
             if n%(l+1): continue
-            pmx=0
-            for i in range(0,n,l+1):
-                cmx=nums[i]; brk=False
-                for j in range(i,l+i+1):
-                    cmx=max(nums[j],cmx)
-                    if pmx>nums[j]:
-                        res-=(l+1); break
-                    if nums[j]>nums[j-1]:
-                        if brk:
-                            res-=(l+1); break
-                        else: brk=True
-                    if j==l+i and brk and nums[i]<nums[l+i]:
-                        res-=(l+1)
-                pmx=cmx
+            if self.λ(nums,l+1):
                 res+=l+1
         return res
     '''
