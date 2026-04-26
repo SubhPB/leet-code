@@ -1,3 +1,23 @@
+# cache:#3896
+N=10**5; cache=[0]*(N+1); prime=N
+def isprime(x:int):
+    if not x%2: return x==2
+    elif not x%3: return x==3
+    f=5
+    while f*f<=x:
+        if not x%f or not x%(f+2):
+            return False
+        f+=6
+    return True
+while not isprime(prime):
+    prime+=1
+
+for num in range(N,3,-1):
+    if not isprime(num):
+        cache[num]=prime-num
+    else: prime=num
+# cache:#3896
+
 class Solution:
     '''
     3896. Minimum Operations to Transform Array into Alternating Prime
@@ -23,12 +43,15 @@ class Solution:
     1 <= nums.length <= 10*5
     1 <= nums[i] <= 10**5
     '''
+
     def minOperations(self, nums: list[int]) -> int:
-        '''
-        Stratéqie: 
-            1) λ isprime : n -> bool
-            2) res += x;
-                -> ops to make it prime if i is even
-                -> ops to make it non-prime if i is odd
-        '''
-        pass
+        n=len(nums); res=0
+        for i in range(n):
+            x=nums[i]
+            if i%2:
+                while isprime(x): #literally O(1)
+                    x+=1
+                res+=x-nums[i]
+            else:
+                res+=cache[x]
+        return res
