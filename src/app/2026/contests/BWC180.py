@@ -1,6 +1,8 @@
 # cache:#3896
 N=10**5; cache=[0]*(N+1); prime=N
+cache[1]=1 # 1 is not prime.
 def isprime(x:int):
+    if x==1: return False
     if not x%2: return x==2
     elif not x%3: return x==3
     f=5
