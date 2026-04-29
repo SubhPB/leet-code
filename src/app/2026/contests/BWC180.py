@@ -13,12 +13,21 @@ def isprime(x:int):
     return True
 while not isprime(prime):
     prime+=1
-
 for num in range(N,3,-1):
     if not isprime(num):
         cache[num]=prime-num
     else: prime=num
 # cache:#3896
+
+# cache:#3897
+M=2*(10**5); mod=10**9+7; pow=[1]*(M+1)
+def add(x:int,y:int):
+    return (x%mod+y%mod)%mod
+def mul(x:int,y:int):
+    return (x%mod*y%mod)%mod
+for i in range(1,M+1): 
+    pow[i]=mul(2,pow[i-1])
+# cache:#3897
 
 class Solution:
     '''
@@ -85,5 +94,15 @@ class Solution:
     nums1[i] + nums0[i] > 0
     The total sum of all elements in nums1 and nums0 does not exceed 2 * 105.
     '''
+
     def maxValue(self, nums1: list[int], nums0: list[int]) -> int:
-        pass
+        n=len(nums1); idx=[i for i in range(n)]
+        idx.sort(key=lambda i:-(nums1[i]+nums0[i]))
+        idx.sort(key=lambda i:nums0[i])
+
+        l=0; res=0
+        for i in range(n-1,-1,-1):
+            x=idx[i]; c=nums1[x]; z=nums0[x]
+            res=add(res, mul(pow[l],pow[c+z]-pow[z]))
+            l+=c+z
+        return res
