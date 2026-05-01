@@ -101,6 +101,7 @@ class Solution:
         idx.sort(key=lambda i:nums0[i])
 
         l=0; res=0
+        print(f'idx={[''.join(['1']*nums1[x]) + ''.join(['0']*nums0[x]) for x in idx]}')
         for i in range(n-1,-1,-1):
             x=idx[i]; c=nums1[x]; z=nums0[x]
             res=add(res, mul(pow[l],pow[c+z]-pow[z]))
