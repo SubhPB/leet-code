@@ -95,17 +95,19 @@ class Solution:
     The total sum of all elements in nums1 and nums0 does not exceed 2 * 105.
     '''
     def maxValue(self, nums1: list[int], nums0: list[int]) -> int:
-        #incomplete
         n=len(nums1); idx=[i for i in range(n)]
-        idx.sort(key=lambda i:-(nums1[i]+nums0[i]))
-        idx.sort(key=lambda i:nums0[i])
+        m=sum([nums1[i]+nums0[i] for i in range(n)])
 
-        l=0; res=0
-        print(f'idx={[''.join(['1']*nums1[x]) + ''.join(['0']*nums0[x]) for x in idx]}')
-        for i in range(n-1,-1,-1):
-            x=idx[i]; c=nums1[x]; z=nums0[x]
-            res=add(res, mul(pow[l],pow[c+z]-pow[z]))
-            l+=c+z
+        idx.sort(key=lambda i:nums0[i])
+        l=0;i=0
+        while i<n and not nums0[idx[i]]: 
+            l+=nums1[idx[i]]; i+=1
+        res=pow[m]-pow[m-l]
+        idx.sort(key=lambda i:-nums1[i])
+        for x in idx:
+            if nums0[x]:
+                res=add(res,pow[m-l]-pow[m-l-nums1[x]])
+                l+=nums0[x]+nums1[x]
         return res
     '''
     3898. Find the Degree of Each Vertex
