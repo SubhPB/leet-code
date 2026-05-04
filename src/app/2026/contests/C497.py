@@ -33,3 +33,34 @@ class Solution:
             if not df: res=max(res,i+1)
             if df not in dt: dt[df]=i
         return res
+    '''
+    3901. Good Subsequence Queries
+
+    You are given an integer array nums of length n and an integer p.
+    A non-empty subsequence of nums is called good if:
+    Its length is strictly less than n.
+    The greatest common divisor (GCD) of its elements is exactly p.
+    You are also given a 2D integer array queries of length q, where each queries[i] = [indi, vali] indicates that you should update nums[indi] to vali.
+    After each query, determine whether there exists any good subsequence in the current array.
+    Return the number of queries for which a good subsequence exists.
+    The term gcd(a, b) denotes the greatest common divisor of a and b.
+    
+    Example 1:
+    Input: nums = [4,8,12,16], p = 2, queries = [[0,3],[2,6]]
+    Output: 1
+    Explanation:
+    i	[indi, vali]	Operation	Updated nums	Any good Subsequence
+    0	[0, 3]	Update nums[0] to 3	[3, 8, 12, 16]	No, as no subsequence has GCD exactly p = 2
+    1	[2, 6]	Update nums[2] to 6	[3, 8, 6, 16]	Yes, subsequence [8, 6] has GCD exactly p = 2
+    Thus, the answer is 1.
+
+    Constraints:
+    2 <= n == nums.length <= 5 * 10^4
+    1 <= nums[i] <= 5 * 104
+    1 <= queries.length <= 5 * 10^4
+    queries[i] = [indi, vali]
+    1 <= vali, p <= 5 * 10^4
+    0 <= indi <= n - 1
+    '''
+    def countGoodSubseq(self, nums: list[int], p: int, queries: list[list[int]]) -> int:
+        pass
