@@ -19,19 +19,33 @@ s consists only of the characters '0' and '1'.
 '''
 class Solution:
     def longestBalanced(self, s: str) -> int:
-        dt={}; res=0; x=0
+        # incorrect
+        n=len(s); res=0
+        u0=n; u1=-1
+        v0=n; v1=-1
         for i,b in enumerate(s):
-            x+=int(b); df=2*x-i-1 #x-o
-            res=max(
-                res,
-                i-min(
-                    dt.get(df-2,i),
-                    dt.get(df+2,i),
-                    dt.get(df,i)
-                )
-            )
-            if not df: res=max(res,i+1)
-            if df not in dt: dt[df]=i
+            if int(b):
+                u0=min(u0,i); u1=max(u1,i)
+            else:
+                v0=min(v0,i); v1=max(v1,i)
+        
+        df={}; Δc=0 # Δc=Δp+Δt
+        df[Δc]=-1
+
+        for i,b in enumerate(s):
+            if int(b): Δc+=1
+            else: Δc-=1
+
+            # Δt:0 -> Δp:Δc
+            res=max(res, i-df.get(Δc,i))
+            # Δt:-2 {u<v} -> Δc:Δp-2
+            j=df.get(Δc+2,i)
+            if u0<=j or i<u1: 
+                res=max(res,i-j)
+            # Δt:2 {u>v} -> Δc:Δp+2
+            j=df.get(Δc-2,i)
+            if v0<=j or j<v1:
+                res=max(res,i-j)
         return res
     '''
     3901. Good Subsequence Queries
