@@ -19,7 +19,14 @@ s consists only of the characters '0' and '1'.
 '''
 class Solution:
     def longestBalanced(self, s: str) -> int:
-        # incorrect
+        '''
+        edgecase: 
+        e.g. "010" output:4 expected:6
+        current algorithm keeping the farthest point of df
+        this edge case points that if that farthest point fails to get swap
+        then not mandatory that other point with less length would get fail too.
+        need a way to address this flaw
+        '''
         n=len(s); res=0
         u0=n; u1=-1
         v0=n; v1=-1
@@ -44,9 +51,12 @@ class Solution:
                 res=max(res,i-j)
             # Δt:2 {u>v} -> Δc:Δp+2
             j=df.get(Δc-2,i)
-            if v0<=j or j<v1:
+            if v0<=j or i<v1:
                 res=max(res,i-j)
+            
+            if Δc not in df: df[Δc]=i
         return res
+
     '''
     3901. Good Subsequence Queries
 
