@@ -1,32 +1,25 @@
-'''
-3900. Longest Balanced Substring After One Swap
-
-You are given a binary string s consisting only of characters '0' and '1'.
-A string is balanced if it contains an equal number of '0's and '1's.
-You can perform at most one swap between any two characters in s. Then, you select a balanced substring from s.
-Return an integer representing the maximum length of the balanced substring you can select.
-
-Example 1:
-Input: s = "100001"
-Output: 4
-Explanation:
-Swap "100001". The string becomes "101000".
-Select the substring "101000", which is balanced because it has two '0's and two '1's.
-
-Constraints:
-1 <= s.length <= 10**5
-s consists only of the characters '0' and '1'.
-'''
 class Solution:
+    '''
+    3900. Longest Balanced Substring After One Swap
+
+    You are given a binary string s consisting only of characters '0' and '1'.
+    A string is balanced if it contains an equal number of '0's and '1's.
+    You can perform at most one swap between any two characters in s. Then, you select a balanced substring from s.
+    Return an integer representing the maximum length of the balanced substring you can select.
+
+    Example 1:
+    Input: s = "100001"
+    Output: 4
+    Explanation:
+    Swap "100001". The string becomes "101000".
+    Select the substring "101000", which is balanced because it has two '0's and two '1's.
+
+    Constraints:
+    1 <= s.length <= 10**5
+    s consists only of the characters '0' and '1'.
+    '''
     def longestBalanced(self, s: str) -> int:
-        '''
-        edgecase: 
-        e.g. "010" output:4 expected:6
-        current algorithm keeping the farthest point of df
-        this edge case points that if that farthest point fails to get swap
-        then not mandatory that other point with less length would get fail too.
-        need a way to address this flaw
-        '''
+
         n=len(s); res=0
         u0=n; u1=-1
         v0=n; v1=-1
@@ -37,26 +30,28 @@ class Solution:
                 v0=min(v0,i); v1=max(v1,i)
         
         df={}; Δc=0 # Δc=Δp+Δt
-        df[Δc]=-1
+        #df[Δp]: segment [initial occrance, contains '0', contains '1']
+        df[Δc]=[-1,n,n] 
 
         for i,b in enumerate(s):
             if int(b): Δc+=1
             else: Δc-=1
 
             # Δt:0 -> Δp:Δc
-            res=max(res, i-df.get(Δc,i))
+            res=max(res, i-df.get(Δc,[i])[0])
             # Δt:-2 {u<v} -> Δc:Δp-2
-            j=df.get(Δc+2,i)
-            if u0<=j or i<u1: 
-                res=max(res,i-j)
+            [j,v,u]=df.get(Δc+2,[i,n,n])
+            if i<u1: res=max(res,i-j)
+            res=max(res,i-u)
             # Δt:2 {u>v} -> Δc:Δp+2
-            j=df.get(Δc-2,i)
-            if v0<=j or i<v1:
-                res=max(res,i-j)
+            [j,v,u]=df.get(Δc-2,[i,n,n])
+            if i<v1: res=max(res,i-j)
+            res=max(res,i-v)
             
-            if Δc not in df: df[Δc]=i
+            if Δc not in df: df[Δc]=[i,n,n]
+            if i>=v0: df[Δc][1]=min(df[Δc][1],i)
+            if i>=u0: df[Δc][2]=min(df[Δc][2],i)
         return res
-
     '''
     3901. Good Subsequence Queries
 
