@@ -19,7 +19,6 @@ class Solution:
     s consists only of the characters '0' and '1'.
     '''
     def longestBalanced(self, s: str) -> int:
-
         n=len(s); res=0
         u0=n; u1=-1
         v0=n; v1=-1
@@ -82,4 +81,11 @@ class Solution:
     0 <= indi <= n - 1
     '''
     def countGoodSubseq(self, nums: list[int], p: int, queries: list[list[int]]) -> int:
+        '''
+        min-heap; d=gcd(...e) where e E min-heap & p|e
+        for q in queries:
+            # update min-heap if p|prev or p|newvalue
+            d=gcd(...e)
+            res+=int(d!=minheap.head())
+        '''
         pass
