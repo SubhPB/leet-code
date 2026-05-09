@@ -1,3 +1,4 @@
+import heapq
 class Solution:
     '''
     3900. Longest Balanced Substring After One Swap
@@ -88,4 +89,33 @@ class Solution:
             d=gcd(...e)
             res+=int(d!=minheap.head())
         '''
-        pass
+        hq=[]; deleted={}
+        res=0; d=None
+        def gcd(x:int,y:int):
+            if x<y: x,y=y,x
+            while x%y: 
+                p=x;x=y;y=p%y; 
+            return y
+
+        for num in nums:
+            if num%p: continue
+            heapq.heappush(hq,num//p)
+            if d is None: d=num//p
+            d=gcd(d,num//p)
+
+        for [i,v] in queries:
+            if not nums[i]%p: 
+                pv=nums[i]//p
+                deleted[pv]=1+deleted.get(pv,0)
+            if not v%p:
+                nv=v//p
+                heapq.heappush(hq,nv)
+                d=gcd(d,nv)
+            while hq and deleted.get(hq[0],0):
+                deleted[hq[0]]-=1
+                heapq.heappop(hq)
+            if hq and hq[0]!=d:
+                res+=1
+        return res
+        
+        
