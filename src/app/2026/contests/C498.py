@@ -23,4 +23,16 @@ class Solution:
     All (ri, ci​​​​​​​) in sources are distinct.
     '''
     def colorGrid(self, n: int, m: int, sources: list[list[int]]) -> list[list[int]]:
-        pass
+        sources.sort(key=lambda arg:-arg[2])
+        g=[[0]*m for _ in range(n)]; i=0    
+        dirs=[[0,1],[0,-1],[1,0],[-1,0]]  
+        while i<len(sources):
+            [x,y,c]=sources[i]
+            if not g[x][y]:
+                g[x][y]=c
+                for [ix,iy] in dirs:
+                    nx=ix+x;ny=iy+y
+                    if 0<=nx<n and 0<=ny<m and not g[nx][ny]:
+                        sources.append([nx,ny,c])
+            i+=1
+        return g
