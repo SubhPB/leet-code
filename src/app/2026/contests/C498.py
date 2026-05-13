@@ -60,4 +60,11 @@ class Solution:
     directions consists of exactly three 'D' characters and three 'R' characters.
     '''
     def countGoodIntegersOnPath(self, l: int, r: int, directions: str) -> int:
+        dp=[[1]*(9+1) for _ in range(6+1)]
+        for i in range(1,6+1):
+            for j in range(9+1):
+                dp[i][j]=0
+                for k in range(j,10):
+                    dp[i][j]+=dp[i-1][k]
+        
         pass
