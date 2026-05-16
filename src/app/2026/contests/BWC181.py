@@ -79,6 +79,20 @@ class Solution:
         for [u,v] in edges: union(u,v)
         res=0
         # will continue from here...
-
+        # incomplete.
+        print(f'parent={parent}')
+        for p in range(n):
+            if parent[p]>-1: continue
+            x=nums[p]; m=-parent[p]
+            for i in range(n):
+                x+=int(parent[i]==p and nums[i])
+            print(f'x={x} W p={p}')
+            for i in range(2,x+1,2):
+                d=int(
+                    perm[x]/(perm[x-i]*perm[i])
+                )
+                k=0
+                for j in range(1,n-x+1): 
+                    pass
         return res
-    
+            
