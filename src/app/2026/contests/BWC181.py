@@ -77,22 +77,21 @@ class Solution:
                 return True
             return False
         for [u,v] in edges: union(u,v)
+        C = lambda a,b: int(perm[a]/(perm[b]*perm[a-b]))
         res=0
         # will continue from here...
         # incomplete.
-        print(f'parent={parent}')
         for p in range(n):
             if parent[p]>-1: continue
-            x=nums[p]; m=-parent[p]
-            for i in range(n):
-                x+=int(parent[i]==p and nums[i])
-            print(f'x={x} W p={p}')
+            m=-parent[p]
+            x=sum([
+                int(p in [i,parent[i]] and nums[i])
+                for i in range(n)
+            ])
+            y=m-x
+            k=sum([C(y,i) for i in range(y)])
             for i in range(2,x+1,2):
-                d=int(
-                    perm[x]/(perm[x-i]*perm[i])
-                )
-                k=0
-                for j in range(1,n-x+1): 
-                    pass
+                u=sum([C(x,i) for _ in range(1,x+1)])
+                res+=y*k*u
         return res
             
