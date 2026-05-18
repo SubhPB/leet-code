@@ -79,19 +79,15 @@ class Solution:
         for [u,v] in edges: union(u,v)
         C = lambda a,b: int(perm[a]/(perm[b]*perm[a-b]))
         res=0
-        # will continue from here...
-        # incomplete.
         for p in range(n):
             if parent[p]>-1: continue
-            m=-parent[p]
+            l=-parent[p]
             x=sum([
                 int(p in [i,parent[i]] and nums[i])
                 for i in range(n)
             ])
-            y=m-x
-            k=sum([C(y,i) for i in range(y)])
-            for i in range(2,x+1,2):
-                u=sum([C(x,i) for _ in range(1,x+1)])
-                res+=y*k*u
+            y=l-x
+            k=sum([C(y,i) for i in range(y+1)])
+            u=sum([C(x,i) for i in range(0,x+1,2)])
+            res+=k*u-1
         return res
-            
