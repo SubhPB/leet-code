@@ -73,4 +73,26 @@ class Solution:
     0 <= li, ri < nums.length
     '''
     def minCost(self, nums: list[int], queries: list[list[int]]) -> list[int]:
-        pass
+        n=len(nums); m=len(queries); cost=[0]*n
+        cost[1]=1
+        for i in range(2,n):
+            cost[i]=cost[i-1]
+            if abs(nums[i-1]-nums[i-2])>abs(nums[i-1]-nums[i]):
+                cost[i]+=1
+            else:
+                cost[i]+=abs(nums[i-1]-nums[i])
+        for i in range(m):
+            [l,r]=queries[i]
+            if l<r: queries[i]=cost[r]-cost[l-1]
+        cost[n-1]=0; cost[n-2]=1
+        for i in range(n-3,-1,-1):
+            cost[i]=cost[i+1]
+            if abs(nums[i+1]-nums[i+2])>abs(nums[i+1]-nums[i]):
+                cost[i]+=1
+            else:
+                cost[i]+=abs(nums[i+1]-nums[i])
+        for i in range(m):
+            if isinstance(queries[i],list):
+                [l,r]=queries[i]
+                queries[i]=cost[l]-cost[r]
+        return queries
