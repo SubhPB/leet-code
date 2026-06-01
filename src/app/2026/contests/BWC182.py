@@ -18,18 +18,10 @@ class Solution:
     '''
     def minFlips(self, s: str) -> int:
         n=len(s); x=s.count('1')
-        f,b=0,0; fg=False
-        for i,k in enumerate(s):
-            if int(k):
-                f+=1; 
-            elif f>1: fg=True
-    
-            if int(s[n-i-1]):
-                b+=1
-            elif b>1: fg=True
-               
-        if fg:
-            return min(
-                abs(x-1),n-x,x
-            )
-        return 0
+        if n<3: return 0
+        k=x-int(s[0])-int(s[-1])
+        return min(
+            x,n-x,
+            max(0,x-1),
+            k+[1,0][int(s[0])]+[1,0][int(s[-1])]
+        )
