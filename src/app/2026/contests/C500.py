@@ -1,3 +1,5 @@
+from functools import cache
+
 # ----#3918----
 def isPrime(x:int):
     if x in [2,3,5,7]:
@@ -118,4 +120,20 @@ class Solution:
     0 <= nums[i] <= 10**5
     '''
     def maxFixedPoints(self, nums: list[int]) -> int:
-        pass
+        idx=[]
+        for i,num in enumerate(nums):
+            if i>=num: idx.append(i)
+        m=len(idx)
+        @cache
+        def λ(i:int,p:int,Δ:int):
+            nonlocal nums,idx,m
+            if i == m: return 0
+            j=idx[i]; df=j-nums[j]
+            df-=Δ;k=i-p-1
+            if k>=df:
+                return max(
+                    λ(i+1,i,Δ+df),
+                    λ(i+1,p,Δ)
+                )
+            return λ(i+1,p,Δ)
+        return λ(0,0,0)
