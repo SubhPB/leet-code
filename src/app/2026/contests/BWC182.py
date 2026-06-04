@@ -1,3 +1,4 @@
+import heapq #3924
 from typing import List
 class Solution:
     '''
@@ -106,4 +107,30 @@ class Solution:
     0 <= k <= edges.length
     '''
     def minimumThreshold(self, n: int, edges: List[List[int]], source: int, target: int, k: int) -> int:
-        pass
+        l=0;r=0;mx=0
+        graph=[[] for _ in range(n)]
+        for u,v,c in edges:
+            graph[u].append((v,c))
+            graph[v].append((u,c))
+            mx=max(mx,c)
+        def λ(val:int):
+            dist=[10**9+7]*n
+            dist[source]=0
+            heap=[(0,source)]
+            while heap:
+                cost,u=heapq.heappop(heap)
+                if dist[u]<cost:
+                    continue
+                for v,c in graph[u]:
+                    c = 1 if c>val else 0
+                    if cost+c < dist[v]:
+                        dist[v]=cost+c
+                        heapq.heappush(heap,(cost+c,v))
+            return dist[target]<=k
+        l=0;r=mx
+        while l<r:
+            m=(l+r)//2
+            if λ(m): r=m
+            else: l=m+1
+        if l!=mx: return l
+        return l if λ(l) else -1
