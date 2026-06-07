@@ -26,4 +26,21 @@ class Solution:
     1 <= queries[i].length <= 10**5
     '''
     def countWordOccurrences(self, chunks: list[str], queries: list[str]) -> list[int]:
-        pass
+        ischar = lambda c: 'a'<=c<='z'
+        s=''.join(chunks); fq={}
+        i=0; n=len(s)
+        while i<n:
+            if ischar(s[i]):
+                w=[]
+                while i<n:
+                    if ischar(s[i]):
+                        w.append(s[i])
+                    elif 0<i<n-1 and s[i]=='-' and ischar(s[i-1]) and ischar(s[i+1]):
+                        w.append(s[i])
+                    else: break
+                    i+=1
+                ky=''.join(w)
+                fq[ky]=1+fq.get(ky,0)
+            else:
+                i+=1
+        return [fq.get(tg,0) for tg in queries]
