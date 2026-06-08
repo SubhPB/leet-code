@@ -44,3 +44,36 @@ class Solution:
             else:
                 i+=1
         return [fq.get(tg,0) for tg in queries]
+    '''
+    3927. Minimize Array Sum Using Divisible Replacements
+
+    You are given an integer array nums.
+    You can perform the following operation any number of times:
+    Choose two indices a and b such that nums[a] % nums[b] == 0.
+    Replace nums[a] with nums[b].
+    Return the minimum possible sum of the array after performing any number of operations.
+
+    Example 1:
+    Input: nums = [3,6,2]
+    Output: 7
+    Explanation:
+
+    Choose a = 1, b = 2, where nums[a] = 6 and nums[b] = 2. Since 6 % 2 == 0, replace nums[1] with nums[2].
+    The array becomes [3, 2, 2].
+    No further operation reduces the sum. Thus, the final sum is 3 + 2 + 2 = 7.
+
+    Constraints:
+    1 <= nums.length <= 10**5
+    1 <= nums[i] <= 10**​​​​​​​5
+    '''
+    def minArraySum(self, nums: list[int]) -> int:
+        β=[False]*(10**5+1); nums.sort()
+        res=0
+        for num in nums:
+            for x in range(1,(num+2)//2):
+                if β[x]:
+                    num=x; break
+            β[num]=True
+            res+=num
+        return res
+            
