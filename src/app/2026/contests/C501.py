@@ -70,10 +70,13 @@ class Solution:
         β=[False]*(10**5+1); nums.sort()
         res=0
         for num in nums:
-            for x in range(1,(num+2)//2):
-                if β[x]:
-                    num=x; break
-            β[num]=True
+            l=num
+            for x in range(1,1+int(num**0.5)):
+                if num%x==0:
+                    if β[x]:l=min(l,x)
+                    if β[num//x]:l=min(num,num//x)
+                    break
+            β[l]=True
             res+=num
         return res
             
