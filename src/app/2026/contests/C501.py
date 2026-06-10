@@ -1,3 +1,4 @@
+from collections import Counter
 class Solution:
     '''
     3926. Count Valid Word Occurrences
@@ -67,16 +68,11 @@ class Solution:
     1 <= nums[i] <= 10**​​​​​​​5
     '''
     def minArraySum(self, nums: list[int]) -> int:
-        β=[False]*(10**5+1); nums.sort()
-        res=0
+        cnt=Counter(nums);nums=sorted(cnt);res=0
         for num in nums:
-            l=num
-            for x in range(1,1+int(num**0.5)):
-                if num%x==0:
-                    if β[x]:l=min(l,x)
-                    if β[num//x]:l=min(num,num//x)
-                    break
-            β[l]=True
-            res+=num
+            if not cnt[num]: continue
+            for b in range(num,nums[-1]+1,num):
+                if cnt[b]:
+                    res+=cnt[b]*num
+                    cnt[b]=0
         return res
-            
