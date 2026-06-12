@@ -108,4 +108,53 @@ class Solution:
     There are no repeated edges.
     '''
     def minCost(self, n: int, prices: list[int], roads: list[list[int]]) -> list[int]:
-        pass
+        inf=int(float('inf'))
+        dp=[
+            [(inf,inf) for v in range(n)] for u in range(n)
+        ]
+
+        parent=[-1]*n
+        def find(u:int):
+            p=u
+            while parent[p]>=0:
+                p=parent[p]
+            if p!=u: parent[u]=p
+            return u
+        def union(u:int,v:int):
+            pofu=find(u); wofu=-parent[pofu]
+            pofv=find(v); wofv=-parent[pofv]
+            if pofu!=pofv:
+                if wofu>wofv:
+                    parent[pofv]=pofu
+                    parent[pofu]-=wofv
+                else: 
+                    parent[pofu]=pofv
+                    parent[pofv]-=wofu
+                return True
+            return False
+
+        G=[[] for _ in range(n)]
+        for [u,v,c,t] in roads:
+            G[u].append((v,c,t))
+            G[v].append((u,c,t))
+            union(u,v)
+        
+        res=[*prices]
+        # for u in range(n):
+        #     for v in range(u+1,v):
+        #         if find(u)!=find(v):
+        #             continue
+        #         a,b=inf,inf
+        #         for g,c,t in G[]
+
+        res=[prices[i] for i in range(n)]
+        for u in range(n):
+            for v in range(u+1,n):
+                if find(u)!=find(v):
+                    continue
+                a,b=inf,inf
+                for g,c,t in G[u]:
+                    # a1,b1=λ(g,v,) le complétera
+                    pass
+        return res
+        
