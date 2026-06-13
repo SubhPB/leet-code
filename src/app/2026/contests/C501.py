@@ -1,4 +1,5 @@
-from collections import Counter
+from collections import deque, Counter
+import math
 class Solution:
     '''
     3926. Count Valid Word Occurrences
@@ -108,53 +109,55 @@ class Solution:
     There are no repeated edges.
     '''
     def minCost(self, n: int, prices: list[int], roads: list[list[int]]) -> list[int]:
-        inf=int(float('inf'))
-        dp=[
-            [(inf,inf) for v in range(n)] for u in range(n)
-        ]
-
-        parent=[-1]*n
-        def find(u:int):
-            p=u
-            while parent[p]>=0:
-                p=parent[p]
-            if p!=u: parent[u]=p
-            return u
-        def union(u:int,v:int):
-            pofu=find(u); wofu=-parent[pofu]
-            pofv=find(v); wofv=-parent[pofv]
-            if pofu!=pofv:
-                if wofu>wofv:
-                    parent[pofv]=pofu
-                    parent[pofu]-=wofv
-                else: 
-                    parent[pofu]=pofv
-                    parent[pofv]-=wofu
-                return True
-            return False
-
         G=[[] for _ in range(n)]
+
         for [u,v,c,t] in roads:
             G[u].append((v,c,t))
             G[v].append((u,c,t))
-            union(u,v)
         
-        res=[*prices]
-        # for u in range(n):
-        #     for v in range(u+1,v):
-        #         if find(u)!=find(v):
-        #             continue
-        #         a,b=inf,inf
-        #         for g,c,t in G[]
+        dp=[
+            [math.inf]*n for r in range(n)
+        ]
 
-        res=[prices[i] for i in range(n)]
+        for u in range(n):
+            q=deque([])
+            q.append((u,0))
+            while q:
+                node,c=q.popleft()
+                if c>=dp[min(node,u)][max(node,u)]: 
+                    continue
+                dp[min(node,u)][max(node,u)]=c
+                for v,cost,_ in G[node]:
+                    if c+cost<dp[min(node,v)][max(node,v)]:
+                        q.append((v,c+cost))
+
+        for i in range(n): dp[i][i]=math.inf
+
+        for u in range(n):
+            q=deque([])
+            q.append((u,0))
+            while q:
+                node,c=q.popleft()
+                if c>=dp[max(node,u)][min(node,u)]:
+                    continue
+                dp[max(node,u)][min(node,u)]=c
+                for v,cost,tax in G[node]:
+                    if c+cost*tax<dp[max(node,v)][min(node,v)]:
+                        q.append((v,c+cost*tax))
+
+        res=[math.inf]*n
         for u in range(n):
             for v in range(u+1,n):
-                if find(u)!=find(v):
-                    continue
-                a,b=inf,inf
-                for g,c,t in G[u]:
-                    # a1,b1=λ(g,v,) le complétera
-                    pass
+                res[u]=min(
+                    res[u],
+                    prices[u],
+                    prices[v]+dp[u][v]+dp[v][u]
+                )
+                res[v]=min(
+                    res[v],
+                    prices[v],
+                    prices[u]+dp[u][v]+dp[v][u]
+                )
+
         return res
         
