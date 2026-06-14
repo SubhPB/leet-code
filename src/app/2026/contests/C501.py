@@ -115,37 +115,39 @@ class Solution:
             G[u].append((v,c,t))
             G[v].append((u,c,t))
         
-        dp=[
-            [math.inf]*n for r in range(n)
-        ]
+        dp=[[math.inf]*n for r in range(n)]
 
         for u in range(n):
             q=deque([])
+            dist=[math.inf]*n
             q.append((u,0))
             while q:
                 node,c=q.popleft()
-                if c>=dp[min(node,u)][max(node,u)]: 
+                if c>=dist[node]: 
                     continue
-                dp[min(node,u)][max(node,u)]=c
+                dist[node]=c
                 for v,cost,_ in G[node]:
-                    if c+cost<dp[min(node,v)][max(node,v)]:
+                    if c+cost<dist[v]:
                         q.append((v,c+cost))
-
-        for i in range(n): dp[i][i]=math.inf
+            for v in range(n):
+                dp[min(u,v)][max(u,v)]=dist[v]
 
         for u in range(n):
             q=deque([])
+            dist=[math.inf]*n
             q.append((u,0))
             while q:
                 node,c=q.popleft()
-                if c>=dp[max(node,u)][min(node,u)]:
+                if c>=dist[node]:
                     continue
-                dp[max(node,u)][min(node,u)]=c
+                dist[node]=c
                 for v,cost,tax in G[node]:
-                    if c+cost*tax<dp[max(node,v)][min(node,v)]:
+                    if c+cost*tax<dist[v]:
                         q.append((v,c+cost*tax))
+            for v in range(n):
+                dp[max(u,v)][min(u,v)]=dist[v]
 
-        res=[math.inf]*n
+        res=[*prices]
         for u in range(n):
             for v in range(u+1,n):
                 res[u]=min(
@@ -160,4 +162,3 @@ class Solution:
                 )
 
         return res
-        
