@@ -20,9 +20,10 @@ class Solution:
     1 <= k <= 30
     '''
     def countKthRoots(self, l: int, r: int, k: int) -> int:
+        if k==1: return r-l+1
         i=0;ls=[]
-        while i**k <= r:
-            ls.append(i)
+        while i**k<=r:
+            ls.append(i**k)
             i+=1
         left=-1;right=len(ls)-1
         while left<right:
@@ -31,14 +32,14 @@ class Solution:
                 left=m
             else:
                 right=m-1
-        res=right
+        res=left
         left=-1; right=len(ls)-1
         while left<right:
             m=(left+right+1)//2
             if ls[m]<=r:
-                left=i
+                left=m
             else:
-                right=i-1
+                right=m-1
         return left-res
     '''
     3933. Largest Local Values in a Matrix II
