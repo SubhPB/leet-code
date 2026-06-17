@@ -1,3 +1,4 @@
+import math
 class Solution:
     '''
     3932. Count K-th Roots in a Range
@@ -19,7 +20,7 @@ class Solution:
     0 <= l <= r <= 10**9
     1 <= k <= 30
     '''
-    def countKthRoots(self, l: int, r: int, k: int) -> int:
+    def countKthRoots(self, l: int, r: int, k: int) -> int: # n+2O(log(n))
         if k==1: return r-l+1
         i=0;ls=[]
         while i**k<=r:
@@ -41,6 +42,10 @@ class Solution:
             else:
                 right=m-1
         return left-res
+    def countKthRootsII(self, l: int, r: int, k: int) -> int: # O(1)
+        l=math.ceil(l**(1/k) - 1e-9); r=math.floor(r**(1/k) + 1e-9)
+        return (r-l)+1
+
     '''
     3933. Largest Local Values in a Matrix II
 
