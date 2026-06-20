@@ -79,21 +79,22 @@ class Solution:
         res=0;n=len(matrix);m=len(matrix[0])
         for i in range(n):
             for j in range(m):
-                val=matrix[i][j]
+                val=matrix[i][j]; bl=val==0
                 for k in range(
                     max(0,i-val),min(n,i+val+1)
                 ):
-                    if matrix[i][j]<0: break
+                    if bl: break
                     for l in range(
                         max(0,j-val),min(m,j+val+1)
                     ):
-                        if k+val in [i+2*val,i] and l+val in [j+val,j]:
+                        if k in (i+val,i-val) and l in (j+val,j-val):
                             continue
                         if matrix[k][l]>val:
-                            matrix[i][j]=-1
+                            bl=True
                             break
-                if matrix[i][j]>=0:
+                if not bl:
                     res+=1
         return res
+
 
 
