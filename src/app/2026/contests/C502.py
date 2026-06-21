@@ -77,24 +77,25 @@ class Solution:
     '''
     def countLocalMaximums(self, matrix: list[list[int]]) -> int:
         res=0;n=len(matrix);m=len(matrix[0])
-        for i in range(n):
-            for j in range(m):
-                val=matrix[i][j]; bl=val==0
-                for k in range(
-                    max(0,i-val),min(n,i+val+1)
+        q=[[i,j] for j in range(m) for i in range(n)]
+        q.sort(key=lambda x:-matrix[x[0]][x[1]])
+        for [i,j] in q:
+            val=(matrix[i][j])
+            if val>0:
+                mx=i;my=j
+                for x in range(
+                  max(0,i-val),min(n,i+val+1)   
                 ):
-                    if bl: break
-                    for l in range(
+                    for y in range(
                         max(0,j-val),min(m,j+val+1)
                     ):
-                        if k in (i+val,i-val) and l in (j+val,j-val):
+                        if x in (i+val,i-val) and y in (j+val,j-val) and (x,y)==(i,j):
                             continue
-                        if matrix[k][l]>val:
-                            bl=True
-                            break
-                if not bl:
-                    res+=1
+                        if val<abs(matrix[x][y]):
+                            mx=x;my=y
+                        if val!=matrix[x][y]:
+                            matrix[x][y]=min(
+                                matrix[x][y],-matrix[x][y]
+                            )
+                if (i,j)==(mx,my): res+=1
         return res
-
-
-
