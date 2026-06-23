@@ -130,22 +130,22 @@ class Solution:
         def λ(l:int):
             hsh1=0;hsh2=0 
             pm1=37; pm2=39
-            pw1=pm1; pw2=pm2
+            pw1=1; pw2=1
             # hash = E(1<=i<=l) e[i]*b[n-i]
             for i in range(l-2,-1,-1): #imp:note range
+                pw1=mul(pw1,pm1,bse1)
                 hsh1=add(
                     hsh1,
                     mul(nums[i],pw1,bse1),
                     bse1
                 )
-                pw1=mul(pw1,pm1,bse1)
 
+                pw2=mul(pw2,pm2,bse2)
                 hsh2=add(
                     hsh2,
                     mul(nums[i],pw2,bse2),
                     bse2
                 )
-                pw2=mul(pw2,pm2,bse2)
             
             fq=defaultdict()
             for i in range(l-1,n):
