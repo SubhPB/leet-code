@@ -1,4 +1,6 @@
 import math
+from collections import defaultdict
+
 class Solution:
     '''
     3932. Count K-th Roots in a Range
@@ -120,5 +122,58 @@ class Solution:
     1 <= nums.length <= 10**5
     1 <= nums[i] <= 10**5
     '''
-    def smallestUniqueSubarray(self, nums:list[int]) -> int:
-        pass
+    def smallestUniqueSubarray(self, nums: list[int]) -> int:
+        n=len(nums); bse1=10**9+7; bse2=bse1+2
+        add = lambda x,y,mod: (x%mod + y%mod)%mod
+        mul = lambda x,y,mod: (x%mod * y%mod)%mod
+
+        def λ(l:int):
+            hsh1=0;hsh2=0 
+            pm1=37; pm2=39
+            pw1=pm1; pw2=pm2
+            # hash = E(1<=i<=l) e[i]*b[n-i]
+            for i in range(l-2,-1,-1): #imp:note range
+                hsh1=add(
+                    hsh1,
+                    mul(nums[i],pw1,bse1),
+                    bse1
+                )
+                pw1=mul(pw1,pm1,bse1)
+
+                hsh2=add(
+                    hsh2,
+                    mul(nums[i],pw2,bse2),
+                    bse2
+                )
+                pw2=mul(pw2,pm2,bse2)
+            
+            fq=defaultdict()
+            for i in range(l-1,n):
+                hsh1=add(hsh1,nums[i],bse1)
+                hsh2=add(hsh2,nums[i],bse2)
+
+                enc=str(hsh1)+'.'+str(hsh2)
+                fq[enc]=1+fq.get(enc,0)
+                
+                hsh1=mul(
+                    hsh1-mul(nums[i-l+1],pw1,bse1),
+                    pm1,
+                    bse1
+                )
+
+                hsh2=mul(
+                    hsh2-mul(nums[i-l+1],pw2,bse2),
+                    pm2,
+                    bse2
+                )
+            for ky in fq:
+                if fq[ky]==1:
+                    return True
+            return False
+
+        l=1;r=n
+        while l<r:
+            m=(l+r)//2
+            if λ(m): r=m
+            else: l=m+1
+        return l
