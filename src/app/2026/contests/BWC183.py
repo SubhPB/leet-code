@@ -32,11 +32,11 @@ class Solution:
                 temp1=0;temp2=0
                 for i,num in enumerate(nums):
                     if i%2:
-                        temp1+=abs(x-num%k)
-                        temp2+=abs(y-num%k)
+                        temp1+=min(k-x+num%k,k-num%k+x,abs(x-num%k))
+                        temp2+=min(k-y+num%k,k-num%k+y,abs(y-num%k))
                     else:
-                        temp2+=abs(x-num%k)
-                        temp1+=abs(y-num%k)
+                        temp2+=min(k-x+num%k,k-num%k+x,abs(x-num%k))
+                        temp1+=min(k-y+num%k,k-num%k+y,abs(y-num%k))
                 if res is None: res=temp1
                 res=min(res,temp1,temp2)
         res = 0 if res is None else res
