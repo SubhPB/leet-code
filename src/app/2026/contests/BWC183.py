@@ -69,4 +69,23 @@ class Solution:
         Problem breaks down into effectively finding subarr with maximum sum.
         Would find & return the sum of such subarr among each col and row.
         '''
-        pass
+        m=len(grid);n=len(grid[0]);res=-10**9
+        for r in range(m):
+            sf=[0]*(n+1);mx=-10**9
+            for c in range(n):
+                sf[c]+=sf[c-1]+grid[r][c]
+                mx=max(mx,grid[r][c])
+            for i in range(n):
+                for j in range(i+1,n):
+                    res=max(res,sf[j]-sf[i-1])
+            if min(m,n)>2: res=max(res,mx)
+
+        for c in range(n):
+            sf=[0]*(m+1)
+            for r in range(m):
+                sf[r]+=sf[r-1]+grid[r][c]
+            for i in range(n):
+                for j in range(i+1,n):
+                    res=max(res,sf[j]-sf[i-1])
+            
+        return res
