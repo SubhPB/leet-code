@@ -67,23 +67,24 @@ class Solution:
 
         m=len(grid);n=len(grid[0]);res=-10**9
         for r in range(m):
-            sf=[0]*(n+1)
-            for c in range(n):
-                sf[c]+=sf[c-1]+grid[r][c]
-            for i in range(n):
-                for j in range(i+1,n):
-                    res=max(res,sf[j]-sf[i-1])
+            total=grid[r][0]
+            least=0
+            for c in range(1,n):
+                least=min(least,total-grid[r][c-1])
+                total+=grid[r][c]
+                res=max(res,total-least)
 
         for c in range(n):
-            sf=[0]*(m+1)
-            for r in range(m):
-                sf[r]+=sf[r-1]+grid[r][c]
-            for i in range(n):
-                for j in range(i+1,n):
-                    res=max(res,sf[j]-sf[i-1])
-        
-        for r in range(1,m-1):
-            for c in range(1,n-1):
-                res=max(res,grid[r][c])
+            total=grid[0][c]
+            least=0
+            for r in range(1,m):
+                least=min(least,total-grid[r-1][c])
+                total+=grid[r][c]
+                res=max(res,total-least)
+                
+        if min(m,n)>2:
+            for r in range(1,m-1):
+                for c in range(1,n-1):
+                    res=max(res,grid[r][c])
             
         return res
