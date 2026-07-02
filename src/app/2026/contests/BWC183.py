@@ -117,4 +117,11 @@ class Solution:
     parent describes a valid rooted tree.
     '''
     def countValidSubsets(self, parent: list[int], nums: list[int], k: int) -> int:
+        '''
+        dpl[r][i] & dpr[r][i] where r:remainder; i:node
+        for r1 in range(vi%k): #rough idea
+            r2=k-r1
+            res+=dpl[r1][i-2]+dpr[r2][i+2]
+            res+=dpl[r2][i-2]+dpr[r1][i+2]
+        '''
         pass
