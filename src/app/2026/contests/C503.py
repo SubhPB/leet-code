@@ -48,15 +48,15 @@ class Solution:
     nums is a permutation of integers from 0 to n - 1.
     '''
     def minOperations(self, nums: list[int]) -> int:
-        res=0; n=len(nums)
-        if n>1:
-            i=0; t= -1 if ((nums[0]+1)%n==nums[1]) else 1
-            print(f't={t}')
-            while i<n:
-                if nums[i]!=(nums[(i+1)%n]+t)%n:
-                    return -1
-                i+=1
-            if t<0: 
-                print(f'nums={nums}')
-                n+=1; nums[-1]=nums[0]
-        return n-1-nums[-1]
+        n=len(nums)
+        if n<=2: return nums[0]
+        i=nums[1]-nums[0]
+        if i in [1-n,n-1]:
+            i = 1 if i<0 else -1
+        if abs(i)!=1: return -1
+        for j in range(n):
+            if (nums[j]+i)%n!=nums[(j+1)%n]:
+                return -1
+        if i>0: #inc 
+            return min(-nums[0]%n,1 + (nums[0]-n+1)%n)
+        return min(-nums[-1]%n + 1,1 + (nums[0]-n+1)%n)
