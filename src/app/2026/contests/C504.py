@@ -21,4 +21,18 @@ class Solution:
     1 <= budget <= 1500
     '''
     def maximumSaleItems(self, items: list[list[int]], budget: int) -> int:
-        return -1
+        n=len(items); gain=[0]*n
+        for i in range(n):
+            for j in range(n):
+                if i!=j and items[j][0]%items[i][0]==0:
+                    gain[i]+=1
+        dp=[0]*(budget+1)
+        for i in range(n):
+            ndp=[*dp]
+            first=1+gain[i]; cost=items[i][1]
+            for b in range(cost,budget+1):
+                ndp[b]=max(ndp[b],dp[b-cost]+first)
+            for b in range(cost,budget+1):
+                ndp[b]=max(ndp[b],ndp[b-cost]+1)
+            dp=ndp
+        return dp[budget]
