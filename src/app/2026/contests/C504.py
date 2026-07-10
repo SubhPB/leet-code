@@ -1,4 +1,4 @@
-
+from collections import Counter
 class Solution:
     '''
     3946. Maximum Number of Items From Sale I
@@ -60,7 +60,35 @@ class Solution:
     1 <= budget <= 10**9
     '''
     def maximumSaleItems(self, items: list[list[int]], budget: int) -> int:
-        pass
+        vals=[item[0] for item in items]
+        n=len(items); mx=max(vals)
+        freq=Counter(vals)
+        factor={}
+
+        for val in freq:
+            c=-1;m=val
+            while m<=mx:
+                if m in freq:
+                    c+=freq[m]
+                m+=val
+            factor[val]=c
+        
+        pre=[];mn=float('inf')
+        for [fac,cost] in items:
+            c=factor[fac]; mn=min(cost,mn)
+            pre.append([fac,cost,c,cost/(2 if c>0 else 1)])
+
+        pre.sort(key=lambda x:(x[3],-x[2])) # priorité: (cost_per_item, most_free_items)
+        res=budget//mn
+        cnt=0
+
+        for _,cost,free,__ in pre:
+            c=min(free,budget//cost)
+            budget-=c*cost
+            cnt+=c*2
+            res=max(res,cnt+budget//mn)
+
+        return res
     '''
     3948. Lexicographically Maximum MEX Array
 
