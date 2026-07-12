@@ -114,4 +114,11 @@ class Solution:
     0 <= nums[i] <= 10**5
     '''
     def maximumMEX(self, nums: list[int]) -> list[int]:
-        pass
+        # need to refine
+        n=len(nums); idxs=[i for i in range(n)]
+        idxs.sort(key=lambda idx:(-nums[idx],idx))
+        result=[]; t=idxs[0]
+        for idx in idxs:
+            if idx<t: continue
+            t=idx; result.append(nums[idx]+1)
+        return result
