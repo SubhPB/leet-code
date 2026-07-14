@@ -26,6 +26,7 @@ class Solution:
     0 <= starti <= endi <= 10**9
     '''
     def minEnergy(self, n: int, brightness: int, intervals: list[list[int]]) -> int:
+        # incomplete
         intervals.sort(key=lambda interval:(interval[0],-interval[1]))
         pstart,pend=intervals[0]
         t=pend-pstart+1; i=1
@@ -35,7 +36,7 @@ class Solution:
                 t+=end-start+1
             elif end>pend:
                 t+=end-pend
-            pstart,pend=start,end
+            pstart,pend=start,max(pend,end)
             i+=1
         return t*math.ceil(brightness/3)
 
