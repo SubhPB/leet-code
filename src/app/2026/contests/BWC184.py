@@ -76,4 +76,35 @@ class Solution:
                 else:
                     res+=nums[i]
         return res
+    '''
+    3953. Maximum Score with Co-Prime Element
 
+    You are given an integer array nums of length n and an integer maxVal.
+    You may change any element in nums to any positive integer less than or equal to maxVal. Each such change costs 1.
+    Two integers are co-prime if their greatest common divisor (GCD) is 1.
+    After all modifications, you must choose an index i such that, nums[i] is co-prime with every other element nums[j].
+    Let:
+    selectedValue be the final value of nums[i] after modifications.
+    modificationCost be the total number of elements changed.
+    The score is defined as score = selectedValue - modificationCost.
+
+    Return the maximum possible score.
+
+    Example 1:
+    Input: nums = [3,4,6], maxVal = 5
+    Output: 4
+
+    Explanation:
+    Change nums[2] from 6 to 5, which costs 1. Choose nums[2] = 5, since it is co-prime with 3 and 4.
+
+    selectedValue = 5
+    modificationCost = 1
+    The score is 5 - 1 = 4
+
+    Constraints:
+    1 <= nums.length <= 10**5
+    1 <= nums[i] <= 10**5
+    1 <= maxVal <= 10**​​​​​​​5
+    '''
+    def maxScore(self, nums: list[int], maxVal: int) -> int:
+        pass
