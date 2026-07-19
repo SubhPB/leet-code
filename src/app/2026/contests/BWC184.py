@@ -63,18 +63,18 @@ class Solution:
     ​​​​​​​s[i] is either '0' or '1'
     '''
     def maxTotal(self, nums: list[int], s: str) -> int:
-        s=list([int(x) for x in s])
-        res=s[0]*nums[0]
-        n=len(nums)
-        for i in range(1,n):
-            if s[i]:
-                if s[i-1]:
-                    res+=nums[i]
-                elif nums[i-1]>=nums[i]:
-                    res+=nums[i-1]
-                    s[i]=0; s[i-1]=1
-                else:
-                    res+=nums[i]
+        n=len(nums);i=0;res=0
+        while i<n:
+            res+=nums[i]
+            if not int(s[i]):
+                j=i+1;mn=nums[i]
+                while j<n and int(s[j]):
+                    mn=min(mn,nums[j])
+                    res+=nums[j]
+                    j+=1
+                res-=mn
+                i=j-1
+            i+=1
         return res
     '''
     3953. Maximum Score with Co-Prime Element
@@ -107,4 +107,5 @@ class Solution:
     1 <= maxVal <= 10**​​​​​​​5
     '''
     def maxScore(self, nums: list[int], maxVal: int) -> int:
+        # incomplete
         pass
