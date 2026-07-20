@@ -28,3 +28,28 @@ class Solution:
     '''
     def generateValidStrings(self, n: int, k: int) -> list[str]:
         pass        
+    '''
+    3956. Maximum Sum of M Non-Overlapping Subarrays I
+
+    You are given an integer array nums of length n, and three integers m, l, and r.
+    Your task is to select at least one and at most m non-overlapping subarrays from nums such that:
+    Each selected subarray has a length between [l, r] (inclusive).
+    The total sum of all selected subarrays is maximized.
+    Return the maximum total sum you can achieve.
+    
+    Example 1:
+    Input: nums = [4,1,-5,2], m = 2, l = 1, r = 3
+    Output: 7
+    Explanation:
+    One optimal strategy is to:
+    Select the subarray [4, 1] with sum 4 + 1 = 5 and the subarray [2] with sum 2. Both subarrays have length between [l, r].
+    The total sum of these subarrays is 5 + 2 = 7, which is the maximum achievable sum with at most m = 2 subarrays.
+
+    Constraints:
+    1 <= n == nums.length <= 1000
+    -10**9 <= nums[i] <= 10**9​​​​​​​
+    1 <= m <= n
+    1 <= l <= r <= n
+    '''
+    def maximumSum(self, nums: list[int], m: int, l: int, r: int) -> int:
+        pass
