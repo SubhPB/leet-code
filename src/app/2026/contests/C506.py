@@ -21,4 +21,28 @@ class Solution:
     1 <= nums[i] <= 10**​​​​​​​9
     '''
     def getLength(self, nums: list[int]) -> int:
-        pass
+        n=len(nums); res=1
+        for i in range(n):
+            freq={};freqCount={}
+            for j in range(i,n):
+                old=freq.get(nums[j],0)
+                if old: 
+                    freqCount[old]-=1
+                    if not freqCount[old]:
+                        del freqCount[old]
+                        
+                if nums[j] not in freq:
+                    freq[nums[j]]=0
+                freq[nums[j]]+=1
+                newfreq=freq.get(nums[j],0)
+                if newfreq not in freqCount:
+                    freqCount[newfreq]=0
+                freqCount[newfreq]+=1
+
+                if len(freq)==1:
+                    res=max(res,j-i+1)
+                elif len(freqCount)==2:
+                    f1,f2=sorted(freqCount)
+                    if f2==2*f1:
+                        res=max(res,j-i+1)
+        return res
