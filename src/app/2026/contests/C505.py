@@ -52,4 +52,22 @@ class Solution:
     1 <= l <= r <= n
     '''
     def maximumSum(self, nums: list[int], m: int, l: int, r: int) -> int:
-        pass
+        # il y a un bug
+        n=len(nums); mn=float('-inf')
+        for i in range(1,n):
+            nums[i]+=nums[i-1]
+            for j in range(max(0,i-r+1), i-l+2):
+                mn=max(mn,nums[i]-nums[j-1])
+        nums.append(0)
+        dp=[[0]*(m+1) for _ in range(n+1)]
+        for i in range(n-1,-1,-1):
+            for j in range(1,m+1):
+                for x in range(i+l-1,min(i+(r-l+1),n)):
+                    dp[i][j]=max(
+                        dp[i][j],
+                        nums[x]-nums[i-1]+dp[x+1][j-1],
+                        dp[i+1][j]
+                    )
+        if not dp[0][m]:
+            return mn
+        return dp[0][m]
