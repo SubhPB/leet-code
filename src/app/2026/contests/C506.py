@@ -71,4 +71,37 @@ class Solution:
     1 <= units[i][j] <= 10**5
     '''
     def maxRatings(self, units: list[list[int]]) -> int:
-        pass
+        inf=10**9+7; res=0
+        mn=inf; sm=0; vmn=inf
+
+        for i,unit in enumerate(units):
+            m=len(unit)
+            v1=unit[0]
+            v2=inf
+            mx=v1
+            if m-1:
+                for j in range(1,m):
+                    if unit[j]<v2:
+                        v2=unit[j]
+                    if v2<v1:
+                        v1,v2=v2,v1
+                    mx=max(mx,unit[j])
+            else:
+                v2=v1
+                vmn=min(vmn,v1)
+                
+            mn=min(mn,v1)
+            res+=v1
+            units[i]=[mx,v2,v1]
+            sm+=v2
+
+        for [mx,v2,v1] in units:
+            res=max(
+                res, sm-v2+mn
+            )
+            res=max(
+                res,
+                (sm-v2+mn)-vmn+mx
+            )
+        return res
+
