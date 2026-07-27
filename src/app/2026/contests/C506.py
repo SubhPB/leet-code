@@ -1,3 +1,5 @@
+import heapq
+
 class Solution:
     '''
     3960. Frequency Balance Subarray
@@ -104,4 +106,99 @@ class Solution:
                 (sm-v2+mn)-vmn+mx
             )
         return res
+    '''
+    3962. Maximum Subarray Sum After at Most K Swaps
 
+    You are given an integer array nums and an integer k.
+    You are allowed to perform at most k swap operations on the array.
+    In one swap operation, you may choose any two indices i and j and swap nums[i] and nums[j].
+    Return an integer denoting the maximum possible subarray sum after performing the swaps.
+
+    Example 1:
+    Input: nums = [1,-1,0,2], k = 1
+    Output: 3
+    Explanation:
+    We can swap on indices 1 and 3, resulting in the array [1, 2, 0, -1].
+    The subarray [1, 2] has a sum of 3, which is the maximum possible subarray sum after at most k = 1​​​​​​​ swap.
+
+    Constraints:
+    1 <= nums.length <= 1500
+    -10**5 <= nums[i] <= 10**5
+    0 <= k <= nums.length
+    '''
+    def maxSum(self, nums: list[int], k: int) -> int:
+        n=len(nums); res=-10**18
+
+        if k==0 or n==1:
+            sm=0
+            for x in nums:
+                sm+=x
+                res=max(res,sm)
+                if sm<0: sm=0
+            return res
+        
+
+        cnt=0; curr_nonneg_sm=0
+        pref=[0]*(n+1)
+
+        for i in range(n):
+            if nums[i]>=0:
+                curr_nonneg_sm+=nums[i]
+            else:
+                cnt+=1
+            pref[i+1]=pref[i]+nums[i]
+            res=max(res,nums[i])
+        
+        if cnt<=k and cnt!=n: # no of negative ints are less or equal to swaps 
+            return curr_nonneg_sm
+        
+        # dp[i][j] = sum of k smallest negatives in [i..j]
+        dp=[[0]*n for _ in range(n)]
+        
+        for i in range(n):
+            pq=[];sm=0
+            for j in range(i,n):
+                if nums[j]>=0:
+                    dp[i][j]=sm # sm of negative elements in btw [i..j] 
+                elif len(pq)<k:
+                    heapq.heappush(pq,-nums[j])
+                    sm+=nums[j]
+                else:
+                    if -pq[0]>nums[j]:
+                        sm-=-pq[0]
+                        heapq.heapreplace(pq,-nums[j])
+                        sm+=nums[j]
+        for i in range(n):
+            pq=[] # min-heap for up to k largest positives
+            sm=0 # sum of positive k elements
+
+            # left-> [0,i-1]
+            for j in range(i):
+                if nums[j]<0: continue
+                elif len(pq)<k:
+                    heapq.heappush(pq,nums[j])
+                    sm+=nums[j]
+                else:
+                    if pq[0]<nums[j]:
+                        sm-=pq[0]
+                        heapq.heapreplace(pq,nums[j])
+                        sm+=nums[j]
+
+            # right side [i+1..n+1]
+            for j in range(n-1,i,-1):
+                curr=pref[j+1]-pref[i] 
+                curr-=dp[i][j] #subtract selected negatives
+                curr+=sm
+                res=max(res,curr)
+
+                if nums[j]<0: continue
+                if len(pq)<k:
+                    heapq.heappush(pq,nums[j])
+                    sm+=nums[j]
+                else:
+                    if pq[0]<nums[j]:
+                        sm-=pq[0]
+                        heapq.heapreplace(pq,nums[j])
+                        sm+=nums[j]
+                if pq: res=max(res,sm)
+        return res
