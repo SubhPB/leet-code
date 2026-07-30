@@ -70,16 +70,35 @@ class Solution:
     The finish time of every task is guaranteed to be less than 2**53.
     '''
     def finishTime(self, n: int, edges: list[list[int]], baseTime: list[int]) -> int:
+        if not n-1: return baseTime[0]
+        parent=[0]*n
         graph=[[] for _ in range(n)]
-        inf=10**18
-        for [u,v] in edges: 
+        for u,v in edges:
+            parent[v]=u
             graph[u].append(v)
-        def dfs(node:int):
-            if not graph[node]:
-                return baseTime[node]
-            erl=inf; lt=-inf
-            for v in graph[node]:
-                erl=min(erl,dfs(v))
-                lt=max(lt,dfs(v))
-            return 2*lt-erl+baseTime[node]
-        return dfs(0)
+
+        q=[]; i=0
+        inf=10**18
+        earliest=[inf]*n
+        latest=[-inf]*n
+        traversed=[False]*n
+
+        for v in range(n):
+            if not graph[v]:
+                q.append(v)
+
+        def finishTime(node:int):
+            if not graph[node]: return baseTime[node]
+            return 2*latest[node]-earliest[node]+baseTime[node]
+
+        while i<len(q):
+            v=q[i]; u=parent[v]
+            if u!=v :
+                earliest[u]=min(earliest[u],finishTime(v))
+                latest[u]=max(latest[u],finishTime(v))
+                if not traversed[u]:
+                    traversed[u]=True
+                    q.append(u)
+            i+=1
+        return finishTime(0)
+
