@@ -77,28 +77,23 @@ class Solution:
             parent[v]=u
             graph[u].append(v)
 
-        q=[]; i=0
         inf=10**18
         earliest=[inf]*n
         latest=[-inf]*n
-        traversed=[False]*n
-
-        for v in range(n):
-            if not graph[v]:
-                q.append(v)
 
         def finishTime(node:int):
             if not graph[node]: return baseTime[node]
             return 2*latest[node]-earliest[node]+baseTime[node]
+        
+        def dfs(node:int):
+            u=parent[node]
+            for v in graph[node]:
+                dfs(v)
+            if u!=node:
+                earliest[u]=min(earliest[u],finishTime(node))
+                latest[u]=max(latest[u],finishTime(node))
+    
+        dfs(0)
 
-        while i<len(q):
-            v=q[i]; u=parent[v]
-            if u!=v :
-                earliest[u]=min(earliest[u],finishTime(v))
-                latest[u]=max(latest[u],finishTime(v))
-                if not traversed[u]:
-                    traversed[u]=True
-                    q.append(u)
-            i+=1
         return finishTime(0)
 
