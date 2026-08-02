@@ -94,6 +94,22 @@ class Solution:
                 latest[u]=max(latest[u],finishTime(node))
     
         dfs(0)
-
         return finishTime(0)
+    '''
+    3966. Count Good Integers in a Range
 
+    You are given three integers l, r and k.
+    A number is considered good if the absolute difference between every pair of adjacent digits is at most k.
+    Return the number of good integers in the range [l, r] (inclusive).
+    The absolute difference between values x and y is defined as abs(x - y).
+
+    Example 1:
+    Input: l = 10, r = 15, k = 1
+    Output: 3
+    
+    Constraints:
+    10 <= l <= r <= 10**15
+    0 <= k <= 9
+    '''
+    def goodIntegers(self, l: int, r: int, k: int) -> int:
+        pass
