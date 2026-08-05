@@ -89,3 +89,49 @@ class Solution:
                     if dist[v][cnew]>dnew:
                         heapq.heappush(pq,(dnew,v,cnew))
         return -1
+    '''
+    3971. Maximum Total Value
+
+    You are given two integer arrays value and decay, and an integer m.
+    value[i] represents the initial value at index i.
+    decay[i] represents how much the value decreases after each selection of index i.
+    You may select any index multiple times. The total number of selections across all indices must not exceed m.
+    If you select index i for the tth time, where t is 1-indexed, the value gained is value[i] - decay[i] * (t - 1).
+    Return the maximum total value you can obtain. Since the answer may be large, return it modulo 109 + 7.
+
+    Example 1:
+    Input: value = [6,5,4], decay = [2,1,1], m = 4
+    Output: 19
+    Explanation:
+    One optimal sequence of selections is as follows:
+    By selecting index 0, the value gained is 6.
+    By selecting index 1, the value gained is 5.
+    By selecting index 2, the value gained is 4.
+    By selecting index 0 again, the value gained is 6 - 2 = 4.
+    The total value is 6 + 5 + 4 + 4 = 19. No other sequence of at most 4 selections gives a higher total value.
+
+    Constraints:
+    1 <= value.length == decay.length <= 10**5
+    1 <= value[i], decay[i] <= 10**9​​​​​​​
+    1 <= m <= 10**9
+    '''
+    def maxTotalValue(self, value: list[int], decay: list[int], m: int) -> int:
+        pq=[]; res=0
+        for i,val in enumerate(value):
+            heapq.heappush(pq,(-val,decay[i]))
+
+        while m>0 and pq:
+            val,dec=heapq.heappop(pq)
+            val*=-1
+            if val<=0: break
+
+            nxt=0 if not pq else -pq[0][0]
+            t=min(m,1+(val-nxt)//dec)
+
+            res += val*t - (dec*(t-1)*t)//2
+            m-=t
+
+            val-=dec*(t+1)
+            if val>0:
+                heapq.heappush(pq, (-val,dec))
+        return res
