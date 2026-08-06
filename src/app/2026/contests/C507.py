@@ -116,7 +116,9 @@ class Solution:
     1 <= m <= 10**9
     '''
     def maxTotalValue(self, value: list[int], decay: list[int], m: int) -> int:
-        pq=[]; res=0
+        # T.L.E. issue
+        pq=[]; res=0; mod=10**9+7
+        add = lambda x,y: (x%mod+y%mod)%mod
         for i,val in enumerate(value):
             heapq.heappush(pq,(-val,decay[i]))
 
@@ -128,10 +130,10 @@ class Solution:
             nxt=0 if not pq else -pq[0][0]
             t=min(m,1+(val-nxt)//dec)
 
-            res += val*t - (dec*(t-1)*t)//2
+            res = add(res, val*t - (dec*(t-1)*t)//2)
             m-=t
 
-            val-=dec*(t+1)
+            val-=dec*t
             if val>0:
                 heapq.heappush(pq, (-val,dec))
         return res
