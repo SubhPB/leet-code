@@ -23,36 +23,28 @@ class Solution:
     1 <= freeStart <= freeEnd <= 10**9
     '''
     def filterOccupiedIntervals(self, ocpi: list[list[int]], fs: int, fe: int) -> list[list[int]]:
-        ocpi.sort(lambda inv:(inv[0],inv[1]))
+        ocpi.sort(key=lambda inv:(inv[0],inv[1]))
         res=[]
         for s,e in ocpi:
-            ps,pe=res[-1] if res else [-1,-1]
-            if s<=pe:
+            ps,pe=res[-1] if res else [-2,-2]
+            if s-1<=pe:
                 res[-1][1]=max(pe,e)
             else: 
                 res.append([s,e])
-        ocpi=[[s,e] for s,e in res]
-        res=[]
-        for s,e in ocpi:
-            if fs<=s<=e<=fe:
+        ocpi=[]
+        for s,e in res:
+            if fs<=s<=e<=fe: 
                 continue
-            if e<fs: res.append([s,e])
-            elif s>fe: res.append([s,e])
-            else:
-                if s<fs<=fe<e:
-                    res.append([s,fs-1])
-                    res.append([fe+1,e])
-                elif s<=fs<=fe<e:
-                    res.append([fs+1,e])
-                elif s<fs<=fe<=e:
-                    res.append([s,fe-1])
-                elif s<fs:
-                    res.append([s,fs-1])
-                    if occi[-1][1]<=fe:
-                        break
-                # elif e< will continue
-            
-        return res
+            elif s<fs<=fe<e:
+                ocpi.append([s,fs-1])
+                ocpi.append([fe+1,e])
+            elif fs<=s<=fe<e:
+                ocpi.append([fe+1,e])
+            elif s<fs<=e<=fe:
+                ocpi.append([s,fs-1])
+            elif e<fs or s>fe:
+                ocpi.append([s,e])
+        return ocpi
     '''
     3976. Maximum Subarray Sum After Multiplier
 
