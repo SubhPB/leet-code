@@ -72,9 +72,26 @@ class Solution:
     1 <= k <= 10**5
     '''
     def maxSubarraySum(self, nums: list[int], k: int) -> int:
-        curr=0; least=0; mx=-10**9
-        for num in nums:
-            curr+=num
-            mx=max(mx,curr-least)
-            least=min(least,curr)
-        return max(mx*k, math.ceil(mx/k))
+        op=[lambda x:x*k,lambda x: x//k if x>0 else (x+k-1)//k]
+        inf=10**9; n=len(nums)
+        res=-inf
+        for i in range(2):
+            dp1=[0]*n
+            dp2=[0]*n
+            dp3=[0]*n
+
+            dp1[0]=nums[0]
+            dp2[0]=op[i](nums[0])
+            dp3[0]=-inf
+
+            for j in range(1,n):
+                curr=nums[j]
+                val=op[i](curr)
+
+                dp1[j]=max(curr,dp1[j-1]+curr)
+                dp2[j]=max(val,dp1[j-1]+val,dp2[j-1]+val)
+                dp3[j]=max(dp2[j-1]+curr,dp3[j-1]+curr,dp2[j])
+            
+            for j in range(n):
+                res=max(res,dp1[j],dp2[j],dp3[j])
+        return res
