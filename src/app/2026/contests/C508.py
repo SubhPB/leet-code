@@ -1,3 +1,4 @@
+import math
 class Solution:
     '''
     3975. Filter Occupied Intervals
@@ -71,4 +72,9 @@ class Solution:
     1 <= k <= 10**5
     '''
     def maxSubarraySum(self, nums: list[int], k: int) -> int:
-        pass
+        curr=0; least=0; mx=-10**9
+        for num in nums:
+            curr+=num
+            mx=max(mx,curr-least)
+            least=min(least,curr)
+        return max(mx*k, math.ceil(mx/k))
