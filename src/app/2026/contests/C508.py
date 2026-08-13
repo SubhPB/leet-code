@@ -1,4 +1,5 @@
-import math
+import heapq
+
 class Solution:
     '''
     3975. Filter Occupied Intervals
@@ -95,3 +96,74 @@ class Solution:
             for j in range(n):
                 res=max(res,dp1[j],dp2[j],dp3[j])
         return res
+    '''
+    3977. Minimum Time to Reach Target With Limited Power
+
+    You are given a directed weighted graph with n nodes labeled from 0 to n - 1.
+    The graph is represented by a 2D integer array edges, 
+    where edges[i] = [ui, vi, ti] indicates a directed edge from node ui to node vi that takes ti seconds to traverse.
+    You are also given an integer power representing the initial available power, and an integer array cost of length n,
+    where cost[u] represents the power required to forward the signal from node u through any one of its outgoing edges.
+    You are given two integers source and target.
+    The signal starts at source at time 0 with power units of power and follows these rules:
+    The signal may traverse a directed edge from node u only if the remaining power is at least cost[u].
+    No power is consumed when the signal arrives at a node, unless it later leaves that node by traversing another edge.
+    When the signal is forwarded from node u, the remaining power is decreased by cost[u] units.
+    Traversing an edge edges[i] = [ui, vi, ti] increases the total time by ti seconds.
+    Return an integer array answer of size 2, where:
+    answer[0] is the minimum time required for the signal to reach node target.
+    answer[1] is the maximum remaining power among all paths that achieve answer[0].
+    If the signal cannot reach target, return [-1, -1].
+
+    Constraints:
+    1 <= n <= 1000
+    0 <= edges.length <= 1000
+    edges[i] = [ui, vi, ti]
+    0 <= ui, vi <= n - 1
+    1 <= ti <= 109
+    1 <= power <= 1000
+    cost.length == n
+    1 <= cost[i] <= 2000
+    0 <= source, target <= n - 1
+    '''
+    def minTimeMaxPower(self, n: int, edges: list[list[int]], power: int, cost: list[int], source: int, target: int) -> List[int]:
+        graph=[[] for _ in range(n)]
+        inf=10**18
+        for u,v,t in edges:
+            graph[u].append((v,t))
+        
+        res=[-1,-1]
+        dist=[inf]*n
+        q=[(0,source)]
+        while q: 
+            p,u=heapq.heappop(q)
+            if p>power: 
+                break
+            if u==target: 
+                res[1]=power-p
+                break
+            if p>dist[u]: continue
+            dist[u]=p
+            for v,_ in graph[u]:
+                newcost=p+cost[v]
+                if newcost<dist[v]:
+                    dist[v]=newcost
+                    heapq.heappush(q,(newcost,v))
+        if res[1]<0: return [-1,-1]
+
+        dist=[inf]*n
+        q=[(0,source)]
+        while q:
+            p,u=heapq.heappop(q)
+            if u==target: 
+                res[0]=p
+                break
+            if p>dist[u]: continue
+            dist[u]=p
+            for v,t in graph[u]:
+                newcost=p+t
+                if newcost<dist[v]:
+                    dist[v]=newcost
+                    heapq.heappush(q,(newcost,v))
+        return res
+
