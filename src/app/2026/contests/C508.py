@@ -126,7 +126,7 @@ class Solution:
     1 <= cost[i] <= 2000
     0 <= source, target <= n - 1
     '''
-    def minTimeMaxPower(self, n: int, edges: list[list[int]], power: int, cost: list[int], source: int, target: int) -> List[int]:
+    def minTimeMaxPower(self, n: int, edges: list[list[int]], power: int, cost: list[int], source: int, target: int) -> list[int]:
         graph=[[] for _ in range(n)]
         inf=10**18
         for u,v,t in edges:
@@ -152,18 +152,20 @@ class Solution:
         if res[1]<0: return [-1,-1]
 
         dist=[inf]*n
-        q=[(0,source)]
+        q=[(0,0,source)]
         while q:
-            p,u=heapq.heappop(q)
+            c,p,u=heapq.heappop(q)
             if u==target: 
-                res[0]=p
+                res[0]=c
                 break
-            if p>dist[u]: continue
-            dist[u]=p
+            if c>dist[u]: continue
+            dist[u]=c
             for v,t in graph[u]:
-                newcost=p+t
-                if newcost<dist[v]:
+                newcost=c+t
+                newpower=p+cost[v]
+                if newcost<dist[v] and newpower<=power:
                     dist[v]=newcost
-                    heapq.heappush(q,(newcost,v))
+                    heapq.heappush(q,(newcost,newpower,v))
         return res
+
 
