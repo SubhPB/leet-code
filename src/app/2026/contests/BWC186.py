@@ -43,11 +43,32 @@ class Solution:
     s1 and s2 consist only of '0' and '1'.
     '''
     def minOperations(self, s1: str, s2: str) -> int:
-        res=0; i=0; n=len(s1)
-        while i<n:
-            if s1[i]!=s2[i]:
-                res+=1
-                if i+1<n and s1[i+1]!=s2[i+1] and (s1[i]==s1[i+1]=='1'):
-                    i+=1       
-            i+=1
-        return res
+        n=len(s1)
+        score=[0]*(n+2)
+        inf=10**18
+        def do_op1(i:int):
+            if s1[i]==s2[i]:
+                return 0
+            if not int(s1[i]):
+                return 1
+            return inf
+        ops=[
+            [0,1,1,2],
+            [2,0,3,1],
+            [2,3,0,1],
+            [1,2,2,0]
+        ]
+        def do_op2(i:int):
+            # comprise [i]-ème et [i+1]-ème
+            return ops[int(s1[i:i+2],2)][int(s2[i:i+2],2)]
+
+        score[n-1]=do_op1(n-1)
+        for i in range(n-2,-1,-1):
+            score[i]=min(
+                score[i+1]+do_op1(i),
+                score[i+2]+do_op2(i),
+                scpre[i+1]+do_op2(i)
+            )
+        if score[0]>=inf:
+            return -1
+        return score[0]
