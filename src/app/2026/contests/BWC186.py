@@ -67,8 +67,39 @@ class Solution:
             score[i]=min(
                 score[i+1]+do_op1(i),
                 score[i+2]+do_op2(i),
-                scpre[i+1]+do_op2(i)
+                score[i+1]+do_op2(i)
             )
         if score[0]>=inf:
             return -1
         return score[0]
+    '''
+    3981. Count Distinct Ways to Form Target from Two Strings
+
+    You are given three strings word1, word2, and target.
+    Your task is to count the number of ways to form target by choosing characters from word1 and word2 under the following conditions:
+    For each character of target, choose one matching character from either word1 or word2.
+    The chosen indices from word1 must be strictly increasing.
+    The chosen indices from word2 must be strictly increasing.
+    At least one character must be chosen from both word1 and word2.
+    Two ways are considered different if, for at least one position in target, the chosen character comes from a different string or a different index.
+    Return the number of ways. Since the answer may be very large, return it modulo 109 + 7.
+
+    Example 1:
+    Input: word1 = "abc", word2 = "bac", target = "abc"
+    Output: 5
+
+    Explanation:
+    There are 5 ways to form target:
+    word1[0] = 'a', word1[1] = 'b', word2[2] = 'c'
+    word1[0] = 'a', word2[0] = 'b', word1[2] = 'c'
+    word1[0] = 'a', word2[0] = 'b', word2[2] = 'c'
+    word2[1] = 'a', word1[1] = 'b', word1[2] = 'c'
+    word2[1] = 'a', word1[1] = 'b', word2[2] = 'c'
+    All ways preserve the increasing index order inside each string and choose at least one character from each string.
+
+    Constraints:
+    1 <= word1.length, word2.length, target.length <= 100
+    word1, word2, and target consist of lowercase English letters only.
+    '''
+    def interleaveCharacters(self, word1: str, word2: str, target: str) -> int:
+        pass
