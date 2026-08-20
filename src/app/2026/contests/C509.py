@@ -17,4 +17,25 @@ class Solution:
     s and t consist only of lowercase English letters.
     '''
     def canMakeSubsequence(self, s: str, t: str) -> bool:
-        pass
+        dt={}
+        for i,ct in enumerate(t):
+            if ct not in dt:dt[ct]=[]
+            dt[ct].append(i)
+        prev=-1; n=len(t); used=0
+        for ch in s:
+            z=len(dt[ch] if ch in dt else [])
+            l=0; r=z
+            while l<r:
+                m=(l+r)//2
+                idx=dt[ch][m]
+                if idx>prev:
+                    r=m
+                else:
+                    l=m+1
+            if l>=z:
+                used+=1
+                prev+=1
+                if used>1 or prev>=n:
+                    return False
+            else: prev=dt[ch][l]
+        return True 
