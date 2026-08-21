@@ -1,3 +1,4 @@
+
 class Solution:
     '''
     3983. Subsequence After One Replacement
@@ -17,25 +18,50 @@ class Solution:
     s and t consist only of lowercase English letters.
     '''
     def canMakeSubsequence(self, s: str, t: str) -> bool:
+        n=len(s); m=len(t)
+        i=0; j=0
+
         dt={}
-        for i,ct in enumerate(t):
-            if ct not in dt:dt[ct]=[]
-            dt[ct].append(i)
-        prev=-1; n=len(t); used=0
-        for ch in s:
-            z=len(dt[ch] if ch in dt else [])
-            l=0; r=z
-            while l<r:
-                m=(l+r)//2
-                idx=dt[ch][m]
-                if idx>prev:
-                    r=m
-                else:
-                    l=m+1
-            if l>=z:
-                used+=1
-                prev+=1
-                if used>1 or prev>=n:
-                    return False
-            else: prev=dt[ch][l]
-        return True 
+        for ch in t: dt[ch]=1+dt.get(ch,0)
+
+        used=0
+        curr={}
+        while i<n and j<m:
+            ch=s[i]; ct=t[i]
+            if ch not in curr:
+                curr[ch]=0
+
+            if ch==ct:
+                curr[ch]+=1
+                i+=1
+            else:
+                # prévoir, si 'ch' existe dans 't' reste
+                cnt=dt.get(ch,0)-curr[ch]
+                if cnt<=0:
+                    used+=1
+                    i+=1
+
+            if used>1: return False #un change nécessaire
+            j+=1
+
+        if i==n: return True
+
+        # même intuition mais à l'envers
+        used=0
+        curr={}
+        i=n-1; j=m-1
+        while j>=0 and i>=0:
+            ch=s[i]; ct=t[j]
+            if ch not in curr: 
+                curr[ch]=0
+            if ch==ct:
+                curr[ch]+=1
+                i-=1
+            else:
+                cnt=dt.get(ch,0)-curr[ch]
+                if cnt<=0:
+                    used+=1
+                    i-=1
+            if used>1: return False
+            j-=1
+        return i==-1
