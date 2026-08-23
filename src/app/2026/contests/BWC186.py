@@ -44,7 +44,7 @@ class Solution:
     '''
     def minOperations(self, s1: str, s2: str) -> int:
         n=len(s1)
-        score=[0]*(n+2)
+        dp=[0]*(n+2)
         inf=10**18
         def do_op1(i:int):
             if s1[i]==s2[i]:
@@ -58,20 +58,32 @@ class Solution:
             [2,3,0,1],
             [1,2,2,0]
         ]
-        def do_op2(i:int):
-            # comprise [i]-ème et [i+1]-ème
-            return ops[int(s1[i:i+2],2)][int(s2[i:i+2],2)]
+        def do_op2(src:list[str],trg:list[int]):
+            return ops[int(src[0]+src[1],2)][int(trg[0]+trg[1],2)]
+        def flip(bv:int):
+            return (bv+1)%2
 
-        score[n-1]=do_op1(n-1)
-        for i in range(n-2,-1,-1):
-            score[i]=min(
-                score[i+1]+do_op1(i),
-                score[i+2]+do_op2(i),
-                score[i+1]+do_op2(i)
+        dp[n-1]=do_op1(n-1)
+        for i in range(n-1,-1,-1):
+            if i>0:
+                dp[i-1]=dp[i+1]+do_op2(
+                    [s1[i-1],s1[i]], [s2[i-1],s2[i]]
+                )
+            dp[i]=min(
+                dp[i],
+                dp[i+1]+do_op1(i)
             )
-        if score[0]>=inf:
+            if i!=n-1:
+                dp[i]=min(
+                    dp[i],
+                    min(dp[i+1],dp[i+2])
+                    +do_op2([s1[i],s1[i+1]], [s2[i],s2[i+1]]),
+                )
+            
+        if dp[0]>=inf:
             return -1
-        return score[0]
+
+        return dp[0]
     '''
     3981. Count Distinct Ways to Form Target from Two Strings
 
