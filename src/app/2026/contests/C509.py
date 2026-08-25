@@ -66,4 +66,37 @@ class Solution:
     1 <= nums[i] <= 10**6
     '''
     def divisibleGame(self, nums: list[int]) -> int:
-        pass
+        st=set(); st.add(2)
+        for num in nums:
+            k=1
+            while k*k<=num:
+                if not num%k: 
+                    if k>1: st.add(k)
+                    if num//k>1: st.add(num//k)
+                k+=1
+
+        mod=10**9+7
+        add=lambda a,b: (a%mod + b%mod)%mod
+        mul=lambda a,b: (a%mod * b%mod)%mod
+
+        mxscore=None; kcurr=2
+        for k in st:
+            score=None
+            total=0
+            mn=0
+            for num in nums:
+                if num%k:
+                    total-=num
+                else: 
+                    total+=num
+
+                if score is None: score=total
+                score=max(score,total-mn)
+                mn=min(mn,total)
+            if mxscore is None or score>mxscore:
+                mxscore=score
+                kcurr=k
+            elif score==mxscore:
+                kcurr=min(kcurr,k)
+            
+        return mul(kcurr,mxscore)
