@@ -114,4 +114,44 @@ class Solution:
     word1, word2, and target consist of lowercase English letters only.
     '''
     def interleaveCharacters(self, word1: str, word2: str, target: str) -> int:
-        pass
+        n=len(word1)
+        m=len(word2)
+        mx=max(n,m)
+        k=len(target)
+        mod=10**9+7
+        add =lambda x,y: (x%mod+y%mod)%mod
+        
+        dp1=[[0]*(1+k) for _ in range(mx+1)]
+        dp2=[[0]*(1+k) for _ in range(mx+1)]
+
+        for g in range(k-1,-1,-1):
+            for i in range(n-1,-1,-1):
+                dp1[i][g]=dp1[i+1][g]
+                if word1[i]==target[g]:
+                    if g==k-1:
+                        dp1[i][g]+=1
+                    dp1[i][g]=add(dp1[i][g], dp1[i+1][g+1])
+
+            for j in range(m-1,-1,-1):
+                dp2[j][g]=dp2[j+1][g]
+                if word2[j]==target[g]:
+                    if g==k-1:
+                        dp2[j][g]+=1
+                    dp2[j][g]=add(dp2[j][g], dp2[j+1][g+1])
+            
+        dp3=[[0]*(1+k) for _ in range(mx+1)]
+        dp4=[[0]*(1+k) for _ in range(mx+1)]
+        
+
+        for g in range(k-1,-1,-1):
+            for i in range(n-1,-1,-1):
+                dp3[i][g]=add(dp3[i+1][g], dp1[i][g])
+                if word1[i]==target[g]:
+                    dp3[i][g]=add(dp3[i][g], dp4[i][g+1])
+            
+            for j in range(m-1,-1,-1):
+                dp4[j][g]=add(dp4[j+1][g], dp2[j][g])
+                if word2[j]==target[g]:
+                    dp4[j][g]=add(dp4[j][g], dp3[j][g+1])
+
+        return add(dp3[0][0],dp4[0][0])-add(dp1[0][0], dp2[0][0])
