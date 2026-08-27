@@ -20,21 +20,39 @@ class Solution:
     def canMakeSubsequence(self, s: str, t: str) -> bool:
         n=len(s)
         m=len(t)
-        left=0
-        for ct in t:
-            if ct==s[left]:
-                left+=1
-            if left==n: return True
 
-        # remplacer nécessaire
-        right=n-1
-        for i in range(n-1,-1,-1):
-            ct=t[i]; ch=s[right]
-            if ct==ch: right-=1
+        if n>m: return False
+        elif not n-1: return True
+
+        left=[-1]*n
+        at=0
+
+        for i,c in enumerate(t):      
+            if c==s[at]: 
+                left[at]=i
+                at+=1
+            if at==n: return True
+
+        right=[-1]*n; at=n-1
+        for i in range(m-1,-1,-1):
+            if s[at]==t[i]:
+                right[at]=i
+                at-=1
+            # note at==0 is not possible bcz left[n-1]=-1
         
-        right+=1; left-=1 # les rendre inclusifs
-        for i,ch in enumerate(s):
-            pass
+        for i in range(n):
+            # replacing ith idx
+            if i==0:
+                r=right[i+1]
+                if r>0: return True
+            elif i==n-1:
+                l=left[i-1]
+                if -1<l<m-1: return True
+            else:
+                l=left[i-1]; r=right[i+1]
+                if -1<l<r-1:
+                    return True
+
         return False
     '''
     3984. Divisible Game
