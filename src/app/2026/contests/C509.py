@@ -118,3 +118,21 @@ class Solution:
                 kcurr=min(kcurr,k)
             
         return mul(kcurr,mxscore)
+    '''
+    3985. Palindromic Subarray Sum
+
+    You are given an integer array nums.
+    Return the maximum possible sum of a subarray of nums that is a palindrome.
+
+    Example 1:
+    Input: nums = [10,10]
+    Output: 20
+    Explanation:
+    The whole array [10,10] is a palindrome. Therefore, the maximum sum is 10 + 10 = 20.
+
+    Constraints:
+    1 <= nums.length <= 10**5
+    1 <= nums[i] <= 10**​​​​​​​9
+    '''
+    def getSum(self, nums: list[int]) -> int:
+        pass
