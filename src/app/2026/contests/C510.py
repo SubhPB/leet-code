@@ -26,4 +26,18 @@ class Solution:
     1 <= k <= 10**9
     '''
     def minimumCost(self, nums: list[int], k: int) -> int:
-        pass
+        mod=10**9+7
+        rsrc=k
+        cost=0
+        mul=lambda x,y: (x%mod*y%mod)%mod
+        add=lambda x,y: (x%mod+y%mod)%mod
+        for num in nums:
+            if num>rsrc:
+                f=(num+k-1)//k
+                cost=add(
+                    mul(cost,f),
+                    mul(f,(f+1))//2
+                )
+                rsrc=add(rsrc,k)
+            rsrc-=num
+        return cost
