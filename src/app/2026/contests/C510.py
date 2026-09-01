@@ -28,16 +28,15 @@ class Solution:
     def minimumCost(self, nums: list[int], k: int) -> int:
         mod=10**9+7
         rsrc=k
+        ops=0
         cost=0
         mul=lambda x,y: (x%mod*y%mod)%mod
         add=lambda x,y: (x%mod+y%mod)%mod
         for num in nums:
             if num>rsrc:
-                f=(num+k-1)//k
-                cost=add(
-                    mul(cost,f),
-                    mul(f,(f+1))//2
-                )
-                rsrc=add(rsrc,k)
+                f=(num-rsrc+k-1)//k
+                ops+=f
+                rsrc=add(rsrc, mul(f,k))
+                cost=add(cost,ops)
             rsrc-=num
         return cost
