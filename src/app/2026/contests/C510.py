@@ -29,14 +29,12 @@ class Solution:
         mod=10**9+7
         rsrc=k
         ops=0
-        cost=0
         mul=lambda x,y: (x%mod*y%mod)%mod
         add=lambda x,y: (x%mod+y%mod)%mod
         for num in nums:
             if num>rsrc:
                 f=(num-rsrc+k-1)//k
-                ops+=f
+                ops=add(ops,f)
                 rsrc=add(rsrc, mul(f,k))
-                cost=add(cost,ops)
             rsrc-=num
-        return cost
+        return mul(ops,ops+1)//2
