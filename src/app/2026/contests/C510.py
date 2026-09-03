@@ -38,3 +38,33 @@ class Solution:
                 rsrc=add(rsrc, mul(f,k))
             rsrc-=num
         return mul(ops,ops+1)//2
+    '''
+    3988. Create Grid With Exactly K Paths I
+
+    You are given three integers m, n, and k.
+    Construct any m x n grid consisting only of the characters '.' and '#', where:
+    '.' represents a free cell.
+    '#' represents an obstacle cell.
+    A valid path is a sequence of free cells that:
+    Starts at the top-left cell (0, 0).
+    Ends at the bottom-right cell (m - 1, n - 1).
+    Moves only:
+    Right, from (i, j) to (i, j + 1), or
+    Down, from (i, j) to (i + 1, j).
+    Return any grid such that there are exactly k valid paths from the top-left cell to the bottom-right cell.
+    If no such grid exists, return an empty array.
+
+    Example 1:
+    Input: m = 2, n = 3, k = 2
+    Output: ["...","#.."]
+    Explanation:
+    There are exactly k = 2 valid paths from (0, 0) to (1, 2):
+    (0, 0) → (0, 1) → (0, 2) → (1, 2)
+    (0, 0) → (0, 1) → (1, 1) → (1, 2)
+
+    Constraints:
+    1 <= m, n <= 10
+    1 <= k <= 4
+    '''
+    def createGrid(self, m: int, n: int, k: int) -> list[str]:
+        pass
