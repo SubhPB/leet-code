@@ -67,7 +67,28 @@ class Solution:
     1 <= k <= 4
     '''
     def createGrid(self, m: int, n: int, k: int) -> list[str]: 
-        pass
+        temp=[
+            [],
+            [['.']],
+            [['..', '..']],
+            [['..', '..', '..'], ['...', '...']],
+            [['..','..','..','..'], ['....','....'], ['..#','...','#..']]
+        ]
+        for r in range(1,5):
+            c=len(temp[0])
+            if r<=m and c<=n:
+                res=[
+                    ['#']*n for _ in range(m)
+                ]
+                for i  in range(r):
+                    for j in range(c):
+                        res[i][j]=temp[r][c]
+                for i in range(r,m):
+                    res[i][c-1]='.'
+                for j in range(c,n):
+                    res[m-1][j]='.'
+                return ["".join(row) for row in res]
+        return []
     '''
     3989. Maximum Consistent Columns in a Grid
     You are given a 2D integer array grid of size m x n, and an integer limit.
