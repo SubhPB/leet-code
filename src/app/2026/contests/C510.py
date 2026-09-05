@@ -74,20 +74,21 @@ class Solution:
             [['..', '..', '..'], ['...', '...']],
             [['..','..','..','..'], ['....','....'], ['..#','...','#..']]
         ]
-        for r in range(1,5):
-            c=len(temp[0])
+        for t in temp[k]:
+            r,c=len(t), len(t[0])
             if r<=m and c<=n:
                 res=[
                     ['#']*n for _ in range(m)
                 ]
-                for i  in range(r):
+                for i in range(r):
                     for j in range(c):
-                        res[i][j]=temp[r][c]
+                        res[i][j]=t[i][j]
                 for i in range(r,m):
                     res[i][c-1]='.'
                 for j in range(c,n):
                     res[m-1][j]='.'
-                return ["".join(row) for row in res]
+                return [''.join(row) for row in res]
+
         return []
     '''
     3989. Maximum Consistent Columns in a Grid
