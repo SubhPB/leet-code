@@ -52,20 +52,16 @@ class Solution:
     1 <= a < b <= 10**9
     '''
     def minAdjacentSwaps(self, nums: list[int], a: int, b: int) -> int:
-        n=len(nums)
-        cost=0
-        mod=10**9+7
-        offset=[0]*(n)
-        k=n-1
-        for i in range(n-1,-1,-1):
-            if nums[i]>b:
-                cost=(cost+k-i)%mod
-                offset[i]=1
-                k-=1
-        k=0; of=0
-        for i,num in enumerate(nums):
-            if num<a:
-                cost=(cost+i-k-of)%mod
-                k+=1
-            of+=offset[i]
-        return cost
+        mod = 10**9 + 7
+        mb = rb = ans = 0
+
+        for x in nums:
+            if x < a:
+                ans += mb + rb
+            elif x <= b:
+                ans += rb
+                mb += 1
+            else:
+                rb += 1
+
+        return ans % mod
