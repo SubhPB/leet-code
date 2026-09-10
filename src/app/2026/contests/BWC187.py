@@ -65,3 +65,78 @@ class Solution:
                 rb += 1
 
         return ans % mod
+    '''
+    3995. Minimum Cost to Convert String III
+
+    You are given two strings, source and target.
+    You are also given a 2D string array rules, where rules[i] = [patterni, replacementi], and an integer array costs, where costs[i] is the base cost of applying rules[i]. Both arrays have the same length. Additionally, patterni and replacementi have the same length.
+    You may apply any rule any number of times. Each rule application works as follows:
+    Choose an index l such that the range of positions from l to l + patterni.length - 1 exists in the current string and none of these positions has been used in a previous rule application.
+    For each index j, the character patterni[j] must either be equal to the current character at position l + j, or be '*'.
+    Replace the characters in this range with replacementi. The replacement is used exactly as given and does not contain wildcards.
+    The cost of this rule application is costs[i] plus the number of '*' characters in patterni.
+    Once a character position has been used in a rule application, it cannot be used in any later rule application.
+    Since every patterni and replacementi have the same length, character positions are preserved after every rule application.
+    Return the minimum total cost required to transform source into target. If it is impossible, return -1.
+
+    Example 1:
+    Input: source = "hello", target = "world", rules = [["he","wo"],["llo","rld"]], costs = [3,4]
+    Output: 7
+    Explanation:
+    Apply rules[0] to replace "he" with "wo" at cost 3, so the string becomes "wollo".
+    Apply rules[1] to replace "llo" with "rld" at cost 4, so the string becomes "world".
+    The total cost is 3 + 4 = 7.
+
+    Constraints:
+    1 <= source.length == target.length <= 5000
+    source and target consist of lowercase English letters.
+    1 <= rules.length == costs.length <= 200
+    rules[i] = [patterni, replacementi]
+    1 <= patterni.length == replacementi.length <= 20
+    patterni contains at least one lowercase English letter and at most 5 '*' characters.
+    replacementi contains only lowercase English letters.
+    1 <= costs[i] <= 1000
+    '''
+    def minCost(self, source: str, target: str, rules: list[list[str]], costs: list[int]) -> int:
+        n=len(source)
+        m=len(target)
+        if n!=m: return -1
+
+        inf=10**18
+        dp=[inf]*(n+1)
+        dp[n]=0
+
+        pro=[]
+        for (pat,rep), c in zip(rules, costs):
+            pro.append(
+                (pat,rep,len(pat),c+pat.count('*'))
+            )
+        
+        for i in range(n-1,-1,-1):
+            if source[i]==target[i]:
+                dp[i]=dp[i+1]
+            
+            for pat,rep,l,cost in pro:
+                if i+l>n: continue
+
+                okay=True
+                for k in range(l): 
+                    # match pattern with source
+                    if pat[k]!='*' and pat[k]!=source[i+k]:
+                        okay=False
+                        break
+                if not okay:
+                    continue
+
+                for k in range(l):
+                    #match replacement with target
+                    if rep[k]!=target[i+k]:
+                        okay=False
+                        break
+                if not okay: 
+                    continue
+
+                dp[i]=min(
+                    dp[i], cost+dp[i+l]
+                )
+        return -1 if dp[0]==inf else dp[0]
