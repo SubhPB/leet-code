@@ -1,3 +1,9 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
 class Solution:
     '''
     3997. Count Dominant Nodes in a Binary Tree
@@ -12,4 +18,14 @@ class Solution:
     The tree is guaranteed to be a complete binary tree.
     '''
     def countDominantNodes(self, root: TreeNode | None) -> int:
-        pass
+        res=0
+        def fn(node: TreeNode | None):
+            if node is None: return 0
+            lval=fn(node.left)
+            rval=fn(node.right)
+            if node.val>=max(lval,rval):
+                nonlocal res    
+                res+=1
+            return max(node.val,lval,rval)
+        fn(root)
+        return res
