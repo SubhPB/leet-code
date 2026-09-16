@@ -64,13 +64,25 @@ class Solution:
     strs[i] is either '0', '1', or '?'​​​​​​​.
     '''
     def transformStr(self, s: str, strs: list[str]) -> list[bool]:
-        cnt1=s.count('1')
-        for i,st in enumerate(strs):
-            cnt2=st.count('1')
-            if cnt1>=cnt2:
-                strs[i]=cnt2+st.count('?')>=cnt1
-            else:
+        n=len(s)
+        o1=s.count('1'); z1=n-o1
+        for i,src in enumerate(strs):
+            o2=0; k=0
+            for ch in src:
+                if ch=='?': k+=1
+                else: o2+=int(ch)
+            z2=n-k-o2
+            if not (o2<=o1 and z2<=z1):
                 strs[i]=False
+            else:
+                for j in range(n-1,-1,-1):
+                    if src[j]!=s[j]:
+                        if src[j]=='?':
+                            pass
+                        elif src[j]=='0':
+                            pass
+                        else:
+                            pass
         return strs
     '''
     3999. Minimum Number of String Groups Through Transformations
@@ -98,4 +110,4 @@ class Solution:
     words[i] consist of lowercase English letters.
     '''
     def minimumGroups(self, words: list[str]) -> int:
-        pass
+        pass 
