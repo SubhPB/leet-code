@@ -64,26 +64,29 @@ class Solution:
     strs[i] is either '0', '1', or '?'​​​​​​​.
     '''
     def transformStr(self, s: str, strs: list[str]) -> list[bool]:
-        n=len(s)
-        o1=s.count('1'); z1=n-o1
-        for i,src in enumerate(strs):
-            o2=0; k=0
-            for ch in src:
-                if ch=='?': k+=1
-                else: o2+=int(ch)
-            z2=n-k-o2
-            if not (o2<=o1 and z2<=z1):
-                strs[i]=False
-            else:
-                for j in range(n-1,-1,-1):
-                    if src[j]!=s[j]:
-                        if src[j]=='?':
-                            pass
-                        elif src[j]=='0':
-                            pass
-                        else:
-                            pass
-        return strs
+        z=s.count('0')
+        p=[i for i,x in enumerate(s) if x=='0']
+        ans=[]
+        for t in strs:
+            t=list(t)
+            q=t.count('?')
+            c=t.count('0')
+            if c>z or c+q<z:
+                ans.append(False)
+                continue
+            need=z-c
+            for i,x in enumerate(t):
+                if x=='?':
+                    if need:
+                        t[i]='0'
+                        need-=1
+                    else:
+                        t[i]='1'
+            v=[i for i,x in enumerate(t) if x=='0']
+            ans.append(
+                all(p[i]>=v[i] for i in range(z))
+            )
+        return ans
     '''
     3999. Minimum Number of String Groups Through Transformations
 
