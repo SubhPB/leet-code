@@ -22,5 +22,15 @@ class Solution:
     1 <= series1[i][1], series2[i][1] <= 10**9
     Each series is sorted in strictly increasing order of timestamp.
     '''
-    def aggregateTimeSeries(self, series1: list[list[int]], series2: list[list[int]]) -> list[list[int]]:
-        pass
+    def aggregateTimeSeries(self, s1: list[list[int]], s2: list[list[int]]) -> list[list[int]]:
+        val1=0;val2=0
+        res=[]
+        while s1 or s2:
+            t=max(
+                s[-1][0] for s in (s1,s2) if s
+            )
+            if s1 and s1[-1][0]==t: val1=s1.pop()[1]
+            if s2 and s2[-1][0]==t: val2=s2.pop()[1]
+            res.append([t,val1+val2])
+        res.reverse()    
+        return res
