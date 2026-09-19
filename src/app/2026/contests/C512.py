@@ -1,3 +1,4 @@
+import math
 class Solution:
     '''
     4001. Aggregate Two Time Series
@@ -34,3 +35,35 @@ class Solution:
             res.append([t,val1+val2])
         res.reverse()    
         return res
+    '''
+    4002. Count Valid Sequences
+
+    You are given two positive integers n and k.
+    A valid sequence is a sequence of k positive integers such that:
+    The sum of all integers in the sequence is equal to n.
+    The product of all integers in the sequence is even.
+    Return the number of valid sequences. Since the answer may be very large, return it modulo 109​​​​​​​ + 7.
+    Two sequences are considered different if they differ at any index. For example, [1, 1, 2] and [1, 2, 1] are considered different sequences.
+
+    Example 1:
+    Input: n = 5, k = 3
+    Output: 3
+    There are 3 sequences with an even product, thus the answer is 3.
+
+    Constraints:
+    1 <= n <= 5 * 10**5
+    1 <= k <= n
+    '''
+    def countValidSequences(self, n: int, k: int) -> int:
+        mod=10**9+7
+        total=math.comb(n-1,k-1)%mod
+        odd=0
+        if (n-k)%2==0:
+            odd=math.comb(
+                (n-k)//2 + k-1, k-1
+            )%mod
+        if (n-k)%2==0:
+            odd=math.comb(
+                (n-k)//2 +k-1,k-1
+            )
+        return (total-odd)%mod
