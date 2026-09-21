@@ -67,3 +67,42 @@ class Solution:
                 (n-k)//2 +k-1,k-1
             )
         return (total-odd)%mod
+    '''
+    4003. Minimum Cost Path with Alternating Directions III
+
+    You are given two integers m and n representing the number of rows and columns of a grid. Your goal is to reach cell (m - 1, n - 1).
+    You are also given a 2D integer array penalty.
+    The cost to enter cell (i, j) is (i + 1) * (j + 1).
+    You begin at cell (0, 0) and initially pay its entrance cost. Actions performed after entering (0, 0) are numbered starting from 1.
+    On each action, you may move to an adjacent cell or wait in the current cell. A move follows the parity rule if:
+    On an odd-numbered action, you move right or down.
+    On an even-numbered action, you move left or up.
+
+    The cost of an action is determined as follows:
+    If you move according to the parity rule, pay only the entrance cost of the destination cell.
+    If you move in a direction that violates the parity rule,
+    pay the entrance cost of the destination cell plus penalty[i][j], where (i, j) is the cell you move from.
+    If you wait in cell (i, j), pay penalty[i][j].
+    After every move or wait, the action number increases by 1.
+    Therefore, the required parity alternates after every action, regardless of whether a penalty was paid.
+    Return the minimum total cost required to reach (m - 1, n - 1).
+
+    Example 1:
+    Input: m = 2, n = 2, penalty = [[5,3],[1,4]]
+    Output: 8
+    Explanation:
+    The optimal path is:
+    Start at cell (0, 0) with entry cost (0 + 1) * (0 + 1) = 1.
+    Move 1: Move down to cell (1, 0) with entry cost (1 + 1) * (0 + 1) = 2.
+    Move 2: Move right to cell (1, 1) with entry cost (1 + 1) * (1 + 1) = 4 and an extra cost of penalty[1][0] = 1 for violating the even parity rule.
+    Thus, the total cost is 1 + 2 + 4 + 1 = 8.
+
+    Constraints:
+    1 <= m, n <= 10**5
+    2 <= m * n <= 10**5
+    penalty.length == m
+    penalty[i].length == n
+    0 <= penalty[i][j] <= 10**5
+    '''
+    def minCost(self, m: int, n: int, penalty: list[list[int]]) -> int:
+        pass
