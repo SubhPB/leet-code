@@ -112,16 +112,13 @@ class Solution:
     '''
     def maxConsistentColumns(self, grid: list[list[int]], limit: int) -> int:
         m=len(grid);n=len(grid[0])
-        dp=[[-1]*n]*n
-        for r in range(m):
-            for a in range(n):
-                v1 = mx = mn = grid[r][a]
-                for b in range(a+1,n):
-                    v2=grid[r][b]
-                    mx=max(mx,v2)
-                    mn=min(mn,v2)
-                    if mx in (v1,v2) and mn in (v1,v2) and mx-mn<=limit:
-                        dp[a][b]=max(dp[a][b], b-a+1)
-                    else:
-                        break
-        return dp
+        dp=[1]*n
+        for b in range(n):
+            for a in range(b):
+                if dp[a]+1>dp[b]:
+                    if all(
+                        abs(row[b]-row[a])<=limit for row in grid
+                    ):
+                        dp[b]=1+dp[a]
+
+        return max(dp)
