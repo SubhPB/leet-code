@@ -111,4 +111,17 @@ class Solution:
     0 <= limit <= 10**5
     '''
     def maxConsistentColumns(self, grid: list[list[int]], limit: int) -> int:
-        pass
+        m=len(grid);n=len(grid[0])
+        dp=[[-1]*n]*n
+        for r in range(m):
+            for a in range(n):
+                v1 = mx = mn = grid[r][a]
+                for b in range(a+1,n):
+                    v2=grid[r][b]
+                    mx=max(mx,v2)
+                    mn=min(mn,v2)
+                    if mx in (v1,v2) and mn in (v1,v2) and mx-mn<=limit:
+                        dp[a][b]=max(dp[a][b], b-a+1)
+                    else:
+                        break
+        return dp
