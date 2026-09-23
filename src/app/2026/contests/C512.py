@@ -1,4 +1,4 @@
-import math
+import math, heapq
 class Solution:
     '''
     4001. Aggregate Two Time Series
@@ -105,4 +105,82 @@ class Solution:
     0 <= penalty[i][j] <= 10**5
     '''
     def minCost(self, m: int, n: int, penalty: list[list[int]]) -> int:
-        pass
+        inf=10**18
+        dist= [
+            [[inf]*n for _ in range(m)] for t in range(2)
+        ]
+        pq=[]
+        base=(1,1,0,0)
+        pq.append(base)
+        while pq:
+            cost,time,i,j=heapq.heappop(pq)
+            if (i,j)==(m-1,n-1):
+                return cost
+            
+            if cost>=dist[time][i][j]:
+                continue
+            dist[time][i][j]=cost
+
+            if time%2: #odd_action
+                ni,nj=i,j+1 #right
+                if nj<n:
+                    new_cost=cost+(ni+1)*(nj+1)
+                    if new_cost<dist[(time+1)%2][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,(time+1)%2,ni,nj)
+                        )
+                ni,nj=i+1,j #down
+                if ni<m:
+                    new_cost=cost+(ni+1)*(nj+1)
+                    if new_cost<dist[(time+1)%2][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,(time+1)%2,ni,nj)
+                        )
+
+                # going_against_the_parity_rule -> opposite_dir
+                ni,nj=i,j-1 #left
+                if nj>=0:
+                    new_cost=cost+(ni+1)*(nj+1)+penalty[i][j]
+                    if new_cost<dist[time][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,time,ni,nj)
+                        )
+                ni,nj=i-1,j #up
+                if ni>=0:
+                    new_cost=cost+(ni+1)*(nj+1)+penalty[i][j]
+                    if new_cost<dist[time][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,time,ni,nj)
+                        )
+            else: #even_action
+                ni,nj=i,j-1 #left
+                if nj>=0:
+                    new_cost=cost+(ni+1)*(nj+1)
+                    if new_cost<dist[(time+1)%2][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,(time+1)%2,ni,nj)
+                        )
+                ni,nj=i-1,j #up
+                if ni>=0:
+                    new_cost=cost+(ni+1)*(nj+1)
+                    if new_cost<dist[(time+1)%2][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,(time+1)%2,ni,nj)
+                        )
+
+                # going_against_the_parity_rule -> opposite_dir
+                ni,nj=i,j+1 #right
+                if nj<n:
+                    new_cost=cost+(ni+1)*(nj+1)+penalty[i][j]
+                    if new_cost<dist[time][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,time,ni,nj)
+                        )
+                ni,nj=i+1,j #down
+                if ni<m:
+                    new_cost=cost+(ni+1)*(nj+1)+penalty[i][j]
+                    if new_cost<dist[time][ni][nj]:
+                        heapq.heappush(
+                            pq, (new_cost,time,ni,nj)
+                        )
+        return -1 #not_possible
