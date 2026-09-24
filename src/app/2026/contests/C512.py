@@ -114,6 +114,7 @@ class Solution:
         pq.append(base)
         while pq:
             cost,time,i,j=heapq.heappop(pq)
+            # print(f'cost={cost}, time={time}, (i={i},j={j}), existingCost={dist[time][i][j]}')
             if (i,j)==(m-1,n-1):
                 return cost
             
@@ -183,4 +184,10 @@ class Solution:
                         heapq.heappush(
                             pq, (new_cost,time,ni,nj)
                         )
+            
+            # wait
+            new_cost=cost+penalty[i][j]
+            heapq.heappush(
+                pq, (new_cost,(time+1)%2,i,j)
+            )
         return -1 #not_possible
