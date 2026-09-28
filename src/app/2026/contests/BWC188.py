@@ -23,11 +23,48 @@ class Solution:
         planks=list(set(planks))
         planks.sort()
         res=0
-        for p in planks:
-            temp=cnt.get(p)
-            x=(p+1)//2 
-            for d in planks:
-                if d>=x: break
-                temp+=min(cnt.get(d,0), cnt.get(p-d,0))
-            res=max(res,temp)
+
+        for i,height in enumerate(planks):
+            # plank's height supposed as final height
+            threshold=(height+1)//2
+            width=cnt.get(height)
+            for another_height in planks:
+                if another_height>=threshold: 
+                    break
+                if height-another_height!=another_height:
+                    width+=min(
+                        cnt.get(another_height), cnt.get(height-another_height,0)
+                    )
+                else:
+                    width+=cnt.get(another_height)//2
+            res=max(res, width)
+
+            # final height as sum of heights
+            for j in range(i+1):
+                height2=planks[j]
+                full_height=height+height2
+                threshold=(full_height+1)//2
+
+                if height!=height2:
+                    width=min(
+                        cnt.get(height), cnt.get(height2)
+                    )
+                else: width//=2
+
+                for another_height in planks:
+                    if another_height>=threshold:
+                        break
+                    if another_height in (height2,height):
+                        continue
+                    
+                    if full_height-another_height!=another_height:
+                        width+=min(
+                            cnt.get(another_height),
+                            cnt.get(full_height-another_height,0)
+                        )
+                    else:
+                        width+=cnt.get(another_height)//2
+                res=max(res,width)
+
         return res
+                    
