@@ -26,12 +26,12 @@ class Solution:
 
         for i,height in enumerate(planks):
             # plank's height supposed as final height
-            threshold=(height+1)//2
+            threshold=height//2
             width=cnt.get(height)
             for another_height in planks:
-                if another_height>=threshold: 
+                if another_height>threshold: 
                     break
-                if height-another_height!=another_height:
+                if 2*another_height!=height:
                     width+=min(
                         cnt.get(another_height), cnt.get(height-another_height,0)
                     )
@@ -43,21 +43,21 @@ class Solution:
             for j in range(i+1):
                 height2=planks[j]
                 full_height=height+height2
-                threshold=(full_height+1)//2
+                threshold=full_height//2
 
                 if height!=height2:
                     width=min(
                         cnt.get(height), cnt.get(height2)
                     )
-                else: width//=2
+                else: width=cnt.get(height)//2
 
                 for another_height in planks:
-                    if another_height>=threshold:
+                    if another_height>threshold:
                         break
                     if another_height in (height2,height):
                         continue
                     
-                    if full_height-another_height!=another_height:
+                    if 2*another_height!=full_height:
                         width+=min(
                             cnt.get(another_height),
                             cnt.get(full_height-another_height,0)
