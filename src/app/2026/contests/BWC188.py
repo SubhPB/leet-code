@@ -20,51 +20,18 @@ class Solution:
     '''
     def maximumWidth(self, planks: list[int]) -> int:
         cnt=Counter(planks)
+        heights={}
         planks=list(set(planks))
-        planks.sort()
-        res=0
-
         for i,height in enumerate(planks):
-            # plank's height supposed as final height
-            threshold=height//2
-            width=cnt.get(height)
-            for another_height in planks:
-                if another_height>threshold: 
-                    break
-                if 2*another_height!=height:
-                    width+=min(
-                        cnt.get(another_height), cnt.get(height-another_height,0)
-                    )
-                else:
-                    width+=cnt.get(another_height)//2
-            res=max(res, width)
-
-            # final height as sum of heights
-            for j in range(i+1):
+            heights[height]=heights.get(height,0)+cnt[height]
+            for j in range(i):
                 height2=planks[j]
                 full_height=height+height2
-                threshold=full_height//2
+                heights[full_height] = heights.get(full_height,0) + min(
+                    cnt[height], cnt[height2]
+                )
+            heights[2*height]=heights.get(2*height,0)+cnt.get(height,0)//2
 
-                if height!=height2:
-                    width=min(
-                        cnt.get(height), cnt.get(height2)
-                    )
-                else: width=cnt.get(height)//2
+        return max([heights[height] for height in heights])
 
-                for another_height in planks:
-                    if another_height>threshold:
-                        break
-                    if another_height in (height2,height):
-                        continue
-                    
-                    if 2*another_height!=full_height:
-                        width+=min(
-                            cnt.get(another_height),
-                            cnt.get(full_height-another_height,0)
-                        )
-                    else:
-                        width+=cnt.get(another_height)//2
-                res=max(res,width)
-
-        return res
                     
