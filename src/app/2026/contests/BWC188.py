@@ -86,3 +86,38 @@ class Solution:
             else:
                 l=m+1
         return l
+    '''
+    4009. Minimum Possible Maximum Waiting Time
+
+    You are given an integer array demand, where demand[i] is the amount of fuel required by the ith car.
+    You are also given an integer array fuel of length 2. There are exactly two fuel dispensers, numbered 0 and 1,
+    where fuel[j] is the initial amount of fuel available in dispenser j.
+    Cars are allowed to start refueling in increasing index order. Car 0 becomes allowed at time 0, and for each i > 0,
+    car i becomes allowed exactly when car i - 1 starts refueling.
+    The refueling process follows these rules:
+    Each dispenser can serve at most one car at a time.
+    When a car becomes allowed, you must choose a dispenser with at least demand[i] fuel remaining.
+    If both dispensers have enough fuel remaining, you may choose either of them, regardless of when they become free.
+    The car waits until the chosen dispenser becomes free and starts refueling immediately.
+    It cannot switch dispensers or intentionally wait after the chosen dispenser becomes free.
+    When a car starts refueling, the remaining fuel in the chosen dispenser decreases by demand[i],
+    and the dispenser remains occupied for demand[i] seconds.
+    Once started, refueling cannot be interrupted.
+    If neither dispenser has at least demand[i] fuel remaining when car i becomes allowed,
+    the process terminates and no further cars can be served.
+    The waiting time of a car is the time between when it becomes allowed to start refueling and when it actually starts.
+    Return the minimum possible value of the maximum waiting time among all served cars over all assignments that maximize the number of served cars.
+    If no car can be served, return -1.
+
+    Example 1:
+    Input: demand = [6,8,4,6,5], fuel = [16,13]
+    Output: 6
+
+    Constraints:
+    1 <= demand.length <= 50
+    1 <= demand[i] <= 20
+    fuel.length == 2
+    1 <= fuel[i] <= 50
+    '''
+    def minMaxWaitingTime(self, demand: list[int], fuel: list[int]) -> int:
+        pass
