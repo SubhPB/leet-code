@@ -1,3 +1,4 @@
+from functools import cache
 from collections import Counter
 class Solution:
     '''
@@ -120,4 +121,23 @@ class Solution:
     1 <= fuel[i] <= 50
     '''
     def minMaxWaitingTime(self, demand: list[int], fuel: list[int]) -> int:
-        pass
+        n=len(demand)
+        @cache
+        def dfs(i,f0,f1,w0,w1):
+            res=[-i,0]
+            if i==n:
+                return res
+            d=demand[i]
+            if f0>=d:
+                cnt,curr=dfs(
+                    i+1,f0-d,f1,d,max(0,w1-w0)
+                )
+                res=min(res,[cnt,max(curr,w0)])
+            if f1>=d:
+                cnt,curr=dfs(
+                    i+1,f0,f1-d,max(0,w0-w1),d
+                )
+                res=min(res,[cnt,max(curr,w1)])
+            return res
+        cnt,res=dfs(0,fuel[0],fuel[1],0,0)
+        return res if cnt else -1
