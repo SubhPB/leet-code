@@ -22,4 +22,16 @@ class Solution:
     1 <= a, b <= 1000
     '''
     def countRatioSubarrays(self, nums: list[int], a: int, b: int) -> int:
-        pass
+        yt=0
+        r=a/b
+        res=0
+        for i,num in enumerate(nums):
+            yt+=num%2
+            j=0; y=yt
+            while j<=i and y>0:
+                x=i-j+1-y
+                if x/y <= r: res+=1
+                y-=nums[j]%2
+                j+=1
+                    
+        return res
