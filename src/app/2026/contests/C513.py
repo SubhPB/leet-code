@@ -66,20 +66,19 @@ class Solution:
         E=[0]*t
         for i,task in enumerate(tasks):
             E[i]+=E[i-1]+task
-        m=0; x=0
+        x=0
         for i,shift in enumerate(shifts):
             if x>=E[-1]: #reset
-                m=0; x=0
-            l=0; r=t-1
+                x=0
+            l=-1; r=t-1
             while l<r:
-                m=(l+r+1)//2
-                if shift>=E[m]-x:
-                    l=m
+                mid=(l+r+1)//2
+                if shift>=E[mid]-x:
+                    l=mid
                 else:
-                    r=m-1
+                    r=mid-1
             # calculate Δv
-            res[i]=len(tasks)- l+1-m
-            m=l+1
+            res[i]=t-(l+1)
             x+=shift
 
         return res
