@@ -82,3 +82,28 @@ class Solution:
             x+=shift
 
         return res
+    '''
+    4013. Count Subarrays With Even Odd Ratio II
+
+    You are given an integer array nums and two integers a and b.
+    For a subarray, let:
+    x be the number of even elements.
+    y be the number of odd elements.
+    The ratio of even to odd elements in a subarray is defined as x / y, where ratios are compared by their exact rational values.
+
+    A subarray is considered valid if:
+    y > 0, and
+    x / y <= a / b.
+    Return the number of valid subarrays in nums.
+
+    Example 1:
+    Input: nums = [1,2,1,2], a = 3, b = 2
+    Output: 7
+
+    Constraints:
+    1 <= nums.length <= 10**5
+    1 <= nums[i] <= 10**9
+    1 <= a, b <= 10**9
+    '''
+    def countRatioSubarrays(self, nums: list[int], a: int, b: int) -> int:
+        pass
