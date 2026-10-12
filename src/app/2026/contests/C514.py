@@ -54,3 +54,33 @@ class Solution:
     '''
     def maxArea(self, mat: list[list[int]]) -> int:
         pass
+    '''
+    4017. Peaks in Array II
+
+    You are given an integer array nums of length n and a 2D integer array queries.
+
+    A subarray nums[i..j] is called a peak subarray if:
+    Its length is at least 3.
+    There exists an index k such that i < k < j and:
+    nums[k] > nums[k - 1]
+    nums[k] > nums[k + 1]
+    You have to process queries of two types:
+    [1, li, ri]: Calculate the number of peak subarrays fully contained within nums[li..ri].
+    [2, indexi, vali]: Update nums[indexi] to vali. This update applies to all subsequent queries.
+    Return an array answer, where answer[i] is the answer to the ith query of type 1 in the order they appear.
+
+    Example 1:
+    Input: nums = [1,3,2,4], queries = [[1,0,3],[2,1,1],[1,0,3]]
+    Output: [2,0]
+
+    Constraints:
+    3 <= n == nums.length <= 10**5
+    0 <= nums[i] <= 10**5
+    1 <= queries.length <= 10**5
+    queries[i] = [1, li, ri] or queries[i] = [2, indexi, vali]
+    0 <= li < ri <= n - 1
+    0 <= indexi <= n - 1
+    0 <= vali <= 10**5
+    '''
+    def countOfPeaks(self, nums: list[int], queries: list[list[int]]) -> list[int]:
+        pass
