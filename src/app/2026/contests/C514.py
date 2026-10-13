@@ -1,3 +1,4 @@
+from collections import deque
 class Solution:
     '''
     4015. Weighted Sum of a Tree
@@ -24,7 +25,26 @@ class Solution:
     The input is generated such that the array parent represents a valid tree rooted at node 0.
     '''
     def weightedSum(self, parent: list[int], nums: list[int]) -> int:
-        pass
+        sm=0
+        n=len(parent)
+        g=[[] for _ in range(n)]
+        for node,p in enumerate(parent):
+            sm+=nums[node]
+            if p!=-1:
+                g[p].append(node)
+        res=sm
+        h=1
+        heights=[h]*n
+        q=deque([0])
+        while q:
+            parent=q.popleft()
+            res-=nums[parent]*heights[parent]
+            for node in g[parent]:
+                heights[node]=heights[parent]+1
+                h=max(h,heights[node])
+                q.append(node)
+        res+=sm*h
+        return res
     '''
     4016. Maximum Area of Two Non-Overlapping Square Submatrices
 
