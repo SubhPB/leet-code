@@ -73,7 +73,29 @@ class Solution:
     mat[i][j] is either 0 or 1.
     '''
     def maxArea(self, mat: list[list[int]]) -> int:
-        pass
+        m=len(mat); n=len(mat[0])
+        dp=[[0]*(n+1) for _ in range(m+1)]
+
+        for i in range(m-1,-1,-1):
+            for j in range(n-1,-1,-1):
+                if not mat[i][j]: continue
+                least=min(dp[i+1][j], dp[i][j+1], dp[i+1][j+1])
+                l=0; r=least
+                while l<r:
+                    mid=(l+r+1)//2
+                    if mid>=least:
+                        l=mid
+                    else:
+                        r=mid-1
+                dp[i][j]=l+1 # 'l'->optimal_least
+                # xaxis_search
+                dp[m][j]=max(dp[m][j], dp[i][j])
+            # yaxis_search
+            dp[i][n]=max(dp[i][n], dp[i][0])
+
+        res=0
+          
+        return -1
     '''
     4017. Peaks in Array II
 
