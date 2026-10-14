@@ -90,12 +90,34 @@ class Solution:
                 dp[i][j]=l+1 # 'l'->optimal_least
                 # xaxis_search
                 dp[m][j]=max(dp[m][j], dp[i][j])
-            # yaxis_search
-            dp[i][n]=max(dp[i][n], dp[i][0])
+                # yaxis_search
+                dp[i][n]=max(dp[i][n], dp[i][j])
 
-        res=0
-          
-        return -1
+        side=0
+        rtl=[0]*(n+1)
+        for j in range(n-1,-1,-1):
+            rtl[j]=max(rtl[j+1],dp[m][j])
+        for j in range(n-1,-1,-1):
+            pin=dp[m][j]
+            side=max(side,pin//2,min(pin,rtl[j+pin]))
+
+            if side>=pin-1: continue
+            # inner_search
+            for k in range(j+1,j+pin):
+                side=max(side,min(k-j,rtl[k]))
+
+        dtu=[0]*(m+1)
+        for i in range(m-1,-1,-1):
+            dtu[i]=max(dtu[i+1],dp[i][n])
+        for i in range(m-1,-1,-1):
+            pin=dp[i][n]
+            side=max(side,dp[i][n]//2,min(pin,dtu[i+pin]))
+
+            if side>=pin-1: continue
+            #inner_search
+            for k in range(i+1,i+pin):
+                side=max(side,min(k-i,dtu[k]))
+        return side*side
     '''
     4017. Peaks in Array II
 
