@@ -29,7 +29,23 @@ class Solution:
     1 <= arrivalTime[i] <= 10**9
     '''
     def minPenalty(self, period: int, lights: list[int], arrivalTime: list[int]) -> int:
-        pass
+        m=len(arrivalTime)
+        for i in range(m):
+            arrivalTime[i]%=period
+        arrivalTime.sort()
+        cost=0
+        for light in lights:
+            l=0; r=m-1
+            while l<r:
+                k=(l+r)//2
+                if arrivalTime[k]<light:
+                    r=k
+                    break
+                else:
+                    l=k+1
+            if arrivalTime[r]>=light:
+                cost+=period-arrivalTime[r]
+        return cost
     '''
     4026. Maximum Gap Between Stations
 
