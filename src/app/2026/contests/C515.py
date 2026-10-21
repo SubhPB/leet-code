@@ -66,7 +66,26 @@ class Solution:
     It is guaranteed that a valid assignment exists for every worker.
     '''
     def maximumGap(self, skill: str, station: str) -> int:
-        pass
+        n=len(skill)
+        m=len(station)
+        left=[-1]*n
+        right=[-1]*n
+        curr=0
+        for j,pr in enumerate(station):
+            if curr>=n: break
+            if pr==skill[curr]:
+                left[curr]=j
+                curr+=1
+        curr=n-1
+        res=0
+        for j in range(m-1,-1,-1):
+            if curr<0: break
+            if station[j]==skill[curr]:
+                right[curr]=j
+                curr-=1
+        for i in range(1,n):
+            res=max(res,right[i]-left[i-1])
+        return res
     '''
     4027. Elevator Requests III
 
