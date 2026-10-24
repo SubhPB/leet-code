@@ -1,3 +1,4 @@
+import heapq
 class Solution:
     '''
     4025. Minimize the Maximum Waiting Time at Synchronized Traffic Lights
@@ -112,4 +113,23 @@ class Solution:
     0 <= start, floori <= n - 1
     '''
     def elevatorRequests(self, n: int, start: int, requests: list[list[int]]) -> int:
-        pass
+        inf=10**18
+        dp=[[inf]*(2**n) for _ in range(n)]
+        base_time=0
+        base_mask=1<<start
+        target_mask=2**n-1
+        q=[]
+        heapq.heappush(q, (base_time, start, base_mask))
+        while q:
+            time,storey,mask=heapq.heappop(q)
+            if mask==target_mask:
+                return time
+            if time>=dp[storey][mask]:
+                continue
+            dp[storey][mask]=time
+
+            for next_storey in range(n):
+                if not (mask & 1<<next_storey):
+                    next_arrival, 
+                    next_time=max(time+abs(storey-next_storey))
+        return -1 # not_possible
