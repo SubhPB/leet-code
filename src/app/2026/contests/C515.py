@@ -115,21 +115,30 @@ class Solution:
     def elevatorRequests(self, n: int, start: int, requests: list[list[int]]) -> int:
         inf=10**18
         dp=[[inf]*(2**n) for _ in range(n)]
-        base_time=0
-        base_mask=1<<start
-        target_mask=2**n-1
+        target_mask=0
+        req_time=[0]*n
+        for [t,f] in requests:
+            target_mask|=1<<f
+            req_time[f]=t
         q=[]
+        base_time=0
+        base_mask=0 # bcz a->b->a->c
         heapq.heappush(q, (base_time, start, base_mask))
         while q:
             time,storey,mask=heapq.heappop(q)
-            if mask==target_mask:
+            if mask&target_mask==target_mask:
                 return time
             if time>=dp[storey][mask]:
                 continue
             dp[storey][mask]=time
 
             for next_storey in range(n):
-                if not (mask & 1<<next_storey):
-                    next_arrival, 
-                    next_time=max(time+abs(storey-next_storey))
+                if (not (mask & 1<<next_storey)):
+                    next_time=max(
+                        req_time[next_storey],
+                        time+abs(storey-next_storey)
+                    )
+                    next_mask=mask|1<<next_storey
+                    if next_time<dp[next_storey][next_mask]:
+                        heapq.heappush(q,(next_time,next_storey,next_mask))
         return -1 # not_possible
