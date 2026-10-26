@@ -114,31 +114,42 @@ class Solution:
     '''
     def elevatorRequests(self, n: int, start: int, requests: list[list[int]]) -> int:
         inf=10**18
-        dp=[[inf]*(2**n) for _ in range(n)]
+        m=len(requests)
+        dp=[[inf]*(2**(m+1)) for _ in range(m+1)]
         target_mask=0
-        req_time=[0]*n
-        for [t,f] in requests:
-            target_mask|=1<<f
-            req_time[f]=t
+        req_time=[0]*(m+1)
+        floors=[0]*(m+1)
+        # req_time[idx=m], floors[idx=m] refers to 'start'-th floor
+        for i,[time,floor] in enumerate(requests):
+            if start!=floor:
+                target_mask|=1<<i
+            else:
+                req_time[m]=max(req_time[m],time) # max->for weird testcase
+            req_time[i]=max(req_time[i],time)
+            floors[i]=floor
+        target_mask|=1<<m # must
+        floors[m]=start # must
         q=[]
         base_time=0
         base_mask=0 # bcz a->b->a->c
-        heapq.heappush(q, (base_time, start, base_mask))
+        heapq.heappush(q, (base_time, m, base_mask))
         while q:
             time,storey,mask=heapq.heappop(q)
             if mask&target_mask==target_mask:
                 return time
-            if time>=dp[storey][mask]:
+            if time>dp[storey][mask]:
                 continue
-            dp[storey][mask]=time
 
-            for next_storey in range(n):
+            for i in range(m+1):
+                # if i!=m and floors[i]==floors[m]: continue
+                next_storey=i if floors[i]!=floors[m] else m
                 if (not (mask & 1<<next_storey)):
                     next_time=max(
                         req_time[next_storey],
-                        time+abs(storey-next_storey)
+                        time+abs(floors[storey]-floors[next_storey])
                     )
                     next_mask=mask|1<<next_storey
                     if next_time<dp[next_storey][next_mask]:
                         heapq.heappush(q,(next_time,next_storey,next_mask))
+                        dp[next_storey][next_mask]=next_time
         return -1 # not_possible
