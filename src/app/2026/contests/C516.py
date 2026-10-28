@@ -20,7 +20,19 @@ class Solution:
     1 <= lower <= upper <= 10**5
     '''
     def findDisappearedNumbers(self, nums: list[int], lower: int, upper: int) -> list[list[int]]:
-        pass
+        nums.append(0)
+        nums.sort()
+        if nums[-1]<upper:
+            nums.append(upper+1)
+        n=len(nums)
+        res=[]
+        for i in range(1,n):
+            start=max(nums[i-1]+1,lower)
+            end=min(nums[i]-1,upper)
+            if lower<=start<=end<=upper:
+                res.append([start,end])
+
+        return res
     '''
     4032. Longest Subarray With at Most K Distinct Prime Factors
 
