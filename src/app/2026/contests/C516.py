@@ -59,3 +59,27 @@ class Solution:
     '''
     def longestSubarray(self, nums: list[int], k: int) -> int:
         pass
+    '''
+    4033. Valid K-Unique Subarrays I
+
+    You are given an integer array nums and an integer k.
+    You are also given a 2D integer array queries, where queries[i] = [li, ri] represents the subarray nums[li..ri].
+    For each query, the subarray nums[li..ri] is considered valid if:
+    It contains exactly k distinct numbers, and
+    The frequency of every number in the subarray is even.
+    Return a boolean array ans, where ans[i] is true if nums[li..ri] is valid, and false otherwise.
+
+    Example 1:
+    Input: nums = [1,2,2,1], k = 2, queries = [[0,1],[0,3],[1,2]]
+    Output: [false,true,false]
+
+    Constraints:
+    2 <= n == nums.length <= 10**5
+    1 <= nums[i] <= 10**5
+    1 <= k <= n
+    1 <= queries.length <= 10**5
+    queries[i] == [li, ri]
+    0 <= li < ri <= n - 1
+    '''
+    def validSubarrays(self, nums: list[int], k: int, queries: list[list[int]]) -> list[bool]:
+        pass
