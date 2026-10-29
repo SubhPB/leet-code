@@ -1,3 +1,22 @@
+# cache for problem-4032
+pfactors=[]
+for num in range(10**5+1):
+    factors={}
+    if num>1:
+        for d in [2,3]:
+            while num%d==0:
+                factors[d]=1+factors.get(d,0)
+                num//=d
+        i=5
+        while i*i<=num:
+            for d in (i,i+2):
+                while num%d==0:
+                    factors[d]=1+factors.get(d,0)
+                    num//=d
+            i+=6
+        if num>1: factors[num]=1
+    pfactors.append(factors)
+
 class Solution:
     '''
     4031. Find All Numbers Disappeared in an Array II
@@ -58,7 +77,25 @@ class Solution:
     1 <= k <= 10**4
     '''
     def longestSubarray(self, nums: list[int], k: int) -> int:
-        pass
+        res=0
+        l=0
+        r=0
+        n=len(nums)
+        freq={}
+        while r<n:
+            if len(freq)>k:
+                for factor,times in pfactors[nums[l]].items():
+                    freq[factor]-=times
+                    if not freq[factor]:
+                        del freq[factor]
+                l+=1
+            else:
+                for factor,times in pfactors[nums[r]].items():
+                    freq[factor]=times+freq.get(factor,0)
+                if len(freq)<=k:
+                    res=max(res,r-l+1)
+                r+=1
+        return res
     '''
     4033. Valid K-Unique Subarrays I
 
