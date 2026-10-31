@@ -119,4 +119,10 @@ class Solution:
     0 <= li < ri <= n - 1
     '''
     def validSubarrays(self, nums: list[int], k: int, queries: list[list[int]]) -> list[bool]:
+        '''
+        -> if r-l+1 !% 2 => false
+        -> len(freq[0:r+1])<k => false
+        -> len(freq[l:n])<k => false
+        
+        '''
         pass
