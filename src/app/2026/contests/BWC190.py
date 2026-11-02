@@ -1,3 +1,4 @@
+from math import gcd
 class Solution:
     '''
     4035. Maximum Valid Split Positions I
@@ -21,8 +22,21 @@ class Solution:
     2 <= nums.length <= 1000
     1 <= nums[i] <= 10**9​​​​​​​
     '''
+
     def maxValidSplits(self, nums: list[int]) -> int:
-        pass
+        n=len(nums)
+        arr=[0]*n
+        for i in range(n-1):
+            arr[i]=gcd(arr[i-1],nums[i])
+        res=0
+        # print(f'left={arr}')
+        for i in range(n-3,-1,-1):
+            if arr[i]==arr[i+2]:
+                res+=1
+            arr[i]=gcd(arr[i+1],nums[i])
+        # print(f'right={arr}')
+        return res
+        
     '''
     4036. Lexicographically Largest String After Pair Transformations
 
