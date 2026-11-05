@@ -22,21 +22,17 @@ class Solution:
     2 <= nums.length <= 1000
     1 <= nums[i] <= 10**9​​​​​​​
     '''
-
     def maxValidSplits(self, nums: list[int]) -> int:
         n=len(nums)
-        arr=[0]*n
-        for i in range(n-1):
-            arr[i]=gcd(arr[i-1],nums[i])
+        garr=[*nums]
+        for i in range(1,n-1):
+            garr[i]=gcd(garr[i-1],garr[i])
         res=0
-        # print(f'left={arr}')
-        for i in range(n-3,-1,-1):
-            if arr[i]==arr[i+2]:
+        for i in range(n-2,-1,-1):
+            if garr[i]==garr[i+1]:
                 res+=1
-            arr[i]=gcd(arr[i+1],nums[i])
-        # print(f'right={arr}')
+            garr[i]=gcd(garr[i+1],nums[i])
         return res
-        
     '''
     4036. Lexicographically Largest String After Pair Transformations
 
