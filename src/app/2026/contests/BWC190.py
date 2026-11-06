@@ -24,14 +24,24 @@ class Solution:
     '''
     def maxValidSplits(self, nums: list[int]) -> int:
         n=len(nums)
-        garr=[*nums]
-        for i in range(1,n-1):
-            garr[i]=gcd(garr[i-1],garr[i])
+        gleft=[*nums]
+        gleft.append(0)
+        for i in range(1,n):
+            gleft[i]=gcd(gleft[i-1],gleft[i])
         res=0
-        for i in range(n-2,-1,-1):
-            if garr[i]==garr[i+1]:
-                res+=1
-            garr[i]=gcd(garr[i+1],nums[i])
+        for x in range(n+1):
+            # when i equals n -> no deletion
+            score=0
+            gright=[*gleft]
+            gright.append(0)
+            for i in range(n-1,-1,-1):
+                if i!=x:
+                    if gright[i]==gright[i+1]:
+                        score+=1
+                    gright[i]=gcd(gright[i+1],nums[i])
+                else:
+                    gright[i]=gright[i+1]
+            res=max(res,score)
         return res
     '''
     4036. Lexicographically Largest String After Pair Transformations
