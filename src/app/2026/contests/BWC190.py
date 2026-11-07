@@ -24,23 +24,25 @@ class Solution:
     '''
     def maxValidSplits(self, nums: list[int]) -> int:
         n=len(nums)
-        gleft=[*nums]
-        gleft.append(0)
-        for i in range(1,n):
-            gleft[i]=gcd(gleft[i-1],gleft[i])
         res=0
+
         for x in range(n+1):
             # when i equals n -> no deletion
+            gleft=[0]*(n+1)
+            for i in range(n):
+                if i!=x:
+                    gleft[i]=gcd(gleft[i-1],nums[i])
+                else:
+                    gleft[i]=gleft[i-1]
+            
             score=0
-            gright=[*gleft]
-            gright.append(0)
             for i in range(n-1,-1,-1):
                 if i!=x:
-                    if gright[i]==gright[i+1]:
+                    if i<n-1 and gleft[i]==gleft[i+1]:
                         score+=1
-                    gright[i]=gcd(gright[i+1],nums[i])
+                    gleft[i]=gcd(gleft[i+1],nums[i])
                 else:
-                    gright[i]=gright[i+1]
+                    gleft[i]=gleft[i+1]
             res=max(res,score)
         return res
     '''
