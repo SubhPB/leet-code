@@ -1,4 +1,9 @@
-from math import gcd
+from math import gcd,floor,log2
+
+pow2=[1]*(27) #Q:4036
+for i in range(1,27):
+    pow2[i]=pow2[i-1]*2
+
 class Solution:
     '''
     4035. Maximum Valid Split Positions I
@@ -67,7 +72,15 @@ class Solution:
     1 <= nums[i] <= 10**8
     '''
     def largestString(self, nums: list[int]) -> list[str]:
-        pass
+        for i,num in enumerate(nums):
+            arr=[]
+            while num>0:
+                x=floor(log2(num))
+                x=min(x,25)
+                arr.append(chr(ord('a')+x))
+                num-=pow2[x]
+            nums[i]=''.join(arr)
+        return nums
     '''
     4037. Maximum Valid Split Positions II
 
