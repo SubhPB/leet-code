@@ -103,4 +103,5 @@ class Solution:
     1 <= nums[i] <= 10**9​​​​​​​
     '''
     def maxValidSplits(self, nums: list[int]) -> int:
+        # brute not work, due to 'n' constrait 
         pass
