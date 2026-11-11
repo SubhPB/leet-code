@@ -1,3 +1,4 @@
+import math
 class Solution:
     '''
     4039. Sum of Decoded Numbers
@@ -30,4 +31,12 @@ class Solution:
     It is guaranteed that every element in nums is a valid encoded integer.
     '''
     def sumDecoded(self, nums: list[int]) -> int:
-        pass
+        mod=10**9+7; res=0
+        for num in nums:
+            w=num%10; d=num//10
+            n=1+math.floor(math.log10(d))
+            p=n-w
+            x=d//pow(10,p,mod)
+            y=d%pow(10,p,mod)
+            res=(res+pow(x,y,mod))%mod
+        return res
