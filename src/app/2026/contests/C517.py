@@ -58,5 +58,23 @@ class Solution:
     1 <= nums[i] <= 500
     1 <= sum <= 5000
     '''
-    def minOperations(self, nums: list[int], sum: int) -> int:
-        pass
+    def minOperations(self, nums: list[int], E: int) -> int:
+        #incomplete
+        inf=10**18
+        n=len(nums)
+        dp=[
+            [[inf for z in range(E+1)] for y in range(E+1)] for x in range(2)
+        ]
+        res=inf
+        for i in range(n-1,-1,-1):
+            # cost1= if nums[i]
+            for y in range(1,E+1):
+                # if nums[i]>=y:
+                    
+                g = y//nums[i] if y>=nums[i] else nums[i]//y
+            for y in range(1,E+1):
+                dp[1][y]=list(*dp[0][y])
+            dp[0][y]=[inf]*(E+1)
+        if res!=inf:
+            return res
+        return res
