@@ -62,19 +62,26 @@ class Solution:
         #incomplete
         inf=10**18
         n=len(nums)
-        dp=[
-            [[inf for z in range(E+1)] for y in range(E+1)] for x in range(2)
-        ]
+        dp=[inf for x in range(E+1)]
+        dp[0]=0
         res=inf
         for i in range(n-1,-1,-1):
-            # cost1= if nums[i]
-            for y in range(1,E+1):
-                # if nums[i]>=y:
-                    
-                g = y//nums[i] if y>=nums[i] else nums[i]//y
-            for y in range(1,E+1):
-                dp[1][y]=list(*dp[0][y])
-            dp[0][y]=[inf]*(E+1)
-        if res!=inf:
-            return res
-        return res
+            temp=[inf]*(E+1)
+            temp[0]=0
+            t=0; x=nums[i]
+            while x<=E:
+                for y in range(E-x+1):
+                    en=y+x
+                    temp[en]=min(temp[en],t+dp[y])
+                x*=2
+                t+=1
+            t=1; x=nums[i]//2
+            while x>0:
+                for y in range(E-x+1):
+                    en=y+x
+                    temp[en]=min(temp[en],t+dp[y])
+                x//=2
+                t+=1
+            res=min(res,temp[E])
+            dp=[*temp]
+        return res if res<inf else -1
