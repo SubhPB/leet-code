@@ -59,14 +59,13 @@ class Solution:
     1 <= sum <= 5000
     '''
     def minOperations(self, nums: list[int], E: int) -> int:
-        #incomplete
         inf=10**18
         n=len(nums)
-        dp=[inf for x in range(E+1)]
+        dp=[inf]*(E+1)
         dp[0]=0
         res=inf
         for i in range(n-1,-1,-1):
-            temp=[inf]*(E+1)
+            temp=[*dp]
             temp[0]=0
             t=0; x=nums[i]
             while x<=E:
