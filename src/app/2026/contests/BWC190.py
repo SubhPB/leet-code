@@ -103,5 +103,21 @@ class Solution:
     1 <= nums[i] <= 10**9​​​​​​​
     '''
     def maxValidSplits(self, nums: list[int]) -> int:
-        # brute not work, due to 'n' constrait 
-        pass
+        n=len(nums)
+        pre=[0]*(n+1)
+        suf=[0]*(n+1)
+        # suf[i] includes nums[i] whereas pre[i] not includes nums[i]
+        for idx in range(1,n+1):
+            pre[idx]=gcd(pre[idx-1],nums[idx-1])
+            suf[n-idx]=gcd(suf[n-idx+1],nums[n-idx])
+        def walk(k,curr,step,g):
+            while curr!=g:
+                curr=gcd(curr,nums[k])
+                k+=step
+            return k
+        best=sum([pre[i]==suf[i] for i in range(n+1)])
+        for i in range(n):
+            #intuition yet need to develop
+            pass
+        return best
+        
