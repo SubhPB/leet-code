@@ -117,7 +117,10 @@ class Solution:
             return k
         best=sum([pre[i]==suf[i] for i in range(n+1)])
         for i in range(n):
-            #intuition yet need to develop
-            pass
+            g=gcd(pre[i],suf[i+1])
+            if g==pre[n]: continue
+            l=walk(k=0,curr=0,step=1,g=g) if pre[i]==g else walk(k=i+1,curr=pre[i],step=1,g=g)
+            r=walk(k=n-1,curr=0,step=-1,g=g) if suf[i+1]==g else walk(k=i-1,curr=suf[i+1],step=-1,g=g)
+            best=max(best, r-l+2-int(l<=i<=r))
         return best
         
