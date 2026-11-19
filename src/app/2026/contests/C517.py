@@ -106,5 +106,35 @@ class Solution:
     1 <= nums[i] <= 500
     1 <= sum <= 5000
     '''
-    def minOperations4041(self, nums: list[int], sum: int) -> int:
-        pass
+    def minOperations4041(self, nums: list[int], E: int) -> int:
+        inf=10**18
+        n=len(nums)
+        dp=[inf]*(E+1)
+        dp[0]=0
+        res=inf
+        for i in range(n-1,-1,-1):
+            temp=[*dp]
+            temp[0]=0
+            t=0; x=nums[i]
+            while x<=E:
+                for y in range(E-x+1):
+                    en=y+x
+                    temp[en]=min(temp[en],t+dp[y])
+                x*=2
+                t+=1
+
+            t=1; x=nums[i]//2
+            while x>0:
+                # x has been reduced, value can be accelerated...
+                tnew=0; xnew=x
+                while xnew<=E and xnew!=nums[i]:
+                    for y in range(E-xnew+1):
+                        en=y+xnew
+                        temp[en]=min(temp[en],t+tnew+dp[y])
+                    xnew*=2
+                    tnew+=1
+                x//=2
+                t+=1
+            res=min(res,temp[E])
+            dp=[*temp]
+        return res if res<inf else -1
