@@ -18,4 +18,32 @@ class Solution:
     n is even.
     '''
     def countGoodRotations(self, nums: list[int]) -> int:
-        pass
+        n=len(pre)
+        for i in range(1,n):
+            pre[i]+=pre[i-1]
+        total=pre[n-1]
+        res=0
+        for i in range(n):
+            if pre[i]>=total-pre[i]:
+                l=-1; r=i
+                while l<r:
+                    m=(l+r+1)//2
+                    curr=pre[i]-pre[m-1]
+                    if curr>=total-curr:
+                        l=m
+                    else:
+                        r=m-1
+                res+=n-(i-l+1)-1
+            else:
+                l=i; r=n-1
+                while l<r:
+                    m=(l+r+1)//2
+                    curr= pre[i] + pre[n-1]-pre[m-1]
+                    if curr>=total-curr:
+                        l=m
+                    else:
+                        r=m-1
+                if l>i+1: # reconsider
+                    res+= n-((i+1)+(n-1)-l+1)-1
+        return res
+        
