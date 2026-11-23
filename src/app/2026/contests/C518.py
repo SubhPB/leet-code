@@ -24,27 +24,27 @@ class Solution:
         total=pre[n-1]
         res=0
         for i in range(n):
-            if pre[i]>=total-pre[i]:
-                l=-1; r=i
+            if 2*pre[i]>=total:
+                l=0; r=i
                 while l<r:
                     m=(l+r+1)//2
                     curr=pre[i]-pre[m-1]
-                    if curr>=total-curr:
+                    if 2*curr>=total:
                         l=m
                     else:
                         r=m-1
-                res+=n-(i-l+1)-1
+                res+=(n-(i-l+1)-1)
             else:
-                l=i; r=n-1
+                l=i+1; r=n-1
                 while l<r:
                     m=(l+r+1)//2
-                    curr= pre[i] + pre[n-1]-pre[m-1]
-                    if curr>=total-curr:
+                    curr=pre[i]+pre[n-1]-pre[m-1]
+                    if 2*curr>=total:
                         l=m
                     else:
                         r=m-1
-                if l>i+1: # reconsider
-                    res+= n-((i+1)+(n-1)-l+1)-1
+                if l!=i+1:
+                    res+=(n-(i+1 + n-1-l+1)-1)
         return res
     '''
     4045. Count Robot Groups
