@@ -17,35 +17,20 @@ class Solution:
     1 <= nums[i] <= 10**9
     n is even.
     '''
-    def countGoodRotations(self, pre: list[int]) -> int:
-        n=len(pre)
-        for i in range(1,n):
-            pre[i]+=pre[i-1]
-        total=pre[n-1]
-        res=0
-        for i in range(n):
-            if 2*pre[i]>=total:
-                l=0; r=i
-                while l<r:
-                    m=(l+r+1)//2
-                    curr=pre[i]-pre[m-1]
-                    if 2*curr>=total:
-                        l=m
-                    else:
-                        r=m-1
-                res+=(n-(i-l+1)-1)
-            else:
-                l=i+1; r=n-1
-                while l<r:
-                    m=(l+r+1)//2
-                    curr=pre[i]+pre[n-1]-pre[m-1]
-                    if 2*curr>=total:
-                        l=m
-                    else:
-                        r=m-1
-                if l!=i+1:
-                    res+=(n-(i+1 + n-1-l+1)-1)
+    def countGoodRotations(self, nums: list[int]) -> int:
+        n=len(nums)
+        total=sum(nums)
+        res=n//2
+        curr=0
+        for i in range(n//2):
+            curr+=nums[i]
+        for i in range(n//2,n):
+            if curr*2==total:
+                res-=1
+            curr-=nums[i-n//2]
+            curr+=nums[i]
         return res
+
     '''
     4045. Count Robot Groups
 
