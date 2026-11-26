@@ -60,7 +60,17 @@ class Solution:
     position is strictly increasing.
     '''
     def countGroups(self, position: list[int], speed: list[int], distance: int) -> int:
-        pass
+        res=0
+        n=len(position)
+        inf=10**18
+        position.append(inf)
+        speed.append(inf)
+        for i in range(n):
+            diff=position[i+1]-position[i]
+            if diff<=distance or speed[i]>speed[i+1]:
+                continue
+            res+=1
+        return res
     '''
     4046. Minimum Cost Path With At Most K Turns
 
